@@ -1,0 +1,6 @@
+@FinancialTracker.Services.Analytics_HostAddress = http://localhost:7005
+
+GET {{FinancialTracker.Services.Analytics_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

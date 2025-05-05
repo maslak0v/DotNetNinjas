@@ -1,7 +1,7 @@
-using FinancialTracker.Services.AnalyticsAPI.Models.Dto;
+using FinancialTracker.Services.Analytics.Models.Dto;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FinancialTracker.Services.AnalyticsAPI.Controllers;
+namespace FinancialTracker.Services.Analytics.Controllers;
 
 [ApiController]
 [Route("api/expenses")]
