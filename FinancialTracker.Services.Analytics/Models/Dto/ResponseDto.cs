@@ -1,4 +1,4 @@
-namespace FinancialTracker.Services.AnalyticsAPI.Models.Dto;
+namespace FinancialTracker.Services.Analytics.Models.Dto;
 
 public class ResponseDto
 {
