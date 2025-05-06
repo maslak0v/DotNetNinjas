@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace FinancialTracker.Services.Analytics.Migrations
+namespace FinancialTracker.Services.Analytics.DataAccess.Migrations
 {
     /// <inheritdoc />
     public partial class SeedUserTable : Migration

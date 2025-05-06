@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace FinancialTracker.Services.Analytics.Migrations
+namespace FinancialTracker.Services.Analytics.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     [Migration("20250505072525_SeedUserTable")]
