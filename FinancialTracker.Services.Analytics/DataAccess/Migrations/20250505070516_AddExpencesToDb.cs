@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace FinancialTracker.Services.Analytics.Migrations
+namespace FinancialTracker.Services.Analytics.DataAccess.Migrations
 {
     /// <inheritdoc />
     public partial class AddExpencesToDb : Migration

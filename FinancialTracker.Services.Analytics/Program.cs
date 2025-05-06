@@ -1,4 +1,4 @@
-using FinancialTracker.Services.Analytics.Data;
+using FinancialTracker.Services.Analytics.DataAccess;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

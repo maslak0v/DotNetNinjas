@@ -1,7 +1,7 @@
 using FinancialTracker.Services.Analytics.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace FinancialTracker.Services.Analytics.Data;
+namespace FinancialTracker.Services.Analytics.DataAccess;
 
 public class AppDbContext : DbContext
 {
