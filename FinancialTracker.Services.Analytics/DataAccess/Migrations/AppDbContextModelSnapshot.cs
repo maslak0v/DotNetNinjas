@@ -61,13 +61,6 @@ namespace FinancialTracker.Services.Analytics.DataAccess.Migrations
                     b.HasKey("UserId");
 
                     b.ToTable("User");
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = 1,
-                            Name = "Даша"
-                        });
                 });
 
             modelBuilder.Entity("FinancialTracker.Services.Analytics.Models.Expense", b =>

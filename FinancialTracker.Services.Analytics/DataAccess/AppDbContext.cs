@@ -10,17 +10,4 @@ public class AppDbContext : DbContext
     }
 
     public DbSet<Expense> Expenses { get; set; }
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        base.OnModelCreating(modelBuilder);
-
-        var userDasha = new User()
-        {
-            Name = "Даша",
-            UserId = 1
-        };
-
-        modelBuilder.Entity<User>().HasData(userDasha);
-    }
 }
