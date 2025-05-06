@@ -1,3 +1,4 @@
+using FinancialTracker.Services.Analytics;
 using FinancialTracker.Services.Analytics.DataAccess;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,6 +8,10 @@ builder.Services.AddDbContext<AppDbContext>(option =>
 {
     option.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+builder.Services.InstallServices();
+builder.Services.InstallRepositories();
+    
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
