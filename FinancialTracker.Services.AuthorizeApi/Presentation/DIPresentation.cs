@@ -1,6 +1,6 @@
 ﻿namespace FinancialTracker.Services.AuthorizeApi.Presentation
 {
-    public static class DIInfrastructure
+    public static class DIPresentation
     {
         public static IServiceCollection AddPresentationLayer(
                 this IServiceCollection services)
