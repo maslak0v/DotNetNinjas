@@ -19,21 +19,29 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task UserRegisterAsync(UserRegisterRequest request)
+        public async Task<OperationResult> UserRegisterAsync(UserRegisterRequest request)
         {
-            logger.LogInformation("Registration of a new user");
-            await checkExistUserAsync(request);
-
-            var newUser = mapper.Map<AuthUser>(request);
-            newUser.CreateAt = DateTime.Now; //maybe utc?
-            var result = await userManager.CreateAsync(newUser, request.Password);
-            if (!result.Succeeded)
+            try
             {
-                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
-                ErrorHandler.HandleWarningError(logger, $"Failed to create user: {errors}");
-            }
-            logger.LogInformation("User created successfully");
+                logger.LogInformation("Registration of a new user");
+                await checkExistUserAsync(request);
 
+                var newUser = mapper.Map<AuthUser>(request);
+                newUser.CreateAt = DateTime.Now; //maybe utc?
+                var result = await userManager.CreateAsync(newUser, request.Password);
+                if (!result.Succeeded)
+                {
+                    var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                    ErrorHandler.HandleWarningError(logger, $"Failed to create user: {errors}");
+                }
+                string message = "User created successfully";
+                logger.LogInformation(message);
+                return OperationResultCreator.Success(message);
+            }
+            catch (Exception ex)
+            {
+                return OperationResultCreator.FromException(ex);
+            }
 
             //------------------ Footer --------------------------
             //helpers methods

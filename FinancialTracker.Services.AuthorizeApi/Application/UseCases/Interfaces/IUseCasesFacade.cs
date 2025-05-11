@@ -1,10 +1,11 @@
 ﻿using FinancialTracker.Services.AuthorizeApi.Application.Contracts;
+using FinancialTracker.Services.AuthorizeApi.Application.Features;
 
 namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Interfaces
 {
     public interface IUseCasesFacade
     {
-        Task UserRegisterAsync(UserRegisterRequest request);
+        Task<OperationResult> UserRegisterAsync(UserRegisterRequest request);
         Task<UserResponse> UserLoginAsync(UserLoginRequest request);
         Task UserLogoutAsync(UserLogoutRequest request);
         Task<UserResponse> GetUserByIdAsync(Guid id);
