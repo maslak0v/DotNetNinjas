@@ -24,7 +24,9 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
             try
             {
                 logger.LogInformation("Registration of a new user");
-                await checkExistUserAsync(request);
+                var checkResult = await checkExistUserAsync(request);
+                if (!checkResult.IsSuccess)
+                    return ErrorHandler.HandleWarningError(logger, checkResult.Error!);
 
                 var newUser = mapper.Map<AuthUser>(request);
                 newUser.CreateAt = DateTime.Now; //maybe utc?
@@ -45,7 +47,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
 
             //------------------ Footer --------------------------
             //helpers methods
-            async Task checkExistUserAsync(UserRegisterRequest request)
+            async Task<OperationResult> checkExistUserAsync(UserRegisterRequest request)
             {
                 //сначала проверить проверку уникальности из коробки Identity
                 //if (await ExistEmailAsync(request.Email))
@@ -53,10 +55,9 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
                 //    ErrorHandler.HandleWarningError(logger, "Email already exist");
                 //}
 
-                if (await ExistUsernameAsync(request.FullName))
-                {
-                    ErrorHandler.HandleWarningError(logger, "User's name already exist");
-                }
+               return await ExistUsernameAsync(request.FullName)
+                    ? ErrorHandler.HandleWarningError(logger, "User's name already exist")
+                    : OperationResultCreator.Success();
             }
 
             //maybe to specifications

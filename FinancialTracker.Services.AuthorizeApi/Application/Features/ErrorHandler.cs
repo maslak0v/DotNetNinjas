@@ -9,10 +9,10 @@
         /// <param name="logger"></param>
         /// <param name="error"></param>
         /// <exception cref="Exception"></exception>
-        public static void HandleWarningError<T>(ILogger<T> logger, string error) where T : class
+        public static OperationResult HandleWarningError<T>(ILogger<T> logger, string error) where T : class
         {
             logger.LogWarning(error);
-            throw new Exception(error);
+            return OperationResultCreator.Failure(error);
         }
         /// <summary>
         /// 
@@ -21,10 +21,10 @@
         /// <param name="logger"></param>
         /// <param name="error"></param>
         /// <exception cref="Exception"></exception>
-        public static void HandleFatalError<T>(ILogger<T> logger, string error) where T : class
+        public static OperationResult HandleFatalError<T>(ILogger<T> logger, string error) where T : class
         {
             logger.LogError(error);
-            throw new Exception(error);
+            return OperationResultCreator.Failure(error);
         }
     }
 }
