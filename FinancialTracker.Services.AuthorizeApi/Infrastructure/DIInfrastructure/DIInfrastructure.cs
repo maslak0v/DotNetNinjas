@@ -1,4 +1,4 @@
-﻿using FinancialTracker.Services.AuthorizeApi.Application.UseCases.Interfaces;
+﻿using FinancialTracker.Services.AuthorizeApi.Application.Contracts;
 using FinancialTracker.Services.AuthorizeApi.Domain.Entities;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.DataAccess;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Helpers;
