@@ -13,4 +13,8 @@ public class Expense
     public DateTime ExpenseTime { get; set; }
     [Required]
     public double Amount { get; set; }
+    
+    // Новые поля для счета и валюты
+    public Guid AccountId { get; set; }
+    public string Currency { get; set; } = "RUB";
 }
