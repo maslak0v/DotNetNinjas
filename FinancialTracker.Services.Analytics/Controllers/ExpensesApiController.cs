@@ -1,4 +1,4 @@
-using FinancialTracker.Services.Analytics.Models;
+using AutoMapper;
 using FinancialTracker.Services.Analytics.Models.Dto;
 using FinancialTracker.Services.Analytics.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +7,8 @@ namespace FinancialTracker.Services.Analytics.Controllers;
 
 [ApiController]
 [Route("api/expenses")]
-public class ExpensesApiController(IExpensesService service) : ControllerBase
+public class ExpensesApiController(IExpensesService service,
+    IMapper mapper) : ControllerBase
 {
     [HttpGet]
     public IActionResult Get(
@@ -21,7 +22,7 @@ public class ExpensesApiController(IExpensesService service) : ControllerBase
         {
             var expenses = service.GetExpenses(userId, startDate, endDate);
 
-            response.Result = expenses.Select(ExpenseToStr);
+            response.Result = mapper.Map<List<ExpenseResponseDto>>(expenses);
         }
         catch (Exception ex)
         {
@@ -52,10 +53,5 @@ public class ExpensesApiController(IExpensesService service) : ControllerBase
             response.Message = ex.Message;
         }
         return Ok(response);
-    }
-
-    private static string ExpenseToStr(Expense expense)
-    {
-        return $"{expense.Amount} рублей {expense.ExpenseTime:dd/MM/yy}";
     }
 }

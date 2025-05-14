@@ -9,6 +9,7 @@ builder.Services.AddDbContext<AppDbContext>(option =>
     option.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
+builder.Services.InstallAutoMapper();
 builder.Services.InstallServices();
 builder.Services.InstallRepositories();
     
