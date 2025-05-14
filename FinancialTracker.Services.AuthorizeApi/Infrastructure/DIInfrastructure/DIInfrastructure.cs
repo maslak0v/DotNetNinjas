@@ -1,9 +1,12 @@
-﻿using FinancialTracker.Services.AuthorizeApi.Application.Contracts;
-using FinancialTracker.Services.AuthorizeApi.Domain.Entities;
+﻿using FinancialTracker.Services.AuthorizeApi.Application.UseCases.Interfaces;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.DataAccess;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Helpers;
-using FinancialTracker.Services.AuthorizeApi.Infrastructure.Services;
+using FinancialTracker.Services.AuthorizeApi.Infrastructure.Models;
+using FinancialTracker.Services.AuthorizeApi.Infrastructure.Repositories;
+using FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Imlementation;
+using FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -58,6 +61,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.DIInfrastructure
             });
 
             services.AddScoped<ITokenService<AuthUser>, TokenServiceImpl>();
+            services.AddScoped<IUserRepository, UserRepository>();
 
             return services;
         }

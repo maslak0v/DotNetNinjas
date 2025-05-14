@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace FinancialTracker.Services.AuthorizeApi.Domain.Entities
+namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Models
 {
     public class AuthUser: IdentityUser
     {

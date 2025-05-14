@@ -1,112 +1,57 @@
-﻿using AutoMapper;
-using FinancialTracker.Services.AuthorizeApi.Application.Contracts;
-using FinancialTracker.Services.AuthorizeApi.Application.Features;
+﻿using FinancialTracker.Services.AuthorizeApi.Application.Features;
 using FinancialTracker.Services.AuthorizeApi.Application.UseCases.Interfaces;
-using FinancialTracker.Services.AuthorizeApi.Domain.Entities;
-using Microsoft.AspNetCore.Identity;
+using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Requests;
+using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Responses;
 
 namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementation
 {
     public class UseCasesFacade(
-        UserManager<AuthUser> userManager,
-        ITokenService<AuthUser> tokenSerice,
-        ICurrentUserService currentUserService,
-        IMapper mapper,
-        ILogger<UseCasesFacade> logger) : IUseCasesFacade
+        IUserRegisterUseCase userRegisterUseCase) : IUseCasesFacade
     {
+
         /// <summary>
         /// Registration a new user
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<OperationResult> UserRegisterAsync(UserRegisterRequest request)
+        public async Task<OperationResult> UserRegisterAsync(IUserRegisterRequest request)
         {
-            try
-            {
-                logger.LogInformation("Registration of a new user");
-                var checkResult = await checkExistUserAsync(request);
-                if (!checkResult.IsSuccess)
-                    return ErrorHandler.HandleWarningError(logger, checkResult.Error!);
-
-                var newUser = mapper.Map<AuthUser>(request);
-                newUser.CreateAt = DateTime.Now; //maybe utc?
-                var result = await userManager.CreateAsync(newUser, request.Password);
-                if (!result.Succeeded)
-                {
-                    var errors = string.Join(", ", result.Errors.Select(e => e.Description));
-                    ErrorHandler.HandleWarningError(logger, $"Failed to create user: {errors}");
-                }
-                string message = "User created successfully";
-                logger.LogInformation(message);
-                return OperationResultCreator.Success(message);
-            }
-            catch (Exception ex)
-            {
-                return OperationResultCreator.FromException(ex);
-            }
-
-            //------------------ Footer --------------------------
-            //helpers methods
-            async Task<OperationResult> checkExistUserAsync(UserRegisterRequest request)
-            {
-                //сначала проверить проверку уникальности из коробки Identity
-                //if (await ExistEmailAsync(request.Email))
-                //{
-                //    ErrorHandler.HandleWarningError(logger, "Email already exist");
-                //}
-
-               return await ExistUsernameAsync(request.FullName)
-                    ? ErrorHandler.HandleWarningError(logger, "User's name already exist")
-                    : OperationResultCreator.Success();
-            }
-
-            //maybe to specifications
-            async Task<bool> ExistUsernameAsync(string fullname)
-                => await userManager.FindByNameAsync(fullname) is not null;
-
-            async Task<bool> ExistEmailAsync(string email)
-                => await userManager.FindByEmailAsync(email) is not null;
+            userRegisterUseCase.Request = request;
+            await userRegisterUseCase.Execute();
+            return userRegisterUseCase.Result;
         }
 
-        public Task<UserResponse> UserLoginAsync(UserLoginRequest request)
+        public Task<OperationResult<IUserResponse>> UserLoginAsync(IUserLoginRequest request)
         {
             throw new NotImplementedException();
         }
 
-        public Task UserLogoutAsync(UserLogoutRequest request)
+        public Task<OperationResult> DeleteAsync(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<UserResponse> UserUpdateAsync(Guid id, UserUpdateRequest reqest)
+        public Task<OperationResult<ICurrentUserLoginResponse>> GetCurrentUserAsync()
         {
             throw new NotImplementedException();
         }
 
-        public Task DeleteAsync(Guid id)
+        public Task<OperationResult<IUserResponse>> GetUserByIdAsync(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<CurrentUserLoginResponse> GetCurrentUserAsync()
+       
+
+        public Task<OperationResult> UserLogoutAsync(IUserLogoutRequest request)
         {
             throw new NotImplementedException();
         }
 
-        public Task<UserResponse> GetUserByIdAsync(Guid id)
+
+        public Task<OperationResult<IUserResponse>> UserUpdateAsync(IUserUpdateRequest reqest)
         {
             throw new NotImplementedException();
         }
-
-        //public Task<CurrentUserLoginResponse> RefreshTokenAsync(RefreshTokenRequest request)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public Task<RevokeRefreshTokenResponse> RevokeRefreshTokenAsync(RefreshTokenRemoveRequest request)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
     }
 }

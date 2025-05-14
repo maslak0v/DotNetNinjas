@@ -1,4 +1,6 @@
-﻿namespace FinancialTracker.Services.AuthorizeApi.Presentation
+﻿
+
+namespace FinancialTracker.Services.AuthorizeApi.Presentation
 {
     public static class DIPresentation
     {

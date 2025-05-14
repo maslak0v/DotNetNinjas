@@ -2,29 +2,31 @@
 {
     public class ErrorHandler
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="logger"></param>
-        /// <param name="error"></param>
-        /// <exception cref="Exception"></exception>
-        public static OperationResult HandleWarningError<T>(ILogger<T> logger, string error) where T : class
+        public static OperationResult HandleWarningError<TLoggingObject>
+            (ILogger<TLoggingObject> logger, string error) where TLoggingObject : class
         {
             logger.LogWarning(error);
             return OperationResultCreator.Failure(error);
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="logger"></param>
-        /// <param name="error"></param>
-        /// <exception cref="Exception"></exception>
-        public static OperationResult HandleFatalError<T>(ILogger<T> logger, string error) where T : class
+        public static OperationResult HandleFatalError<TLoggingObject>
+            (ILogger<TLoggingObject> logger, string error) where TLoggingObject : class
         {
             logger.LogError(error);
             return OperationResultCreator.Failure(error);
+        }
+
+        public static OperationResult<TResult> HandleWarningError<TLoggingObject, TResult>
+            (ILogger<TLoggingObject> logger, string error) where TLoggingObject : class
+        {
+            logger.LogWarning(error);
+            return OperationResultCreator.Failure<TResult>(error);
+        }
+
+        public static OperationResult<TResult> HandleInformation<TLoggingObject, TResult>
+            (ILogger<TLoggingObject> logger, string error) where TLoggingObject : class
+        {
+            logger.LogInformation(error);
+            return OperationResultCreator.Failure<TResult>(error);
         }
     }
 }

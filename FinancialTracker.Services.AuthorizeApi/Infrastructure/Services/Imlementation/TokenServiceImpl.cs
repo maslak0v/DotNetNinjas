@@ -1,6 +1,6 @@
-﻿using FinancialTracker.Services.AuthorizeApi.Application.Contracts;
-using FinancialTracker.Services.AuthorizeApi.Domain.Entities;
-using FinancialTracker.Services.AuthorizeApi.Infrastructure.Helpers;
+﻿using FinancialTracker.Services.AuthorizeApi.Infrastructure.Helpers;
+using FinancialTracker.Services.AuthorizeApi.Infrastructure.Models;
+using FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -9,7 +9,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Services
+namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Imlementation
 {
     public class TokenServiceImpl(
         ILogger<TokenServiceImpl> logger,

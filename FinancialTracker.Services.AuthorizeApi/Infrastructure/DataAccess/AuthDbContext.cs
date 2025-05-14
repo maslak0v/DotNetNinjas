@@ -1,4 +1,4 @@
-﻿using FinancialTracker.Services.AuthorizeApi.Domain.Entities;
+﻿using FinancialTracker.Services.AuthorizeApi.Infrastructure.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

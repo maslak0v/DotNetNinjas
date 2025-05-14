@@ -1,3 +1,4 @@
+using FinancialTracker.Services.AuthorizeApi.Application;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.DIInfrastructure;
 using FinancialTracker.Services.AuthorizeApi.Presentation;
 
@@ -6,6 +7,7 @@ var configuration = builder.Configuration;
 // Add services to the container.
 
 //Add dependencies from layers
+builder.Services.AddApplicationLayer();
 builder.Services.AddInfrastructureLayer(configuration);
 builder.Services.AddPresentationLayer();
 

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace FinancialTracker.Services.AuthorizeApi.Application.Contracts
+namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Interfaces
 {
     public interface ITokenService<TUser> where TUser : IdentityUser
     {
