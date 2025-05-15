@@ -1,26 +1,28 @@
 ﻿using FinancialTracker.Services.AuthorizeApi.Application.Extensions;
+using FinancialTracker.Services.AuthorizeApi.Domain.ValueObjects;
 
 namespace FinancialTracker.Services.AuthorizeApi.Application.Features
 {
-    public record OperationResult(bool IsSuccess, string? Message = null, string? Error = null);
+    public record OperationResult
+        (bool IsSuccess, Enum_StatusCode StatusCode, string? Message = null);
     public record OperationResult<TResult>
-        (TResult? Result, bool IsSuccess, string? Message = null, string? Error = null);
+        (TResult? Result, bool IsSuccess, Enum_StatusCode status, string? Message = null);
     public static class OperationResultCreator
     {
-        public static OperationResult Success(string? message = null)
-            => new OperationResult(true, message);
+        public static OperationResult Success(Enum_StatusCode statusCode, string? message = null)
+            => new OperationResult(true, statusCode, message);
         public static OperationResult<TResult> Success<TResult>
-            (TResult result, string? message = null)
-            => new OperationResult<TResult>(result, true, message);
+            (TResult result, Enum_StatusCode statusCode, string? message = null)
+            => new OperationResult<TResult>(result, true, statusCode, message);
 
-        public static OperationResult Failure(string error) 
-            => new OperationResult(false, Error: error);
-        public static OperationResult<TResult> Failure<TResult>(string error) 
-            => new OperationResult<TResult> (IsSuccess: false, Error: error, Result: default);
+        public static OperationResult Failure(Enum_StatusCode statusCode, string error) 
+            => new OperationResult(false, statusCode, error);
+        public static OperationResult<TResult> Failure<TResult>(Enum_StatusCode statusCode, string error) 
+            => new OperationResult<TResult> (default, false, statusCode, error);
 
         public static OperationResult FromException(Exception ex) 
-            => Failure(ex.MessageWithInner());
+            => Failure(Enum_StatusCode.INTERNAL_SERVER_ERROR, ex.MessageWithInner());
         public static OperationResult<TResult> FromException<TResult>(Exception ex)
-            => Failure<TResult>(ex.MessageWithInner());
+            => Failure<TResult>(Enum_StatusCode.INTERNAL_SERVER_ERROR, ex.MessageWithInner());
     }
 }

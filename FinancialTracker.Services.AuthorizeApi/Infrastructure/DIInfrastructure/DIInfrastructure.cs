@@ -6,7 +6,6 @@ using FinancialTracker.Services.AuthorizeApi.Infrastructure.Repositories;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Imlementation;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -30,7 +29,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.DIInfrastructure
 
             //DbContext registration
             services.AddDbContext<AuthDbContext>(options
-                => options.UseSqlite(configuration.GetConnectionString("DefaultConnection")));
+                => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
             //Set dbContext for identity
             services.AddIdentity<AuthUser, IdentityRole>(options =>
