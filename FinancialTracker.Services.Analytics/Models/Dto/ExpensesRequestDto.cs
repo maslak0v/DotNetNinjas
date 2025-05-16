@@ -8,5 +8,4 @@ public class ExpensesRequestDto
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
     public Guid AccountId { get; set; }
-    public string Currency { get; set; } = "RUB";
 } 

@@ -22,7 +22,6 @@ public class ExpensesRepository(AppDbContext db) : IExpensesRepository
             .Where(x => x.User != null && 
                        x.User.Guid == request.UserId &&
                        x.AccountId == request.AccountId &&
-                       x.Currency == request.Currency &&
                        x.ExpenseTime >= request.StartDate.ToUniversalTime() &&
                        x.ExpenseTime <= request.EndDate.ToUniversalTime());
     }

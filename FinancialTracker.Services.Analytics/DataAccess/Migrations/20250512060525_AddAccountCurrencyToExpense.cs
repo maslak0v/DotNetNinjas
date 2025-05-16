@@ -23,7 +23,7 @@ namespace FinancialTracker.Services.Analytics.Migrations
                 table: "Expenses",
                 type: "text",
                 nullable: false,
-                defaultValue: "");
+                defaultValue: "RUB");
         }
 
         /// <inheritdoc />
