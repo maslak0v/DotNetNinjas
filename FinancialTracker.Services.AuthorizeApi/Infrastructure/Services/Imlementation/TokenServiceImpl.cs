@@ -31,15 +31,16 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Imlemen
         private JwtSecurityToken GenerateSecurityToken(IEnumerable<Claim> claims)
         {
             var jwtSettings = jwtOptions.Value;
-            if (jwtSettings is null || string.IsNullOrEmpty(jwtSettings.Key))
+            var secretkey = Environment.GetEnvironmentVariable("JWT_KEY");
+            if (jwtSettings is null || string.IsNullOrEmpty(secretkey))
             {
-                string error = "Jwt secret key is not configured";
+                string error = "Jwt settings is not configured";
                 logger.LogWarning(error);
                 throw new InvalidOperationException(error);
             }
 
-            byte[] secretKey = Encoding.UTF8.GetBytes(jwtSettings.Key);
-            var symmetricSecurityKey = new SymmetricSecurityKey(secretKey);
+            byte[] secretKeyBytes = Encoding.UTF8.GetBytes(secretkey);
+            var symmetricSecurityKey = new SymmetricSecurityKey(secretKeyBytes);
             var signingCredentials = new SigningCredentials(
                     symmetricSecurityKey,
                     SecurityAlgorithms.HmacSha256);
@@ -56,8 +57,8 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Imlemen
         {
             List<Claim> claims = [
                 new (ClaimTypes.NameIdentifier, user.Id),
-                new (ClaimTypes.Name, user.UserName),
-                new (ClaimTypes.Email, user.Email)
+                new (ClaimTypes.Name, user.UserName!),
+                new (ClaimTypes.Email, user.Email!)
             ];
             var roles = (await userManager
                 .GetRolesAsync(user))

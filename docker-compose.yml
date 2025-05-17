@@ -1,0 +1,48 @@
+
+services:
+  financialtracker.services.authorizeapi:
+    image: ${DOCKER_REGISTRY-}financialtrackerservicesauthorizeapi
+    build:
+      context: .
+      dockerfile: FinancialTracker.Services.AuthorizeApi/Dockerfile
+    env_file: ./AuthData.env
+    ports:
+       - "5000:5000"
+       - "5001:5001"
+    container_name: auth_webapi
+    depends_on:
+      - postgres_db
+    networks:
+      - my_network
+    #command: ["dotnet", "ef", "database", "update", "--no-build", "--project", "FinancialTracker.Services.AuthorizeApi.csproj", "--startup-project", "."]
+
+  postgres_db:
+    image: postgres:latest
+    container_name: db_postgesql_container
+    restart: always
+    ports:
+      - "5432:5432"
+    env_file: ./AuthData.env
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - my_network
+  pgadmin: 
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container
+    restart: always
+    ports:
+      - "8081:80"
+    env_file: ./AuthData.env
+    volumes:
+      - pgadmindata:/var/lib/pgadmin
+    networks:
+      - my_network
+
+volumes:
+  pg_data:
+  pgadmindata:
+
+networks:
+  my_network:
+    driver: bridge

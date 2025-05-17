@@ -23,13 +23,20 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.DIInfrastructure
             var jwtSettings = configuration
                 .GetSection(nameof(JwtSettings))
                 .Get<JwtSettings>();
+            var jwtkey = Environment.GetEnvironmentVariable("JWT_KEY");
+            if (string.IsNullOrWhiteSpace(jwtkey))
+                throw new Exception("Jwtkey is not configured");
             //JwtSettings registration 
             //(To inject by IOptions<JwtSettings>)
             services.Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)));
 
+            string? connectionString = Environment.GetEnvironmentVariable("AUTH_DB_CONNECTION_STRING");
+            if (string.IsNullOrWhiteSpace(connectionString))
+                throw new Exception("Connection string for db is empty");
+
             //DbContext registration
             services.AddDbContext<AuthDbContext>(options
-                => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+                => options.UseNpgsql(connectionString));
 
             //Set dbContext for identity
             services.AddIdentity<AuthUser, IdentityRole>(options =>
@@ -55,7 +62,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.DIInfrastructure
                     ValidIssuer = jwtSettings.ValidIssuer,
                     ValidAudience = jwtSettings.ValidAudience,
                     IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(jwtSettings.Key))
+                        Encoding.UTF8.GetBytes(jwtkey))
                 };
             });
 
@@ -63,6 +70,14 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.DIInfrastructure
             services.AddScoped<IUserRepository, UserRepository>();
 
             return services;
+        }
+
+        public static async Task ApplyMigrationsAsync(this IApplicationBuilder app)
+        {
+            await using var scope = app.ApplicationServices.CreateAsyncScope();
+            using var dbContext = 
+                scope.ServiceProvider.GetRequiredService<AuthDbContext>();
+            await dbContext.Database.MigrateAsync();
         }
     }
 }
