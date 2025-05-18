@@ -4,11 +4,11 @@ using Microsoft.Extensions.Configuration;
 
 namespace Wallet.Infrastructure.Data;
 
-public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<WalletDbContext>
+public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<WalletPostgresDbContext>
 {
-    public WalletDbContext CreateDbContext(string[] args)
+    public WalletPostgresDbContext CreateDbContext(string[] args)
     {
-        var optionsBuilder = new DbContextOptionsBuilder<WalletDbContext>();
+        var optionsBuilder = new DbContextOptionsBuilder<WalletPostgresDbContext>();
         
         var configuration = new ConfigurationBuilder()
             .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "..", "Wallet.API"))
@@ -17,6 +17,6 @@ public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<WalletDbCo
         
         optionsBuilder.UseNpgsql(configuration.GetConnectionString("PGConnection"));
 
-        return new WalletDbContext(optionsBuilder.Options);
+        return new WalletPostgresDbContext(optionsBuilder.Options);
     }
 }

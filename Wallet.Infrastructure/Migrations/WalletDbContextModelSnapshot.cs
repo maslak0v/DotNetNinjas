@@ -10,7 +10,7 @@ using Wallet.Infrastructure.Data;
 
 namespace Wallet.Infrastructure.Migrations
 {
-    [DbContext(typeof(WalletDbContext))]
+    [DbContext(typeof(WalletPostgresDbContext))]
     partial class WalletDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

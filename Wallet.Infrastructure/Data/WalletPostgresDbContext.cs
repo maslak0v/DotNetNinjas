@@ -3,7 +3,7 @@ using Wallet.Domain.Entities;
 
 namespace Wallet.Infrastructure.Data;
 
-public class WalletDbContext : DbContext
+public class WalletPostgresDbContext : DbContext
 {
     public DbSet<Account> Account { get; set; }
     public DbSet<Transaction> Transactions { get; set; }
@@ -11,7 +11,7 @@ public class WalletDbContext : DbContext
     public DbSet<Tag> Tags { get; set; }
     public DbSet<TransactionTag> TransactionTags { get; set; }
 
-    public WalletDbContext(DbContextOptions<WalletDbContext> options) : base(options)
+    public WalletPostgresDbContext(DbContextOptions<WalletPostgresDbContext> options) : base(options)
     {
     }
 
@@ -78,6 +78,9 @@ public class WalletDbContext : DbContext
             entity.Property(c => c.Icon)
                   .HasMaxLength(50)
                   .HasDefaultValue("default");
+            
+            entity.HasIndex(c => c.Name)
+                  .IsUnique();
         });
 
         // Конфигурация Tag

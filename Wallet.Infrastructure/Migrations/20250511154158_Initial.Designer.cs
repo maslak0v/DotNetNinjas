@@ -11,7 +11,7 @@ using Wallet.Infrastructure.Data;
 
 namespace Wallet.Infrastructure.Migrations
 {
-    [DbContext(typeof(WalletDbContext))]
+    [DbContext(typeof(WalletPostgresDbContext))]
     [Migration("20250511154158_Initial")]
     partial class Initial
     {
