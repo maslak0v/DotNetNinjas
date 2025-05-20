@@ -20,7 +20,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
                     return;
                 }
                 
-                var result = await repository.CreateUser(Request);
+                var result = await repository.CreateUserAsync(Request);
                 if (!result.IsSuccess)
                 {
                     Result = OperationResultCreator.Failure(

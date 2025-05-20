@@ -35,8 +35,8 @@ namespace FinancialTracker.Services.AuthorizeApi.Presentation.Controllers
                 };
 
             }
-            logger.LogInformation(message);
-            return Ok(message);
+            logger.LogInformation(string.IsNullOrEmpty(message)? "user created" : message);
+            return Created();
         }
     }
 }

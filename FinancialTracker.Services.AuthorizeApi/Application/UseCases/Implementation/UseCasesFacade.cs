@@ -1,12 +1,12 @@
-﻿using FinancialTracker.Services.AuthorizeApi.Application.Features;
+﻿using FinancialTracker.Services.AuthorizeApi.Application.Fabrics;
+using FinancialTracker.Services.AuthorizeApi.Application.Features;
 using FinancialTracker.Services.AuthorizeApi.Application.UseCases.Interfaces;
 using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Requests;
 using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Responses;
 
 namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementation
 {
-    public class UseCasesFacade(
-        IUserRegisterUseCase userRegisterUseCase) : IUseCasesFacade
+    public class UseCasesFacade(IUseCaseFabric useCaseFabric) : IUseCasesFacade
     {
 
         /// <summary>
@@ -16,9 +16,10 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
         /// <returns></returns>
         public async Task<OperationResult> UserRegisterAsync(IUserRegisterRequest request)
         {
-            userRegisterUseCase.Request = request;
-            await userRegisterUseCase.Execute();
-            return userRegisterUseCase.Result;
+            var useCase = useCaseFabric.CreateUserRegister_UseCase();
+            useCase.Request = request;
+            await useCase.Execute();
+            return useCase.Result;
         }
 
         public Task<OperationResult<IUserResponse>> UserLoginAsync(IUserLoginRequest request)

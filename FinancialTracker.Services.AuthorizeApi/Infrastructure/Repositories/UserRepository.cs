@@ -10,7 +10,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Repositories
 {
     public class UserRepository(UserManager<AuthUser> userManager) : IUserRepository
     {
-        public async Task<OperationResult> CreateUser(IUserRegisterRequest userRegisterRequest)
+        public async Task<OperationResult> CreateUserAsync(IUserRegisterRequest userRegisterRequest)
         {
             var user = new AuthUser().FromRegisterRequst(userRegisterRequest);
             user.CreateAt = DateTime.UtcNow;
