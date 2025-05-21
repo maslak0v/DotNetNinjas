@@ -16,7 +16,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
         /// <returns></returns>
         public async Task<OperationResult> UserRegisterAsync(IUserRegisterRequest request)
         {
-            var useCase = useCaseFabric.CreateUserRegister_UseCase();
+            var useCase = useCaseFabric.CreateUserRegisterAsync();
             useCase.Request = request;
             await useCase.Execute();
             return useCase.Result;
@@ -53,6 +53,14 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
         public Task<OperationResult<IUserResponse>> UserUpdateAsync(IUserUpdateRequest reqest)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<OperationResult<List<IUserResponseInfo>>> GetAllUsersAsync()
+        {
+            var useCase = useCaseFabric.CreateGetAllUsersAsync();
+            await useCase.Execute();
+            var result = useCase.Result;
+            return result;
         }
     }
 }

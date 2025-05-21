@@ -4,6 +4,9 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.Fabrics
 {
     public interface IUseCaseFabric
     {
-        IUserRegisterUseCase CreateUserRegister_UseCase();
+        IUserRegisterUseCase CreateUserRegisterAsync();
+        IGetAllUsersUseCase CreateGetAllUsersAsync();
+
+        //other usecases..
     }
 }

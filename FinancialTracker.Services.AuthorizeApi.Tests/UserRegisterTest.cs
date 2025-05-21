@@ -4,7 +4,6 @@ using FinancialTracker.Services.AuthorizeApi.Application.UseCases.Interfaces;
 using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Requests;
 using FinancialTracker.Services.AuthorizeApi.Domain.ValueObjects;
 using FinancialTracker.Services.AuthorizeApi.Tests.Helpers;
-using Microsoft.AspNetCore.Mvc;
 using Moq;
 
 namespace FinancialTracker.Services.AuthorizeApi.Tests
@@ -18,7 +17,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Tests
             var request = RequestCreator.CreateUserRegisterGoodRequest();
             var mockRepository = new Mock<IUserRepository>();
             mockRepository.Setup(repo => repo.CreateUserAsync(request))
-                .Returns(Task.FromResult(mockResult));
+                .ReturnsAsync(mockResult);
 
             IUseCaseFabric fabric = UseCaseFabricCreator.Create(mockRepository.Object);
             IUseCasesFacade useCasesFacade = UseCaseFacadeCreator.Create(fabric);
@@ -37,7 +36,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Tests
             var request = RequestCreator.CreateUserRegisterBadRequest();
             var mockRepository = new Mock<IUserRepository>();
             mockRepository.Setup(repo => repo.CreateUserAsync(request))
-                .Returns(Task.FromResult(mockResult));
+                .ReturnsAsync(mockResult);
             
 
             IUseCaseFabric fabric = UseCaseFabricCreator.Create(mockRepository.Object);

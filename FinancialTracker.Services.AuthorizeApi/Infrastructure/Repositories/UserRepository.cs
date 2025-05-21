@@ -1,10 +1,12 @@
 ﻿using FinancialTracker.Services.AuthorizeApi.Application.Features;
 using FinancialTracker.Services.AuthorizeApi.Application.UseCases.Interfaces;
 using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Requests;
+using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Responses;
 using FinancialTracker.Services.AuthorizeApi.Domain.ValueObjects;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Mapping;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Repositories
 {
@@ -27,5 +29,15 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Repositories
 
         public async Task<bool> ExistUsernameAsync(string userName)
             => await userManager.FindByNameAsync(userName) is not null;
+
+        public async Task<OperationResult<List<IUserResponseInfo>>> GetAllUsersQueryAsync()
+        {
+            var users = await userManager.Users
+                .AsNoTracking()
+                .ToResponseFormatExt()
+                .ToListAsync();
+
+            return OperationResultCreator.Success(users, Enum_StatusCode.OK);
+        }
     }
 }

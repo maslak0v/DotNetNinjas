@@ -1,6 +1,6 @@
 ﻿
 using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Requests;
-using FinancialTracker.Services.AuthorizeApi.Presentation.Contracts;
+using FinancialTracker.Services.AuthorizeApi.Infrastructure.Contracts;
 
 namespace FinancialTracker.Services.AuthorizeApi.Tests.Helpers
 {

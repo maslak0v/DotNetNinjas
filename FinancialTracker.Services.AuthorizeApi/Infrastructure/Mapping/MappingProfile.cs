@@ -1,4 +1,6 @@
 ﻿using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Requests;
+using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Responses;
+using FinancialTracker.Services.AuthorizeApi.Infrastructure.Contracts;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Models;
 
 namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Mapping
@@ -11,5 +13,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Mapping
             user.UserName = userDto.FullName;
             return user;
         }
+        public static IQueryable<IUserResponseInfo> ToResponseFormatExt(this IQueryable<AuthUser> query)
+             => query.Select(x => new UserResponseInfo(x.Id, x.UserName!, x.Email!));
     }
 }
