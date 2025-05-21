@@ -10,7 +10,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Repositories
 {
-    public class UserRepository(UserManager<AuthUser> userManager) : IUserRepository
+    public class UserRepository(
+        UserManager<AuthUser> userManager,
+        SignInManager<AuthUser> signInManager) : IUserRepository
     {
         public async Task<OperationResult> CreateUserAsync(IUserRegisterRequest userRegisterRequest)
         {
