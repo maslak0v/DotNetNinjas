@@ -1,0 +1,23 @@
+using FinancialTracker.Services.Analytics.Models;
+using FinancialTracker.Services.Analytics.Models.Dto;
+
+namespace FinancialTracker.Services.Analytics.DataAccess.Repositories;
+
+public interface IExpensesRepository
+{
+    /// <summary>
+    /// Получить список расходов за период для пользователя
+    /// </summary>
+    /// <param name="userId"> Guid пользователя </param>
+    /// <param name="startDate"> Дата начала периода </param>
+    /// <param name="endDate">Дата окончания периода </param>
+    /// <returns></returns>
+    IEnumerable<Expense> GetExpenses(Guid userId, DateTime startDate, DateTime endDate);
+
+    /// <summary>
+    /// Получить список расходов за период для пользователя с учетом счета и валюты
+    /// </summary>
+    /// <param name="request">Параметры запроса</param>
+    /// <returns>Список расходов</returns>
+    IEnumerable<Expense> GetExpensesByAccount(ExpensesRequestDto request);
+}
