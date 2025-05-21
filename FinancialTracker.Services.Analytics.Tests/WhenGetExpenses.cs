@@ -67,6 +67,43 @@ public class WhenGetExpenses
         // Assert
         Assert.That(result, Is.EqualTo(emptyExpenses));
     }
+
+    [Test]
+    public void BeforeDate_ReturnsExpensesOnlyBeforeDate()
+    {
+        // Arrange
+        var mockRepository = new Mock<IExpensesRepository>();
+        var tommy = CreateUser("Tommy");
+        var tommyExpenses2009 = Create.Expense()
+            .At(01, 01, 2009)
+            .For(tommy).Please();
+        var tommyExpenses2010 = Create.Expense()
+            .At(01, 01, 2010)
+            .For(tommy).Please();
+        var tommyExpenses2011 = Create.Expense()
+            .At(01, 01, 2011)
+            .For(tommy).Please();
+        var allExpenses = new List<Expense>
+        {
+            tommyExpenses2009, tommyExpenses2010, tommyExpenses2011
+        };
+        var expensesBefore2010 = new List<Expense>
+        {
+            tommyExpenses2009, tommyExpenses2010
+        };
+
+        mockRepository.Setup(repo =>
+                repo.GetExpensesBeforeDate(tommy.Guid, It.IsAny<DateTime>()))
+            .Returns(allExpenses.Where(e => e.ExpenseTime.Year <= 2010));
+        var expensesService = new ExpensesService(mockRepository.Object);
+        
+        // Act
+        var result = expensesService.GetExpensesBeforeDate(tommy.Guid,
+            new DateTime(2010, 01, 01)).ToList();
+
+        // Assert
+        Assert.That(result, Is.EqualTo(expensesBefore2010));
+    }
     
     private User CreateUser(string name)
     {

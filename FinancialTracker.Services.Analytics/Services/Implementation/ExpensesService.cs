@@ -10,6 +10,11 @@ public class ExpensesService (IExpensesRepository expensesRepository): IExpenses
     {
         return expensesRepository.GetExpenses(userId, startDate, endDate);
     }
+    
+    public IEnumerable<Expense> GetExpensesBeforeDate(Guid userId, DateTime beforeDate)
+    {
+        return expensesRepository.GetExpensesBeforeDate(userId, beforeDate);
+    }
 
     public IEnumerable<Expense> GetExpensesByAccount(ExpensesRequestDto request)
     {
