@@ -9,8 +9,8 @@ namespace FinancialTracker.Services.AuthorizeApi.Application
         public static IServiceCollection AddApplicationLayer(this IServiceCollection services)
         {
 
-            services.AddScoped<IUseCaseFabric, UseCaseFabric>();
-            services.AddScoped<IUseCasesFacade, UseCasesFacade>();
+            services.AddScoped<IAuthUseCaseFabric, AuthUseCaseFabric>();
+            services.AddScoped<IAuthUseCasesFacade, AuthUseCasesFacade>();
             
             return services;
         }

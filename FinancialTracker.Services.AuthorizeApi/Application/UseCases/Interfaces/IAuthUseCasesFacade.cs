@@ -4,7 +4,7 @@ using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Responses;
 
 namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Interfaces
 {
-    public interface IUseCasesFacade
+    public interface IAuthUseCasesFacade
     {
         Task<OperationResult> UserRegisterAsync(IUserRegisterRequest request);
         Task<OperationResult<IUserResponse>> UserLoginAsync(IUserLoginRequest request);

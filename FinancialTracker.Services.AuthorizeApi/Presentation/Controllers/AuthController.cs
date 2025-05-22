@@ -8,7 +8,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Presentation.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController(
-        IUseCasesFacade useCasesFacade,
+        IAuthUseCasesFacade useCasesFacade,
         ILogger<AuthController> logger) : ControllerBase
     {
         /// <summary>

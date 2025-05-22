@@ -6,7 +6,7 @@ using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Responses;
 
 namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementation
 {
-    public class UseCasesFacade(IUseCaseFabric useCaseFabric) : IUseCasesFacade
+    public class AuthUseCasesFacade(IAuthUseCaseFabric useCaseFabric) : IAuthUseCasesFacade
     {
 
         /// <summary>
