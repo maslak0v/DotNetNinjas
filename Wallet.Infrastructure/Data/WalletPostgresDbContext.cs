@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Wallet.Domain.Entities;
 
 namespace Wallet.Infrastructure.Data;
@@ -39,6 +40,10 @@ public class WalletPostgresDbContext : DbContext
                   .WithOne(t => t.Account)
                   .HasForeignKey(t => t.WalletId)
                   .OnDelete(DeleteBehavior.Cascade);
+            
+            entity.Property(c => c.CreatedAt)
+                  .ValueGeneratedOnAdd() 
+                  .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
         });
         
         modelBuilder.Entity<Transaction>(entity =>
@@ -64,6 +69,10 @@ public class WalletPostgresDbContext : DbContext
                   
             entity.HasIndex(t => t.WalletId);
             entity.HasIndex(t => t.CategoryId);
+            
+            entity.Property(c => c.TransactionDate)
+                  .ValueGeneratedOnAdd() 
+                  .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
         });
 
         // Конфигурация Category
@@ -81,6 +90,10 @@ public class WalletPostgresDbContext : DbContext
             
             entity.HasIndex(c => c.Name)
                   .IsUnique();
+            
+            entity.Property(c => c.CreatedAt)
+                  .ValueGeneratedOnAdd() 
+                  .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
         });
 
         // Конфигурация Tag
