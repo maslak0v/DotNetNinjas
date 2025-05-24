@@ -20,4 +20,12 @@ public interface IExpensesRepository
     /// <param name="request">Параметры запроса</param>
     /// <returns>Список расходов</returns>
     IEnumerable<Expense> GetExpensesByAccount(ExpensesRequestDto request);
+
+    /// <summary>
+    /// Получить список расходов до указанной даты (включительно)
+    /// </summary>
+    /// <param name="userId"> Guid пользователя </param>
+    /// <param name="beforeDate"> Дата, до которой получаем расходы </param>
+    /// <returns></returns>
+    IQueryable<Expense> GetExpensesBeforeDate(Guid userId, DateTime beforeDate);
 }
