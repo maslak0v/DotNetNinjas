@@ -15,7 +15,7 @@ public class ExpensesRepository(AppDbContext db) : IExpensesRepository
                         && x.ExpenseTime <= endDate.ToUniversalTime());
     }
     
-    public IEnumerable<Expense> GetExpensesBeforeDate(Guid userId, DateTime date)
+    public IQueryable<Expense> GetExpensesBeforeDate(Guid userId, DateTime date)
     {
         var query = db.Set<Expense>().AsNoTracking();
         return query

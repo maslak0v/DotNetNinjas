@@ -20,7 +20,7 @@ public interface IExpensesService
     /// <param name="userId"> Guid пользователя </param>
     /// <param name="beforeDate"> Дата, до которой получаем расходы </param>
     /// <returns> Список расходов </returns>
-    IEnumerable<Expense> GetExpensesBeforeDate(Guid userId, DateTime beforeDate);
+    IQueryable<Expense> GetExpensesBeforeDate(Guid userId, DateTime beforeDate);
 
     /// <summary>
     /// Получить список расходов за период для пользователя с учетом счета и валюты

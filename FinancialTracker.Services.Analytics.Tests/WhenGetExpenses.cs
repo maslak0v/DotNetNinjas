@@ -94,7 +94,7 @@ public class WhenGetExpenses
 
         mockRepository.Setup(repo =>
                 repo.GetExpensesBeforeDate(tommy.Guid, It.IsAny<DateTime>()))
-            .Returns(allExpenses.Where(e => e.ExpenseTime.Year <= 2010));
+            .Returns(allExpenses.AsQueryable().Where(e => e.ExpenseTime.Year <= 2010));
         var expensesService = new ExpensesService(mockRepository.Object);
         
         // Act

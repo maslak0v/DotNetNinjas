@@ -27,5 +27,5 @@ public interface IExpensesRepository
     /// <param name="userId"> Guid пользователя </param>
     /// <param name="beforeDate"> Дата, до которой получаем расходы </param>
     /// <returns></returns>
-    IEnumerable<Expense> GetExpensesBeforeDate(Guid userId, DateTime beforeDate);
+    IQueryable<Expense> GetExpensesBeforeDate(Guid userId, DateTime beforeDate);
 }

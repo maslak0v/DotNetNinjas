@@ -32,7 +32,7 @@ public class WhenGetBalance
 
         mockRepository.Setup(repo =>
                 repo.GetExpensesBeforeDate(tommy.Guid, It.IsAny<DateTime>()))
-            .Returns(allExpenses);
+            .Returns(allExpenses.AsQueryable);
         var expensesService = new ExpensesService(mockRepository.Object);
         var balanceService = new BalanceService(expensesService);
         
@@ -54,7 +54,7 @@ public class WhenGetBalance
 
         mockRepository.Setup(repo =>
                 repo.GetExpensesBeforeDate(tommy.Guid, It.IsAny<DateTime>()))
-            .Returns(allExpenses);
+            .Returns(allExpenses.AsQueryable);
         var expensesService = new ExpensesService(mockRepository.Object);
         var balanceService = new BalanceService(expensesService);
         
