@@ -4,10 +4,10 @@ namespace Wallet.Domain.Interfaces;
 
 public interface IAccountRepository 
 {
-    Task<Account?> GetByIdAsync(Guid id);
-    Task<decimal> GetTotalBalanceByUserIdAsync(Guid userId);
-    Task AddAsync(Account account);
-    void Update(Account account);
-    void Delete(Account account);
-    Task<bool> ExistsAsync(Guid id);
+    Task<Account?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<IEnumerable<Account>> GetAllByUserIdAsync(Guid id, CancellationToken cancellationToken);
+    Task AddAsync(Account account, CancellationToken cancellationToken);
+    Task Update(Account account, CancellationToken cancellationToken);
+    Task SoftDelete(Account account, CancellationToken cancellationToken);
+    Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken);
 }

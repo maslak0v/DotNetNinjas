@@ -44,6 +44,10 @@ public class WalletPostgresDbContext : DbContext
             entity.Property(c => c.CreatedAt)
                   .ValueGeneratedOnAdd() 
                   .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
+            
+            entity.Property(a => a.UserId)
+                  .IsRequired()
+                  .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
         });
         
         modelBuilder.Entity<Transaction>(entity =>

@@ -25,6 +25,8 @@ public class Startup
         
         services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<ICategoryService, CategoryService>();
+        services.AddScoped<IAccountRepository, AccountRepository>();
+        services.AddScoped<IAccountService, AccountService>();
         
         services.AddControllers(); 
         services.AddEndpointsApiExplorer();
