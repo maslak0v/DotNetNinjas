@@ -21,7 +21,7 @@ public class BalanceApiController(IBalanceService service,
         {
             var balance = service.GetBalance(userId, forDate);
 
-            response.Result = balance;
+            response.Result = mapper.Map<BalanceResponseDto>(balance);
         }
         catch (Exception ex)
         {

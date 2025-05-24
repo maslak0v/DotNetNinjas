@@ -35,6 +35,7 @@ public static class Registrator
         var configuration = new MapperConfiguration(cfg =>
         {
             cfg.AddProfile<ExpenseMappingsProfile>();
+            cfg.AddProfile<BalanceMappingsProfile>();
         });
 
         configuration.AssertConfigurationIsValid();
