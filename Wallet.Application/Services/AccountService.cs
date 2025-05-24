@@ -11,8 +11,7 @@ public class AccountService :  IAccountService
     {
         _accountRepository = accountRepository;
     }
-
-
+    
     public async Task<IEnumerable<Account>> GetAllByUserIdAsync(Guid id, CancellationToken cancellationToken) => await _accountRepository.GetAllByUserIdAsync(id, cancellationToken);
     
     public async Task AddAsync(Account account, CancellationToken cancellationToken) 
@@ -22,9 +21,8 @@ public class AccountService :  IAccountService
     public async Task UpdateAsync(Account account, CancellationToken cancellationToken) 
         => await _accountRepository.Update(account, cancellationToken);
 
-    public async Task DeleteAsync(Account account, CancellationToken cancellationToken) 
-        =>await _accountRepository.SoftDelete(account, cancellationToken);
-
+    public async Task SoftDeleteAsync(Account account, CancellationToken cancellationToken) => await _accountRepository.SoftDelete(account, cancellationToken);
+    
     public Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
