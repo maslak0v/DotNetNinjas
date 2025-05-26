@@ -15,12 +15,13 @@ public class ExpensesRepository(AppDbContext db) : IExpensesRepository
                         && x.ExpenseTime <= endDate.ToUniversalTime());
     }
     
-    public IQueryable<Expense> GetExpensesBeforeDate(Guid userId, DateTime date)
+    public async Task<List<Expense>> GetExpensesBeforeDateAsync(Guid userId, DateTime date)
     {
         var query = db.Set<Expense>().AsNoTracking();
-        return query
+        return await query
             .Where(x => x.User.Guid == userId &&
-                        x.ExpenseTime <= date.ToUniversalTime());
+                        x.ExpenseTime <= date.ToUniversalTime())
+            .ToListAsync();
     }
 
     public IEnumerable<Expense> GetExpensesByAccount(ExpensesRequestDto request)

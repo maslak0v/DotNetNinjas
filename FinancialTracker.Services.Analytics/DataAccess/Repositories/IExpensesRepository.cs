@@ -22,10 +22,10 @@ public interface IExpensesRepository
     IEnumerable<Expense> GetExpensesByAccount(ExpensesRequestDto request);
 
     /// <summary>
-    /// Получить список расходов до указанной даты (включительно)
+    /// Получить список расходов до указанной даты включительно
     /// </summary>
     /// <param name="userId"> Guid пользователя </param>
     /// <param name="beforeDate"> Дата, до которой получаем расходы </param>
-    /// <returns></returns>
-    IQueryable<Expense> GetExpensesBeforeDate(Guid userId, DateTime beforeDate);
+    /// <returns> Список расходов </returns>
+    Task<List<Expense>> GetExpensesBeforeDateAsync(Guid userId, DateTime beforeDate);
 }

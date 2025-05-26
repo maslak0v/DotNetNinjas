@@ -69,7 +69,7 @@ public class WhenGetExpenses
     }
 
     [Test]
-    public void BeforeDate_ReturnsExpensesOnlyBeforeDate()
+    public async Task BeforeDate_ReturnsExpensesOnlyBeforeDate()
     {
         // Arrange
         var mockRepository = new Mock<IExpensesRepository>();
@@ -93,13 +93,13 @@ public class WhenGetExpenses
         };
 
         mockRepository.Setup(repo =>
-                repo.GetExpensesBeforeDate(tommy.Guid, It.IsAny<DateTime>()))
-            .Returns(allExpenses.AsQueryable().Where(e => e.ExpenseTime.Year <= 2010));
+                repo.GetExpensesBeforeDateAsync(tommy.Guid, It.IsAny<DateTime>()))
+            .ReturnsAsync(allExpenses.Where(e => e.ExpenseTime.Year <= 2010).ToList());
         var expensesService = new ExpensesService(mockRepository.Object);
         
         // Act
-        var result = expensesService.GetExpensesBeforeDate(tommy.Guid,
-            new DateTime(2010, 01, 01)).ToList();
+        var result = await expensesService.GetExpensesBeforeDateAsync(tommy.Guid,
+            new DateTime(2010, 01, 01));
 
         // Assert
         Assert.That(result, Is.EqualTo(expensesBefore2010));
