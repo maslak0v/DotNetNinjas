@@ -14,7 +14,7 @@ public class WhenGetExpenses
     }
 
     [Test]
-    public void ForTommy_ReturnsExpensesOnlyForTommy()
+    public async Task ForTommy_ReturnsExpensesOnlyForTommy()
     {
         // Arrange
         var mockRepository = new Mock<IExpensesRepository>();
@@ -30,14 +30,14 @@ public class WhenGetExpenses
         };
 
         mockRepository.Setup(repo =>
-                repo.GetExpenses(tommy.Guid, It.IsAny<DateTime>(), It.IsAny<DateTime>()))
-            .Returns(allExpenses.Where(e => e.User.Guid == tommy.Guid));
+                repo.GetExpensesAsync(tommy.Guid, It.IsAny<DateTime>(), It.IsAny<DateTime>()))
+            .ReturnsAsync(allExpenses.Where(e => e.User.Guid == tommy.Guid).ToList);
         var expensesService = new ExpensesService(mockRepository.Object);
         
         // Act
-        var result = expensesService.GetExpenses(tommy.Guid,
+        var result = await expensesService.GetExpensesAsync(tommy.Guid,
             new DateTime(2019, 01, 01),
-            new DateTime(2024, 01, 01)).ToList();
+            new DateTime(2024, 01, 01));
 
         // Assert
         Assert.That(result.Count, Is.EqualTo(1));
@@ -45,7 +45,7 @@ public class WhenGetExpenses
     }
 
     [Test]
-    public void ForEmptyPeriod_ReturnEmptyExpenses()
+    public async Task ForEmptyPeriod_ReturnEmptyExpenses()
     {
         // Arrange
         var tommy = CreateUser("Tommy");
@@ -53,16 +53,15 @@ public class WhenGetExpenses
         
         var mockRepository = new Mock<IExpensesRepository>();
         mockRepository.Setup(repo =>
-                repo.GetExpenses(tommy.Guid, It.IsAny<DateTime>(), It.IsAny<DateTime>()))
-            .Returns(emptyExpenses);
+                repo.GetExpensesAsync(tommy.Guid, It.IsAny<DateTime>(), It.IsAny<DateTime>()))
+            .ReturnsAsync(emptyExpenses);
         var expensesService = new ExpensesService(mockRepository.Object);
         
         // Act
         var fromDate = new DateTime(2024, 01, 01);
         var toDate = fromDate.AddDays(-1);
-        var result = expensesService.GetExpenses(tommy.Guid,
-            fromDate, toDate)
-            .ToList();
+        var result = await expensesService.GetExpensesAsync(tommy.Guid,
+            fromDate, toDate);
         
         // Assert
         Assert.That(result, Is.EqualTo(emptyExpenses));

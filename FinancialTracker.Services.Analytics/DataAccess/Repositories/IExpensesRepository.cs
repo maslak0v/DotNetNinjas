@@ -12,14 +12,14 @@ public interface IExpensesRepository
     /// <param name="startDate"> Дата начала периода </param>
     /// <param name="endDate">Дата окончания периода </param>
     /// <returns></returns>
-    IEnumerable<Expense> GetExpenses(Guid userId, DateTime startDate, DateTime endDate);
+    Task<List<Expense>> GetExpensesAsync(Guid userId, DateTime startDate, DateTime endDate);
 
     /// <summary>
     /// Получить список расходов за период для пользователя с учетом счета и валюты
     /// </summary>
     /// <param name="request">Параметры запроса</param>
     /// <returns>Список расходов</returns>
-    IEnumerable<Expense> GetExpensesByAccount(ExpensesRequestDto request);
+    Task<List<Expense>> GetExpensesByAccountAsync(ExpensesRequestDto request);
 
     /// <summary>
     /// Получить список расходов до указанной даты включительно

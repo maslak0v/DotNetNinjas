@@ -6,13 +6,14 @@ namespace FinancialTracker.Services.Analytics.DataAccess.Repositories;
 
 public class ExpensesRepository(AppDbContext db) : IExpensesRepository
 {
-    public IEnumerable<Expense> GetExpenses(Guid userId, DateTime startDate, DateTime endDate)
+    public async Task<List<Expense>> GetExpensesAsync(Guid userId, DateTime startDate, DateTime endDate)
     {
         var query = db.Set<Expense>().AsNoTracking();
-        return query
+        return await query
             .Where(x => x.User.Guid == userId &&
                        x.ExpenseTime >= startDate.ToUniversalTime()
-                        && x.ExpenseTime <= endDate.ToUniversalTime());
+                        && x.ExpenseTime <= endDate.ToUniversalTime())
+            .ToListAsync();
     }
     
     public async Task<List<Expense>> GetExpensesBeforeDateAsync(Guid userId, DateTime date)
@@ -24,13 +25,14 @@ public class ExpensesRepository(AppDbContext db) : IExpensesRepository
             .ToListAsync();
     }
 
-    public IEnumerable<Expense> GetExpensesByAccount(ExpensesRequestDto request)
+    public async Task<List<Expense>> GetExpensesByAccountAsync(ExpensesRequestDto request)
     {
         var query = db.Set<Expense>().AsNoTracking();
-        return query
+        return await query
             .Where(x => x.User.Guid == request.UserId &&
                        x.AccountId == request.AccountId &&
                        x.ExpenseTime >= request.StartDate.ToUniversalTime() &&
-                       x.ExpenseTime <= request.EndDate.ToUniversalTime());
+                       x.ExpenseTime <= request.EndDate.ToUniversalTime())
+            .ToListAsync();
     }
 }

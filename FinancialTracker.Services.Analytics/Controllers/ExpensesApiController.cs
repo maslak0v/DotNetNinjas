@@ -11,7 +11,7 @@ public class ExpensesApiController(IExpensesService service,
     IMapper mapper) : ControllerBase
 {
     [HttpGet]
-    public IActionResult Get(
+    public async Task<IActionResult> GetAsync(
         [FromQuery] Guid userId,
         [FromQuery] DateTime startDate,
         [FromQuery] DateTime endDate)
@@ -20,7 +20,7 @@ public class ExpensesApiController(IExpensesService service,
         
         try
         {
-            var expenses = service.GetExpenses(userId, startDate, endDate);
+            var expenses = await service.GetExpensesAsync(userId, startDate, endDate);
 
             response.Result = mapper.Map<List<ExpenseResponseDto>>(expenses);
         }
@@ -33,19 +33,14 @@ public class ExpensesApiController(IExpensesService service,
     }
 
     [HttpGet("by-account")]
-    public IActionResult GetByAccount([FromQuery] ExpensesRequestDto request)
+    public async Task<IActionResult> GetByAccountAsync([FromQuery] ExpensesRequestDto request)
     {
         var response = new ResponseDto();
         
         try
         {
-            var expenses = service.GetExpensesByAccount(request);
-            response.Result = expenses.Select(expense => new
-            {
-                Amount = expense.Amount,
-                Currency = expense.Currency,
-                Date = expense.ExpenseTime.ToString("dd/MM/yyyy")
-            });
+            var expenses = await service.GetExpensesByAccountAsync(request);
+            response.Result = mapper.Map<List<ExpenseResponseDto>>(expenses);
         }
         catch (Exception ex)
         {
