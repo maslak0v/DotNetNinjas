@@ -3,6 +3,7 @@
 .vscode/
 *.sln.iml
 *.code-workspace
+*.env
 
 # Rider & ReSharper
 .idea/
