@@ -6,23 +6,23 @@ namespace FinancialTracker.Services.Analytics.Services.Implementation;
 
 public class ExpensesService (IExpensesRepository expensesRepository): IExpensesService
 {
-    public IEnumerable<Expense> GetExpenses(Guid userId, DateTime startDate, DateTime endDate)
+    public async Task<List<Expense>> GetExpensesAsync(Guid userId, DateTime startDate, DateTime endDate)
     {
-        return expensesRepository.GetExpenses(userId, startDate, endDate);
+        return await expensesRepository.GetExpensesAsync(userId, startDate, endDate);
     }
     
-    public IQueryable<Expense> GetExpensesBeforeDate(Guid userId, DateTime beforeDate)
+    public async Task<List<Expense>> GetExpensesBeforeDateAsync(Guid userId, DateTime beforeDate)
     {
-        return expensesRepository.GetExpensesBeforeDate(userId, beforeDate);
+        return await expensesRepository.GetExpensesBeforeDateAsync(userId, beforeDate);
     }
 
-    public IEnumerable<Expense> GetExpensesByAccount(ExpensesRequestDto request)
+    public async Task<List<Expense>> GetExpensesByAccountAsync(ExpensesRequestDto request)
     {
         if (request.StartDate > request.EndDate)
         {
             throw new ArgumentException("Дата начала периода не может быть позже даты окончания");
         }
 
-        return expensesRepository.GetExpensesByAccount(request);
+        return await expensesRepository.GetExpensesByAccountAsync(request);
     }
 }

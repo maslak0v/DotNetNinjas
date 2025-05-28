@@ -11,7 +11,7 @@ public class BalanceApiController(IBalanceService service,
     IMapper mapper) : ControllerBase
 {
     [HttpGet]
-    public IActionResult Get(
+    public async Task<IActionResult> GetAsync(
         [FromQuery] Guid userId,
         [FromQuery] DateTime forDate)
     {
@@ -19,7 +19,7 @@ public class BalanceApiController(IBalanceService service,
         
         try
         {
-            var balance = service.GetBalance(userId, forDate);
+            var balance = await service.GetBalanceAsync(userId, forDate);
 
             response.Result = mapper.Map<BalanceResponseDto>(balance);
         }

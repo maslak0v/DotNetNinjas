@@ -14,7 +14,7 @@ public class WhenGetBalance
     }
 
     [Test]
-    public void ForAccountWithAnyExpenses_ResultShouldBeEqualToSumOfExpensesWithAMinusSign()
+    public async Task ForAccountWithAnyExpenses_ResultShouldBeEqualToSumOfExpensesWithAMinusSign()
     {
         // Arrange
         var mockRepository = new Mock<IExpensesRepository>();
@@ -31,13 +31,13 @@ public class WhenGetBalance
         };
 
         mockRepository.Setup(repo =>
-                repo.GetExpensesBeforeDate(tommy.Guid, It.IsAny<DateTime>()))
-            .Returns(allExpenses.AsQueryable);
+                repo.GetExpensesBeforeDateAsync(tommy.Guid, It.IsAny<DateTime>()))
+            .ReturnsAsync(allExpenses);
         var expensesService = new ExpensesService(mockRepository.Object);
         var balanceService = new BalanceService(expensesService);
         
         // Act
-        var result = balanceService.GetBalance(tommy.Guid,
+        var result = await balanceService.GetBalanceAsync(tommy.Guid,
             new DateTime(2010, 01, 01));
 
         // Assert
@@ -45,7 +45,7 @@ public class WhenGetBalance
     }
 
     [Test]
-    public void ForAccountWithoutExpenses_ResultShouldBeZero()
+    public async Task ForAccountWithoutExpenses_ResultShouldBeZero()
     {
         // Arrange
         var mockRepository = new Mock<IExpensesRepository>();
@@ -53,13 +53,13 @@ public class WhenGetBalance
         var allExpenses = new List<Expense> {};
 
         mockRepository.Setup(repo =>
-                repo.GetExpensesBeforeDate(tommy.Guid, It.IsAny<DateTime>()))
-            .Returns(allExpenses.AsQueryable);
+                repo.GetExpensesBeforeDateAsync(tommy.Guid, It.IsAny<DateTime>()))
+            .ReturnsAsync(allExpenses);
         var expensesService = new ExpensesService(mockRepository.Object);
         var balanceService = new BalanceService(expensesService);
         
         // Act
-        var result = balanceService.GetBalance(tommy.Guid,
+        var result = await balanceService.GetBalanceAsync(tommy.Guid,
             new DateTime(2010, 01, 01));
 
         // Assert
