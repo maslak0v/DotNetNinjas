@@ -14,12 +14,10 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Contracts
         string FullName) : IUserRegisterRequest;
 
     //Login
-    public record UserLoginRequest(string Email, string Password);
-    public record CurrentUserLoginResponse(string Id, string AccessToken, string RefreshToken);
+    public record UserLoginRequest(string Email, string Password)
+        : IUserLoginRequest;
     
-    //Logout
-    public record UserLogoutRequest(string Id);
-
+    
     //Update
     public record UserUpdateRequest(string Email, string Password, string FullName);
 

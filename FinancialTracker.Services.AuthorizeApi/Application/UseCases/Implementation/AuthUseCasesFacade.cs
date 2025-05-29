@@ -1,6 +1,7 @@
 ﻿using FinancialTracker.Services.AuthorizeApi.Application.Fabrics;
 using FinancialTracker.Services.AuthorizeApi.Application.Features;
 using FinancialTracker.Services.AuthorizeApi.Application.UseCases.Interfaces;
+using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces;
 using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Requests;
 using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Responses;
 
@@ -15,17 +16,12 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
         /// <param name="request"></param>
         /// <returns></returns>
         public async Task<OperationResult> UserRegisterAsync(IUserRegisterRequest request)
-        {
-            var useCase = useCaseFabric.CreateUserRegisterAsync();
-            useCase.Request = request;
-            await useCase.Execute();
-            return useCase.Result;
-        }
+            => await ExecuteUseCaseAsync<IUserRegisterUseCase, OperationResult>(
+                () => useCaseFabric.CreateUserRegister(request));
 
-        public Task<OperationResult<IUserResponse>> UserLoginAsync(IUserLoginRequest request)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<OperationResult<IAuthResponse>> UserLoginAsync(IUserLoginRequest request)
+            => await ExecuteUseCaseAsync<ILoginUseCase, OperationResult<IAuthResponse>>(
+                () => useCaseFabric.CreateLogin(request));
 
         public Task<OperationResult> DeleteAsync(Guid id)
         {
@@ -37,7 +33,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
             throw new NotImplementedException();
         }
 
-        public Task<OperationResult<IUserResponse>> GetUserByIdAsync(Guid id)
+        public Task<OperationResult<IAuthResponse>> GetUserByIdAsync(Guid id)
         {
             throw new NotImplementedException();
         }
@@ -50,17 +46,21 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
         }
 
 
-        public Task<OperationResult<IUserResponse>> UserUpdateAsync(IUserUpdateRequest reqest)
+        public Task<OperationResult<IAuthResponse>> UserUpdateAsync(IUserUpdateRequest reqest)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<OperationResult<List<IUserResponseInfo>>> GetAllUsersAsync()
+        public async Task<OperationResult<List<IUserResponseInfo>>> GetAllUsersAsync() 
+            => await ExecuteUseCaseAsync<IGetAllUsersUseCase,
+                OperationResult<List<IUserResponseInfo>>> (useCaseFabric.CreateGetAllUsers);
+
+        private async Task<TResult> ExecuteUseCaseAsync<TUsecase, TResult>(
+            Func<TUsecase> createUsecase) where TUsecase : ICommandAsync<TResult>
         {
-            var useCase = useCaseFabric.CreateGetAllUsersAsync();
-            await useCase.Execute();
-            var result = useCase.Result;
-            return result;
+            var usecase = createUsecase();
+            await usecase.ExecuteAsync();
+            return usecase.Result;
         }
     }
 }

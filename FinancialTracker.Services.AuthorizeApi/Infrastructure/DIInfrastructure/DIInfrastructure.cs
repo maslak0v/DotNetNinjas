@@ -1,14 +1,14 @@
-﻿using FinancialTracker.Services.AuthorizeApi.Application.UseCases.Interfaces;
+﻿using FinancialTracker.Services.AuthorizeApi.Application.Interfaces;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.DataAccess;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Helpers;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Models;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Repositories;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Imlementation;
-using FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 using System.Text;
 
 namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.DIInfrastructure
@@ -36,9 +36,11 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.DIInfrastructure
         #region private
         private static void AddScopedServices(IServiceCollection services)
         {
-            services.AddScoped<ITokenService<AuthUser>, TokenServiceImpl>();
+            services.AddScoped<ITokenService, TokenServiceImpl>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ITokenRepository, TokenRepository>();
         }
+
         private static void Registration_AuthenticationJwt(IServiceCollection services, string jwtkey, JwtSettings? jwtSettings)
         {
             services.AddAuthentication(options =>
@@ -57,7 +59,8 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.DIInfrastructure
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(
                         Encoding.UTF8.GetBytes(jwtkey)),
-                    ClockSkew = TimeSpan.Zero
+                    ClockSkew = TimeSpan.Zero,
+                    RoleClaimType = ClaimTypes.Role,
                 };
             });
         }

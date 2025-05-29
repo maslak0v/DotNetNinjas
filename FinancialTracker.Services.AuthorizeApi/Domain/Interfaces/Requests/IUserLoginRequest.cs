@@ -2,5 +2,7 @@
 {
     public interface IUserLoginRequest
     {
+        string Email { get; }
+        string Password { get; }
     }
 }
