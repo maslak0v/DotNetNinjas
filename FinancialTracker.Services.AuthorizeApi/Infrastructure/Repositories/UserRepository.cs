@@ -1,11 +1,9 @@
 ﻿using FinancialTracker.Services.AuthorizeApi.Application.Features;
 using FinancialTracker.Services.AuthorizeApi.Application.Interfaces;
 using FinancialTracker.Services.AuthorizeApi.Domain.Entities;
-using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces;
 using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Requests;
 using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Responses;
 using FinancialTracker.Services.AuthorizeApi.Domain.ValueObjects;
-using FinancialTracker.Services.AuthorizeApi.Infrastructure.Contracts;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.DataAccess;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Mapping;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Models;
@@ -50,7 +48,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Repositories
         public async Task<User?> TryGetCurrentLoginUserAsync(string email, string password)
         {
             var user = await userManager.FindByEmailAsync(email);
-            if (user is null || await userManager.CheckPasswordAsync(user, password))
+            if (user is null || !await userManager.CheckPasswordAsync(user, password))
                 return null;
             return user.ToDomainUser();
         }

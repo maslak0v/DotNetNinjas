@@ -3,7 +3,7 @@ using FinancialTracker.Services.AuthorizeApi.Domain.Entities;
 
 namespace FinancialTracker.Services.AuthorizeApi.Application.Interfaces
 {
-    public interface ITokenService
+    public interface IAuthTokenService
     {
         /// <summary>
         /// Create and save to db

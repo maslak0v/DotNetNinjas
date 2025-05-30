@@ -8,7 +8,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Interfaces
     public interface IAuthUseCasesFacade
     {
         Task<OperationResult> UserRegisterAsync(IUserRegisterRequest request);
-        Task<OperationResult<IAuthResponse>> UserLoginAsync(ITokenService tokenService, IUserLoginRequest request);
+        Task<OperationResult<IAuthResponse>> UserLoginAsync(IAuthTokenService tokenService, IUserLoginRequest request);
         Task<OperationResult> UserLogoutAsync(IUserLogoutRequest request);
         Task<OperationResult<List<IUserResponseInfo>>> GetAllUsersAsync();
         Task<OperationResult<IAuthResponse>> GetUserByIdAsync(Guid id);

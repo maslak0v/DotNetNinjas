@@ -23,7 +23,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.DataAccess
                 .HasForeignKey(r => r.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<RefreshToken>()
+            builder.Entity<RefreshTokenModel>()
                 .HasIndex(r => r.ExpiresAt);
         }
 

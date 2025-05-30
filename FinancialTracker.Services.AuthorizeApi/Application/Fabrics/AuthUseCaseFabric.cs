@@ -14,7 +14,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.Fabrics
         public IUserRegisterUseCase CreateUserRegister(IUserRegisterRequest request)
             => new UserRegisterUseCase(repository, request);
 
-        public ILoginUseCase CreateLogin(ITokenService tokenService, IUserLoginRequest request)
+        public ILoginUseCase CreateLogin(IAuthTokenService tokenService, IUserLoginRequest request)
             => new LoginUseCase(repository, tokenService, request);
 
         //other use-cases ..

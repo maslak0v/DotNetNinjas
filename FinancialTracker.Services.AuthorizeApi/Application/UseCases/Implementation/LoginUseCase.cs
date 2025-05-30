@@ -10,7 +10,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
 {
     public class LoginUseCase(
         IUserRepository repository,
-        ITokenService tokenService,
+        IAuthTokenService tokenService,
         IUserLoginRequest request) : ILoginUseCase
     {
         public OperationResult<IAuthResponse> Result { get; private set; } = null!;

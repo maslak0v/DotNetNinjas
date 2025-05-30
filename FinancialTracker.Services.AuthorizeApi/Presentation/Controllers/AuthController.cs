@@ -1,7 +1,6 @@
-﻿using FinancialTracker.Services.AuthorizeApi.Application.Features;
+﻿
 using FinancialTracker.Services.AuthorizeApi.Application.Interfaces;
 using FinancialTracker.Services.AuthorizeApi.Application.UseCases.Interfaces;
-using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Responses;
 using FinancialTracker.Services.AuthorizeApi.Domain.ValueObjects;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Contracts;
 using Microsoft.AspNetCore.Authorization;
@@ -13,7 +12,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Presentation.Controllers
     [ApiController]
     public class AuthController(
         IAuthUseCasesFacade useCasesFacade,
-        ITokenService tokenService,
+        IAuthTokenService tokenService,
         ILogger<AuthController> logger) : ControllerBase
     {
         /// <summary>

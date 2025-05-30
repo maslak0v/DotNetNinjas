@@ -20,7 +20,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
             => await ExecuteUseCaseAsync<IUserRegisterUseCase, OperationResult>(
                 () => useCaseFabric.CreateUserRegister(request));
 
-        public async Task<OperationResult<IAuthResponse>> UserLoginAsync(ITokenService service, IUserLoginRequest request)
+        public async Task<OperationResult<IAuthResponse>> UserLoginAsync(IAuthTokenService service, IUserLoginRequest request)
             => await ExecuteUseCaseAsync<ILoginUseCase, OperationResult<IAuthResponse>>(
                 () => useCaseFabric.CreateLogin(service, request));
 

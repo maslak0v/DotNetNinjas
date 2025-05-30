@@ -1,4 +1,4 @@
-﻿using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces;
+﻿
 
 namespace FinancialTracker.Services.AuthorizeApi.Domain.Entities
 {

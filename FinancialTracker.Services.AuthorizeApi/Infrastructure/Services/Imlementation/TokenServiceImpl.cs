@@ -12,11 +12,11 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Imlemen
 {
     public class TokenServiceImpl(
         IOptions<JwtSettings> jwtOptions,
-        ITokenRepository tokenRepository) : ITokenService
+        ITokenRepository tokenRepository) : IAuthTokenService
     {
         public async Task<RefreshToken> GenerateRefreshTokenAsync(string userId)
         {
-            string refreshtokenStr = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
+            string refreshtokenStr = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
             var expiresDays = jwtOptions.Value.RefreshExpires;
             RefreshToken token = RefreshToken.CreateNew(
                 refreshtokenStr,

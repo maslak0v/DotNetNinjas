@@ -36,7 +36,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.DIInfrastructure
         #region private
         private static void AddScopedServices(IServiceCollection services)
         {
-            services.AddScoped<ITokenService, TokenServiceImpl>();
+            services.AddScoped<IAuthTokenService, TokenServiceImpl>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ITokenRepository, TokenRepository>();
         }
