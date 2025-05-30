@@ -1,5 +1,6 @@
 ﻿using FinancialTracker.Services.AuthorizeApi.Application.Fabrics;
 using FinancialTracker.Services.AuthorizeApi.Application.Features;
+using FinancialTracker.Services.AuthorizeApi.Application.Interfaces;
 using FinancialTracker.Services.AuthorizeApi.Application.UseCases.Interfaces;
 using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces;
 using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Requests;
@@ -19,9 +20,9 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
             => await ExecuteUseCaseAsync<IUserRegisterUseCase, OperationResult>(
                 () => useCaseFabric.CreateUserRegister(request));
 
-        public async Task<OperationResult<IAuthResponse>> UserLoginAsync(IUserLoginRequest request)
+        public async Task<OperationResult<IAuthResponse>> UserLoginAsync(ITokenService service, IUserLoginRequest request)
             => await ExecuteUseCaseAsync<ILoginUseCase, OperationResult<IAuthResponse>>(
-                () => useCaseFabric.CreateLogin(request));
+                () => useCaseFabric.CreateLogin(service, request));
 
         public Task<OperationResult> DeleteAsync(Guid id)
         {

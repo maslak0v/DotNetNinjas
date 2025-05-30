@@ -1,4 +1,5 @@
 ﻿using FinancialTracker.Services.AuthorizeApi.Application.Features;
+using FinancialTracker.Services.AuthorizeApi.Application.Interfaces;
 using FinancialTracker.Services.AuthorizeApi.Application.UseCases.Interfaces;
 using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Responses;
 using FinancialTracker.Services.AuthorizeApi.Domain.ValueObjects;
@@ -12,6 +13,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Presentation.Controllers
     [ApiController]
     public class AuthController(
         IAuthUseCasesFacade useCasesFacade,
+        ITokenService tokenService,
         ILogger<AuthController> logger) : ControllerBase
     {
         /// <summary>
@@ -51,7 +53,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Presentation.Controllers
         public async Task<ActionResult> Login([FromBody] UserLoginRequest request)
         {
             logger.LogInformation("try login ..");
-            var result = await useCasesFacade.UserLoginAsync(request);
+            var result = await useCasesFacade.UserLoginAsync(tokenService, request);
             if (!result.IsSuccess)
             {
                 logger.LogWarning(result.Message);

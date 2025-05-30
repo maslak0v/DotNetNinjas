@@ -11,7 +11,6 @@ using System.Text;
 namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Imlementation
 {
     public class TokenServiceImpl(
-        ILogger<TokenServiceImpl> logger,
         IOptions<JwtSettings> jwtOptions,
         ITokenRepository tokenRepository) : ITokenService
     {
@@ -48,11 +47,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Imlemen
             var jwtSettings = jwtOptions.Value;
             var secretkey = Environment.GetEnvironmentVariable("JWT_KEY");
             if (jwtSettings is null || string.IsNullOrEmpty(secretkey))
-            {
-                string error = "Jwt settings is not configured";
-                logger.LogCritical(error);
-                throw new InvalidOperationException(error);
-            }
+                throw new InvalidOperationException("Jwt settings is not configured");
 
             byte[] secretKeyBytes = Encoding.UTF8.GetBytes(secretkey);
             var symmetricSecurityKey = new SymmetricSecurityKey(secretKeyBytes);
