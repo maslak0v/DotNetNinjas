@@ -20,7 +20,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Repositories
     {
         public async Task<OperationResult> CreateUserAsync(IUserRegisterRequest userDto)
         {
-            var user = new AuthUser().FromRegisterRequst(userDto);
+            var user = new AuthUser().FromRegisterRequest(userDto);
             user.CreateAt = DateTime.UtcNow;
             var result = await userManager.CreateAsync(user, userDto.Password);
             return result.Succeeded

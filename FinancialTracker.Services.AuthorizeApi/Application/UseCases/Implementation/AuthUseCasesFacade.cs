@@ -47,7 +47,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
         }
 
 
-        public Task<OperationResult<IAuthResponse>> UserUpdateAsync(IUserUpdateRequest reqest)
+        public Task<OperationResult<IAuthResponse>> UserUpdateAsync(IUserUpdateRequest request)
         {
             throw new NotImplementedException();
         }

@@ -8,7 +8,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Mapping
 {
     public static class MappingAuthUser
     {
-        public static AuthUser FromRegisterRequst(this AuthUser user, IUserRegisterRequest userDto)
+        public static AuthUser FromRegisterRequest(this AuthUser user, IUserRegisterRequest userDto)
         {
             user.Email = userDto.Email;
             user.UserName = userDto.FullName;

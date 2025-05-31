@@ -13,7 +13,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Interfaces
         Task<OperationResult<List<IUserResponseInfo>>> GetAllUsersAsync();
         Task<OperationResult<IAuthResponse>> GetUserByIdAsync(Guid id);
         Task<OperationResult<ICurrentUserLoginResponse>> GetCurrentUserAsync();
-        Task<OperationResult<IAuthResponse>> UserUpdateAsync(IUserUpdateRequest reqest);
+        Task<OperationResult<IAuthResponse>> UserUpdateAsync(IUserUpdateRequest request);
         Task<OperationResult> DeleteAsync(Guid id);
     }
 }
