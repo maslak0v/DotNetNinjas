@@ -38,7 +38,7 @@ public class WalletPostgresDbContext : DbContext
             
             entity.HasMany(w => w.Transactions)
                   .WithOne(t => t.Account)
-                  .HasForeignKey(t => t.WalletId)
+                  .HasForeignKey(t => t.AccountId)
                   .OnDelete(DeleteBehavior.Cascade);
             
             entity.Property(c => c.CreatedAt)
@@ -71,7 +71,7 @@ public class WalletPostgresDbContext : DbContext
                   .HasForeignKey(t => t.CategoryId)
                   .OnDelete(DeleteBehavior.Restrict);
                   
-            entity.HasIndex(t => t.WalletId);
+            entity.HasIndex(t => t.AccountId);
             entity.HasIndex(t => t.CategoryId);
             
             entity.Property(c => c.TransactionDate)

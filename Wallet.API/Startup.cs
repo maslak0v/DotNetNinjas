@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Wallet.API.Mappings;
+using Microsoft.OpenApi.Models;
 using Wallet.Application.Services;
 using Wallet.Domain.Interfaces;
 using Wallet.Infrastructure.Data;
@@ -32,7 +32,12 @@ public class Startup
         
         services.AddControllers(); 
         services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
+        services.AddSwaggerGen(c =>
+        {
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "Wallet API", Version = "v1" });
+            c.TagActionsBy(api => new[] { api.GroupName });
+            c.DocInclusionPredicate((version, desc) => true);
+        });
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

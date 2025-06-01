@@ -24,7 +24,7 @@ public class Transaction
     /// <summary>
     /// Идентификатор счета, к которому относится транзакция.
     /// </summary>
-    public Guid WalletId { get; set; }
+    public Guid AccountId { get; set; }
 
     /// <summary>
     /// Сумма транзакции.
@@ -39,12 +39,12 @@ public class Transaction
     /// <summary>
     /// Комментарий к транзакции.
     /// </summary>
-    public string Comment { get; set; }
+    public string Comment { get; set; } = string.Empty;
 
     /// <summary>
     /// Путь к изображению, связанному с транзакцией.
     /// </summary>
-    public string Image { get; set; }
+    public string? Image { get; set; }
     
     /// <summary>
     /// Дата последнего изменения транзакции.

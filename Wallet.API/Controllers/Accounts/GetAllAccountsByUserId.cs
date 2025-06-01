@@ -16,8 +16,8 @@ public class GetAllAccountsByUserId : AccountBase
         _mapper = mapper;
     }
 
-    [HttpGet("{id:guid}/all")]
-    public async Task<IActionResult> Update(Guid id, CancellationToken cancellationToken)
+    [HttpGet("user/{id:guid}/all")]
+    public async Task<IActionResult> GetAllByUserId(Guid id, CancellationToken cancellationToken)
     {
         var accounts = await _accountService.GetAllByUserIdAsync(id, cancellationToken);
         var response = _mapper.Map<List<AccountResponse>>(accounts);
