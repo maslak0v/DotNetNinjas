@@ -1,12 +1,12 @@
 ﻿
 using FinancialTracker.Services.AuthorizeApi.Application.Fabrics;
-using FinancialTracker.Services.AuthorizeApi.Application.UseCases.Interfaces;
+using FinancialTracker.Services.AuthorizeApi.Application.Interfaces;
 
 namespace FinancialTracker.Services.AuthorizeApi.Tests.Helpers
 {
-    public  static class AuthUseCaseFabricCreator
+    public static class AuthUseCaseFabricCreator
     {
-        public static IAuthUseCaseFabric Create(IUserRepository repo) 
+        public static IAuthUseCaseFabric Create(IUserRepository repo)
             => new AuthUseCaseFabric(repo);
     }
 }

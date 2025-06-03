@@ -1,15 +1,20 @@
 ﻿using FinancialTracker.Services.AuthorizeApi.Application.Features;
+using FinancialTracker.Services.AuthorizeApi.Domain.Entities;
+using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces;
 using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Requests;
 using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Responses;
+using System.Threading.Tasks;
 
-namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Interfaces
+namespace FinancialTracker.Services.AuthorizeApi.Application.Interfaces
 {
     public interface IUserRepository
     {
         Task<OperationResult> CreateUserAsync(IUserRegisterRequest userRegisterRequest);
+        Task<User?> TryGetCurrentLoginUserAsync(string email, string password);
         Task<bool> ExistUsernameAsync(string username);
         Task<bool> ExistEmailAsync(string email);
 
         Task<OperationResult<List<IUserResponseInfo>>> GetAllUsersQueryAsync();
+        Task<IList<string>> GetRolesForUserAsync(User user);
     }
 }

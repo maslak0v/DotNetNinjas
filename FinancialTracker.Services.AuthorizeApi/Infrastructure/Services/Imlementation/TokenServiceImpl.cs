@@ -1,7 +1,6 @@
-﻿using FinancialTracker.Services.AuthorizeApi.Infrastructure.Helpers;
-using FinancialTracker.Services.AuthorizeApi.Infrastructure.Models;
-using FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Interfaces;
-using Microsoft.AspNetCore.Identity;
+﻿using FinancialTracker.Services.AuthorizeApi.Application.Interfaces;
+using FinancialTracker.Services.AuthorizeApi.Domain.Entities;
+using FinancialTracker.Services.AuthorizeApi.Infrastructure.Helpers;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -12,32 +11,43 @@ using System.Text;
 namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Imlementation
 {
     public class TokenServiceImpl(
-        ILogger<TokenServiceImpl> logger,
         IOptions<JwtSettings> jwtOptions,
-        UserManager<AuthUser> userManager) : ITokenService<AuthUser>
+        ITokenRepository tokenRepository) : IAuthTokenService
     {
-        public string GenerateRefreshToken() =>
-            Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
-
-        public async Task<string> GenerateTokenAsync(AuthUser user)
+        public async Task<RefreshToken> GenerateRefreshTokenAsync(string userId)
         {
-            var claims = await GetClaims(user);
+            string refreshtokenStr = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+            var expiresDays = jwtOptions.Value.RefreshExpires;
+            RefreshToken token = RefreshToken.CreateNew(
+                refreshtokenStr,
+                userId,
+                DateTime.UtcNow.AddDays(expiresDays));
+            tokenRepository.Add(token);
+            await tokenRepository.SaveAsync();
+            return token;
+        }
+
+        public string GenerateAccessToken(User user, string jti, IList<string> roles)
+        {
+            var claims = GetClaims(user, jti, roles);
             var jwtsecurityToken = GenerateSecurityToken(claims);
             string token = new JwtSecurityTokenHandler().WriteToken(jwtsecurityToken);
             return token;
         }
 
         #region private
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="claims"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
         private JwtSecurityToken GenerateSecurityToken(IEnumerable<Claim> claims)
         {
             var jwtSettings = jwtOptions.Value;
             var secretkey = Environment.GetEnvironmentVariable("JWT_KEY");
             if (jwtSettings is null || string.IsNullOrEmpty(secretkey))
-            {
-                string error = "Jwt settings is not configured";
-                logger.LogWarning(error);
-                throw new InvalidOperationException(error);
-            }
+                throw new InvalidOperationException("Jwt settings is not configured");
 
             byte[] secretKeyBytes = Encoding.UTF8.GetBytes(secretkey);
             var symmetricSecurityKey = new SymmetricSecurityKey(secretKeyBytes);
@@ -49,22 +59,20 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Imlemen
                 issuer: jwtSettings.ValidIssuer,
                 audience: jwtSettings.ValidAudience,
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(jwtSettings.Expires),
+                expires: DateTime.UtcNow.AddMinutes(jwtSettings.Expires),
                 signingCredentials: signingCredentials);
         }
 
-        private async Task<List<Claim>> GetClaims(AuthUser user)
+        private List<Claim> GetClaims(User user, string jti, IList<string> roles)
         {
             List<Claim> claims = [
-                new (ClaimTypes.NameIdentifier, user.Id),
-                new (ClaimTypes.Name, user.UserName!),
-                new (ClaimTypes.Email, user.Email!)
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+                new Claim(JwtRegisteredClaimNames.Jti, jti),
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Name, user.UserName!)
             ];
-            var roles = (await userManager
-                .GetRolesAsync(user))
-                .Select(role => new Claim(ClaimTypes.Role, role));
-            claims.AddRange(roles);
-
+            var claimRoles = roles.Select(role => new Claim(ClaimTypes.Role, role));
+            claims.AddRange(claimRoles);
             return claims;
         }
         #endregion

@@ -1,6 +1,9 @@
-﻿using FinancialTracker.Services.AuthorizeApi.Application.UseCases.Interfaces;
+﻿
+using FinancialTracker.Services.AuthorizeApi.Application.Interfaces;
+using FinancialTracker.Services.AuthorizeApi.Application.UseCases.Interfaces;
 using FinancialTracker.Services.AuthorizeApi.Domain.ValueObjects;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FinancialTracker.Services.AuthorizeApi.Presentation.Controllers
@@ -9,6 +12,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Presentation.Controllers
     [ApiController]
     public class AuthController(
         IAuthUseCasesFacade useCasesFacade,
+        IAuthTokenService tokenService,
         ILogger<AuthController> logger) : ControllerBase
     {
         /// <summary>
@@ -17,24 +21,14 @@ namespace FinancialTracker.Services.AuthorizeApi.Presentation.Controllers
         /// <param name="registerRequest"></param>
         /// <returns></returns>
         [HttpPost("register")]
-        public async Task<ActionResult> Register([FromBody]UserRegisterRequest registerRequest)
+        public async Task<ActionResult> Register([FromBody] UserRegisterRequest registerRequest)
         {
             logger.LogInformation("Registration of a new user...");
-            var result = await useCasesFacade.UserRegisterAsync(registerRequest);
-            string message = result.Message ?? string.Empty;
+            var result = await useCasesFacade.UserRegisterAsync(registerRequest); 
             if (!result.IsSuccess)
-            {
-                logger.LogWarning(message);
-                return result.StatusCode switch
-                {
-                    Enum_StatusCode.BAD_REQUEST => BadRequest(message),
-                    _ => Problem(
-                        statusCode: (int)result.StatusCode,
-                        detail: message)
-                };
+                return UseCaseBadResultHandle(result.StatusCode, result.Message ?? string.Empty);
 
-            }
-            logger.LogInformation(string.IsNullOrEmpty(message)? "user created" : message);
+            logger.LogInformation("user created");
             return Created();
         }
 
@@ -48,14 +42,36 @@ namespace FinancialTracker.Services.AuthorizeApi.Presentation.Controllers
             logger.LogInformation("Get all users");
             var result = await useCasesFacade.GetAllUsersAsync();
             if (!result.IsSuccess)
-            {
-                logger.LogError(result.Message);
-                return Problem(
-                    detail: result.Message,
-                    statusCode: (int)result.status);
-            }
+                return UseCaseBadResultHandle(result.StatusCode, result.Message ?? string.Empty);
             logger.LogInformation($"found {result.Result!.Count} elements");
-            return Ok(result);
+            return Ok(result.Result);
+        }
+
+        [AllowAnonymous]
+        [HttpPost("login")]
+        public async Task<ActionResult> Login([FromBody] UserLoginRequest request)
+        {
+            logger.LogInformation("try login ..");
+            var result = await useCasesFacade.UserLoginAsync(tokenService, request);
+            if (!result.IsSuccess)
+            {
+                logger.LogWarning(result.Message);
+                return Unauthorized();
+            }
+            logger.LogInformation("login successfully");
+            return Ok(result.Result);
+        }
+
+        private ActionResult UseCaseBadResultHandle(Enum_StatusCode statusCode, string message)
+        {
+            logger.LogWarning(message);
+            return statusCode switch
+            {
+                Enum_StatusCode.BAD_REQUEST => BadRequest(message),
+                _ => Problem(
+                    statusCode: (int)statusCode,
+                    detail: message)
+            };
         }
     }
 }

@@ -1,7 +1,8 @@
 ﻿namespace FinancialTracker.Services.AuthorizeApi.Domain.Interfaces
 {
-    public interface ICommandAsync
+    public interface ICommandAsync<TResult>
     {
-        Task Execute();
+        Task ExecuteAsync();
+        TResult Result { get; }
     }
 }

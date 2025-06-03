@@ -33,6 +33,15 @@ namespace FinancialTracker.Services.AuthorizeApi.Presentation
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Auth API", Version = "v1" });
             });
 
+            //turn off cookie
+            services.ConfigureApplicationCookie(options => {
+                options.Cookie.HttpOnly = true;
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+                options.SlidingExpiration = true;
+                options.LoginPath = PathString.Empty;
+                options.AccessDeniedPath = PathString.Empty;
+            });
+
             return services;
         }
     }

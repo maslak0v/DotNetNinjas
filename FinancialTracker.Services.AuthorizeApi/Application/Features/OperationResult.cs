@@ -6,7 +6,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.Features
     public record OperationResult
         (bool IsSuccess, Enum_StatusCode StatusCode, string? Message = null);
     public record OperationResult<TResult>
-        (TResult? Result, bool IsSuccess, Enum_StatusCode status, string? Message = null);
+        (TResult? Result, bool IsSuccess, Enum_StatusCode StatusCode, string? Message = null);
     public static class OperationResultCreator
     {
         public static OperationResult Success(Enum_StatusCode statusCode, string? message = null)

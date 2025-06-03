@@ -1,5 +1,6 @@
 ﻿using FinancialTracker.Services.AuthorizeApi.Application.Fabrics;
 using FinancialTracker.Services.AuthorizeApi.Application.Features;
+using FinancialTracker.Services.AuthorizeApi.Application.Interfaces;
 using FinancialTracker.Services.AuthorizeApi.Application.UseCases.Interfaces;
 using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Requests;
 using FinancialTracker.Services.AuthorizeApi.Domain.ValueObjects;
