@@ -53,6 +53,37 @@ namespace FinancialTracker.Services.Analytics.DataAccess.Migrations
                     b.ToTable("Expenses");
                 });
 
+            modelBuilder.Entity("FinancialTracker.Services.Analytics.Models.Revenue", b =>
+            {
+                b.Property<int>("RevenueId")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("integer");
+
+                NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("RevenueId"));
+
+                b.Property<Guid>("AccountId")
+                    .HasColumnType("uuid");
+
+                b.Property<decimal>("Amount")
+                    .HasColumnType("numeric");
+
+                b.Property<string>("Currency")
+                    .IsRequired()
+                    .HasColumnType("text");
+
+                b.Property<DateTime>("RevenueTime")
+                    .HasColumnType("timestamp with time zone");
+
+                b.Property<int>("UserId")
+                    .HasColumnType("integer");
+
+                b.HasKey("RevenueId");
+
+                b.HasIndex("UserId");
+
+                b.ToTable("Revenues");
+            });
+
             modelBuilder.Entity("FinancialTracker.Services.Analytics.Models.User", b =>
                 {
                     b.Property<int>("UserId")
