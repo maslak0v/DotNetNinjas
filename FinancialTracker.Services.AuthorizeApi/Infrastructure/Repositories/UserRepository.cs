@@ -12,11 +12,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Repositories
 {
-    
+
     public class UserRepository(
         UserManager<AuthUser> userManager,
-        AuthDbContext authDb): IUserRepository
-        
+        AuthDbContext authDb) : IUserRepository
+
     {
         public async Task<OperationResult> CreateUserAsync(IUserRegisterRequest userDto)
         {
@@ -56,6 +56,37 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Repositories
         {
             var user = domainUser.ToAuthUser();
             return await userManager.GetRolesAsync(user);
+        }
+
+        public async Task<OperationResult> AddRolesToUserAsync(string userName, ICollection<string> roles)
+        {
+            var user = await userManager.FindByNameAsync(userName);
+            if (user is null)
+                return OperationResultCreator.Failure(Enum_StatusCode.NOT_FOUND, "user not found");
+            var result = await userManager.AddToRolesAsync(user, roles);
+            string nameRoles = string.Join(",", roles);
+            return result.Succeeded
+                ? OperationResultCreator.Success(Enum_StatusCode.OK, $"with roles {nameRoles}")
+                : OperationResultCreator.Failure(
+                    Enum_StatusCode.BAD_REQUEST,
+                    string.Join(", ", result.Errors.Select(e => e.Description)));
+        }
+
+        public async Task<OperationResult> RegisterUserAsync(
+            IUserRegisterRequest request, ICollection<string> roles)
+        {
+            using var transaction = authDb.Database.BeginTransaction();
+            var result = await CreateUserAsync(request);
+            if(!result.IsSuccess)
+            {
+                transaction.Rollback();
+                return result;
+            }
+            var resultAdd = await AddRolesToUserAsync(request.FullName, roles);
+            transaction.Commit();
+            string messageAddRoles = result.Message ?? string.Empty;
+            var newResult = result with { Message = $"{result?.Message ?? string.Empty} {messageAddRoles}" };            
+            return result!;
         }
     }
 }

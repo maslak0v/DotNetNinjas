@@ -32,7 +32,14 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.DIInfrastructure
             return services;
         }
 
-
+        public static async Task<IApplicationBuilder> ApplyMigrationsAsync(this IApplicationBuilder app)
+        {
+            await using var scope = app.ApplicationServices.CreateAsyncScope();
+            using var dbContext =
+                scope.ServiceProvider.GetRequiredService<AuthDbContext>();
+            await dbContext.Database.MigrateAsync();
+            return app;
+        }
         #region private
         private static void AddScopedServices(IServiceCollection services)
         {
@@ -113,13 +120,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.DIInfrastructure
             return jwtSettings;
         }
 
-        public static async Task ApplyMigrationsAsync(this IApplicationBuilder app)
-        {
-            await using var scope = app.ApplicationServices.CreateAsyncScope();
-            using var dbContext = 
-                scope.ServiceProvider.GetRequiredService<AuthDbContext>();
-            await dbContext.Database.MigrateAsync();
-        }
+
         #endregion
     }
 }

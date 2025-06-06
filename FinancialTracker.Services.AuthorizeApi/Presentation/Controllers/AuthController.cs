@@ -21,6 +21,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Presentation.Controllers
         /// <param name="registerRequest"></param>
         /// <returns></returns>
         [HttpPost("register")]
+        [AllowAnonymous]
         public async Task<ActionResult> Register([FromBody] UserRegisterRequest registerRequest)
         {
             logger.LogInformation("Registration of a new user...");
@@ -37,6 +38,8 @@ namespace FinancialTracker.Services.AuthorizeApi.Presentation.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("users")]
+        //todo: policy
+        //[Authorize(Roles = $"{nameof(Enum_BaseRoles.ADMIN)}, {nameof(Enum_BaseRoles.SUPERUSER)}")]
         public async Task<ActionResult> GetAllUsers()
         {
             logger.LogInformation("Get all users");
