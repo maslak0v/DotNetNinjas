@@ -20,7 +20,8 @@ public static class Registrator
     public static IServiceCollection InstallRepositories(this IServiceCollection serviceCollection)
     {
         serviceCollection
-            .AddScoped<IExpensesRepository, ExpensesRepository>();
+            .AddScoped<IExpensesRepository, ExpensesRepository>()
+            .AddScoped<IRevenuesRepository, RevenuesRepository>();
 
         return serviceCollection;
     }
