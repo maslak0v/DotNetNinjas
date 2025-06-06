@@ -1,5 +1,3 @@
-using System;
-
 namespace FinancialTracker.Services.Analytics.Models.Dto;
 
 public class ExpensesRequestDto
