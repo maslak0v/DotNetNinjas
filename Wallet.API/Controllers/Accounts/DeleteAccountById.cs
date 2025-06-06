@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Wallet.Domain.Interfaces;
+using Wallet.Application.Interfaces;
+using Wallet.Infrastructure.Data.Interfaces;
 
 namespace Wallet.API.Controllers.Accounts;
 

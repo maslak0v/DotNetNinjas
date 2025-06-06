@@ -114,17 +114,20 @@ public class WalletPostgresDbContext : DbContext
         
         modelBuilder.Entity<TransactionTag>(entity =>
         {
-            entity.HasKey(tt => new { tt.TransactionId, tt.TagId });
-            
-            entity.HasOne(tt => tt.Transaction)
-                  .WithMany(t => t.TransactionTags)
-                  .HasForeignKey(tt => tt.TransactionId)
-                  .OnDelete(DeleteBehavior.Cascade);
-                  
-            entity.HasOne(tt => tt.Tag)
-                  .WithMany(t => t.TransactionTags)
-                  .HasForeignKey(tt => tt.TagId)
-                  .OnDelete(DeleteBehavior.Cascade);
+              entity.HasKey(tt => tt.TransactionTagId);
+              
+              entity.HasOne(tt => tt.Transaction)
+                    .WithMany(t => t.TransactionTags)
+                    .HasForeignKey(tt => tt.TransactionId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+              entity.HasOne(tt => tt.Tag)
+                    .WithMany(t => t.TransactionTags)
+                    .HasForeignKey(tt => tt.TagId)
+                    .OnDelete(DeleteBehavior.Cascade);
+              
+              entity.HasIndex(tt => new { tt.TransactionId, tt.TagId })
+                    .IsUnique();
         });
     }
 }

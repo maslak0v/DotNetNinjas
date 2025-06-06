@@ -1,7 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Wallet.API.Models.Accounts;
-using Wallet.Domain.Interfaces;
+using Wallet.Application.Interfaces;
 
 namespace Wallet.API.Controllers.Accounts;
 

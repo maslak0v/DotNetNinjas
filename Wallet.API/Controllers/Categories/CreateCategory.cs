@@ -1,8 +1,9 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Wallet.API.Models.Categories;
+using Wallet.Application.Interfaces;
 using Wallet.Domain.Entities;
-using Wallet.Domain.Interfaces;
+
 namespace Wallet.API.Controllers.Categories;
 
 public class CreateCategory : CategoryBase

@@ -165,15 +165,22 @@ namespace Wallet.Infrastructure.Migrations
 
             modelBuilder.Entity("Wallet.Domain.Entities.TransactionTag", b =>
                 {
-                    b.Property<Guid>("TransactionId")
+                    b.Property<Guid>("TransactionTagId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("TagId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("TransactionId", "TagId");
+                    b.Property<Guid>("TransactionId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("TransactionTagId");
 
                     b.HasIndex("TagId");
+
+                    b.HasIndex("TransactionId", "TagId")
+                        .IsUnique();
 
                     b.ToTable("TransactionTags");
                 });

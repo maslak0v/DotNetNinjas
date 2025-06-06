@@ -1,6 +1,6 @@
 using Wallet.Domain.Entities;
 
-namespace Wallet.Domain.Interfaces;
+namespace Wallet.Infrastructure.Data.Interfaces;
 
 public interface ICategoryRepository
 {

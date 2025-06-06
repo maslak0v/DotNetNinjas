@@ -1,5 +1,6 @@
+using Wallet.Application.Interfaces;
 using Wallet.Domain.Entities;
-using Wallet.Domain.Interfaces;
+using Wallet.Infrastructure.Data.Interfaces;
 
 namespace Wallet.Application.Services;
 

@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Wallet.Domain.Entities;
-using Wallet.Domain.Interfaces;
+using Wallet.Infrastructure.Data.Interfaces;
 
 namespace Wallet.Infrastructure.Data.Repositories;
 
@@ -28,7 +28,7 @@ public class AccountRepository : IAccountRepository
        await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task Update(Account account, CancellationToken cancellationToken)
+    public async Task UpdateAsync(Account account, CancellationToken cancellationToken)
     {
         _context.Update(account);
         await _context.SaveChangesAsync(cancellationToken);

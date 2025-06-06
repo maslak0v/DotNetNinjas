@@ -1,8 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Wallet.Application.Interfaces;
 using Wallet.Application.Services;
-using Wallet.Domain.Interfaces;
 using Wallet.Infrastructure.Data;
+using Wallet.Infrastructure.Data.Interfaces;
 using Wallet.Infrastructure.Data.Repositories;
 
 namespace Wallet.API;
@@ -23,12 +24,19 @@ public class Startup
         
         services.AddAutoMapper(typeof(Startup));
         
+        // Репозитории 
         services.AddScoped<ICategoryRepository, CategoryRepository>();
-        services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<IAccountRepository, AccountRepository>();
-        services.AddScoped<IAccountService, AccountService>();
         services.AddScoped<ITagRepository, TagRepository>();
+        services.AddScoped<ITransactionTagRepository, TransactionTagRepository>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<ITransactionRepository , TransactionRepository>();
+        
+        //Сервисы
+        services.AddScoped<ICategoryService, CategoryService>();
+        services.AddScoped<IAccountService, AccountService>();
         services.AddScoped<ITagService, TagService>();
+        services.AddScoped<ITransactionService, TransactionService>();
         
         services.AddControllers(); 
         services.AddEndpointsApiExplorer();

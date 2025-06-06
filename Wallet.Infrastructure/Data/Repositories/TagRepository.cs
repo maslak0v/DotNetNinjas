@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Wallet.Domain.Entities;
-using Wallet.Domain.Interfaces;
+using Wallet.Infrastructure.Data.Interfaces;
 
 namespace Wallet.Infrastructure.Data.Repositories;
 
@@ -22,6 +22,9 @@ public class TagRepository : ITagRepository
     public async Task<Tag?> GetByIdAsync(Guid tagId, CancellationToken cancellationToken)
         => await _context.Tags.FindAsync(tagId, cancellationToken);
 
+    public async Task<Tag?> GetTagIdByNameAsync(string title, Guid userId, CancellationToken cancellationToken) 
+        => await _context.Tags.FirstOrDefaultAsync(t => t.Name == title && t.UserId == userId, cancellationToken);
+    
     public async Task<IEnumerable<Tag>> GetAllUserTagsAsync(Guid userId, CancellationToken cancellationToken)
         => await _context.Tags.Where(t => t.UserId == userId).ToListAsync(cancellationToken);
     

@@ -1,8 +1,8 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Wallet.API.Models.Tags;
+using Wallet.Application.Interfaces;
 using Wallet.Domain.Entities;
-using Wallet.Domain.Interfaces;
 
 namespace Wallet.API.Controllers.Tags;
 
@@ -22,6 +22,6 @@ public class CreateTag : TagBase
     {
         var tag = _mapper.Map<Tag>(tagRequest);
         await _tagService.AddAsync(tag, cancellationToken);
-        return Ok();
+        return Ok(new { tagId = tag.TagId });
     }
 }
