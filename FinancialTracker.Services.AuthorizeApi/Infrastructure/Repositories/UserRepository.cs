@@ -75,15 +75,20 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Repositories
         public async Task<OperationResult> RegisterUserAsync(
             IUserRegisterRequest request, ICollection<string> roles)
         {
-            using var transaction = authDb.Database.BeginTransaction();
+            await using var transaction = await authDb.Database.BeginTransactionAsync();
             var result = await CreateUserAsync(request);
             if(!result.IsSuccess)
             {
-                transaction.Rollback();
+                await transaction.RollbackAsync();
                 return result;
             }
             var resultAdd = await AddRolesToUserAsync(request.FullName, roles);
-            transaction.Commit();
+            if (!resultAdd.IsSuccess)
+            {
+                await transaction.RollbackAsync();
+                return resultAdd;
+            }
+            await transaction.CommitAsync();
             string messageAddRoles = resultAdd.Message ?? string.Empty;
             var newResult = result with { Message = $"{result?.Message ?? string.Empty} {messageAddRoles}" };            
             return newResult!;
