@@ -84,9 +84,9 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Repositories
             }
             var resultAdd = await AddRolesToUserAsync(request.FullName, roles);
             transaction.Commit();
-            string messageAddRoles = result.Message ?? string.Empty;
+            string messageAddRoles = resultAdd.Message ?? string.Empty;
             var newResult = result with { Message = $"{result?.Message ?? string.Empty} {messageAddRoles}" };            
-            return result!;
+            return newResult!;
         }
     }
 }
