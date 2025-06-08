@@ -20,6 +20,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
     await app.ApplyMigrationsAsync();
 }
+app.Lifetime.ApplicationStarted.Register(async () =>
+{
+    using var scope = app.Services.CreateScope();
+    await Seeder.SeedRoles(scope);
+    await Seeder.SeedSuperUserWithRole(scope);
+});
 
 app.UseHttpsRedirection();
 app.UseCors("AllowAllOrigins");

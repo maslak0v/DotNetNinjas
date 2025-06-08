@@ -21,14 +21,10 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
                         Enum_StatusCode.BAD_REQUEST, "Passwords are not equal.");
                     return;
                 }
-                
-                var result = await repository.CreateUserAsync(request);
-                if (!result.IsSuccess)
-                {
-                    Result = OperationResultCreator.Failure(
-                        Enum_StatusCode.BAD_REQUEST, $"Failed to create user: {result.Message}");
-                    return;
-                }
+
+                //register
+                List<string> roles = [Enum_BaseRoles.USER.ToString()];
+                var result = await repository.RegisterUserAsync(request, roles);
                 Result = result;
             }
             catch (Exception ex)
