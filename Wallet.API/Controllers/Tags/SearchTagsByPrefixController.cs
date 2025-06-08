@@ -18,14 +18,9 @@ public class SearchTagsByPrefixController : TagBase
     }
 
     [HttpGet("{userId:guid}/search")]
-    public async Task<IActionResult> Search([FromRoute] Guid userId, [FromQuery][MinLength(1)] string prefix, [FromQuery] int limit,
+    public async Task<IActionResult> Search([FromRoute] Guid userId, [FromQuery][MinLength(1)] string prefix, [FromQuery][Range(1, 100, ErrorMessage = "Недопустимый лимит выборки")] int limit,
         CancellationToken cancellationToken)
     {
-        if (prefix.Length < 1)
-        {
-            return BadRequest("Нужен минимум 1 знак для поиска");
-        }
-        
         var tags = await _tagService.SearchTagsByPrefixAsync(userId, prefix, limit, cancellationToken);
         var response = _mapper.Map<List<TagResponse>>(tags);
         
