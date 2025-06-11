@@ -1,6 +1,7 @@
 ﻿
 
-using Microsoft.AspNetCore.Builder;
+using FinancialTracker.Services.AuthorizeApi.Domain.ValueObjects;
+using FinancialTracker.Services.AuthorizeApi.Presentation.Helpers;
 using Microsoft.OpenApi.Models;
 
 namespace FinancialTracker.Services.AuthorizeApi.Presentation
@@ -24,19 +25,31 @@ namespace FinancialTracker.Services.AuthorizeApi.Presentation
                 options.RedirectStatusCode = StatusCodes.Status308PermanentRedirect;
                 options.HttpsPort = 443;
             });
-            
             services.AddHttpContextAccessor();
             services.AddControllers();
             services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen(c =>
+            services.AddSwaggerGen(options =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "AuthorizeAPI", Version = "v1" });
-                c.TagActionsBy(api => [api.GroupName]);
-                c.DocInclusionPredicate((version, desc) => true);
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "AuthorizeAPI", Version = "v1" });
+                options.TagActionsBy(api => [api.GroupName]);
+                options.DocInclusionPredicate((version, desc) => true);
+
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "Введите JWT токен в формате: Bearer {token}"
+                });
+
+                options.OperationFilter<AuthorizeCheckOperationFilter>();
             });
 
             //turn off cookie
-            services.ConfigureApplicationCookie(options => {
+            services.ConfigureApplicationCookie(options =>
+            {
                 options.Cookie.HttpOnly = true;
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
                 options.SlidingExpiration = true;
@@ -44,6 +57,23 @@ namespace FinancialTracker.Services.AuthorizeApi.Presentation
                 options.AccessDeniedPath = PathString.Empty;
             });
 
+            //админу доступны функции обычного пользователя
+            //суперпользователю кошелек ни к чему,
+            //  это расширенный функционал админа по управлению пользователями и ролями
+            services.AddAuthorization(options =>
+            {
+                List<Enum_BaseRoles> roles = [
+                    Enum_BaseRoles.AdminAndUser,
+                    Enum_BaseRoles.SUPERUSER,
+                    Enum_BaseRoles.SuperUserAndAdmin
+                ];
+                foreach (var role in roles)
+                {
+                    var policyType = Policy.CreatePolicy(role);
+                    options.AddPolicy(policyType.Name,
+                        policyBuilder => policyBuilder.RequireRole(policyType.Roles));
+                }
+            });
             return services;
         }
     }

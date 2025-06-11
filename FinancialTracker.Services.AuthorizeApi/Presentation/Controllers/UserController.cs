@@ -1,5 +1,7 @@
 ﻿using FinancialTracker.Services.AuthorizeApi.Application.UseCases.Interfaces;
 using FinancialTracker.Services.AuthorizeApi.Presentation.Controllers.BaseControllers;
+using FinancialTracker.Services.AuthorizeApi.Presentation.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FinancialTracker.Services.AuthorizeApi.Presentation.Controllers
@@ -14,8 +16,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Presentation.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        //todo: policy
-        //[Authorize(Roles = $"{nameof(Enum_BaseRoles.ADMIN)}, {nameof(Enum_BaseRoles.SUPERUSER)}")]
+        [Authorize(Policy = nameof(Enum_AuthPolicy.CanAccess_AdminAndSuperUser))]
         public async Task<ActionResult> GetAllUsers()
         {
             _logger.LogInformation("Get all users");

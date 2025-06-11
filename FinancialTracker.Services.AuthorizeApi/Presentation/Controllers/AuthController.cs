@@ -31,8 +31,8 @@ namespace FinancialTracker.Services.AuthorizeApi.Presentation.Controllers
         }
 
 
-        [AllowAnonymous]
         [HttpPost("login")]
+        [AllowAnonymous]
         public async Task<ActionResult> Login([FromBody] UserLoginRequest request)
         {
             _logger.LogInformation("try login ..");

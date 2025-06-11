@@ -67,7 +67,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.DIInfrastructure
                     IssuerSigningKey = new SymmetricSecurityKey(
                         Encoding.UTF8.GetBytes(jwtkey)),
                     ClockSkew = TimeSpan.Zero,
-                    RoleClaimType = ClaimTypes.Role,
+                    RoleClaimType = ClaimTypes.Role
                 };
             });
         }
