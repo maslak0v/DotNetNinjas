@@ -27,7 +27,7 @@ app.Lifetime.ApplicationStarted.Register(async () =>
     await Seeder.SeedSuperUserWithRole(scope);
 });
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 app.UseCors("AllowAllOrigins");
 app.UseAuthentication();
 app.UseAuthorization();
