@@ -30,7 +30,9 @@ namespace FinancialTracker.Services.AuthorizeApi.Presentation
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Auth API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "AuthorizeAPI", Version = "v1" });
+                c.TagActionsBy(api => [api.GroupName]);
+                c.DocInclusionPredicate((version, desc) => true);
             });
 
             //turn off cookie
