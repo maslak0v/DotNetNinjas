@@ -8,15 +8,10 @@ namespace Wallet.API.Controllers.Categories;
 
 public class CreateCategory : CategoryBase
 {
-    private readonly ICategoryService _categoryService;
-    private readonly IMapper _mapper;
-
-    public CreateCategory(ICategoryService categoryService, IMapper mapper)
+    public CreateCategory(ICategoryService categoryService, IMapper mapper) : base(categoryService, mapper)
     {
-        _categoryService = categoryService;
-        _mapper = mapper;
     }
-    
+
     [HttpPost("create")]
     public async Task<IActionResult> Create([FromBody] CategoryRequest categoryRequest, CancellationToken cancellationToken)
     {

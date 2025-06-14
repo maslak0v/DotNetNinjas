@@ -8,15 +8,10 @@ namespace Wallet.API.Controllers.Transactions;
 
 public class CreateTransaction: TransactionBase
 {
-    private readonly ITransactionService _transactionService;
-    private readonly IMapper _mapper;
-    
-    public CreateTransaction(IMapper mapper, ITransactionService transactionService)
+    public CreateTransaction(ITransactionService transactionService, IMapper mapper) : base(transactionService, mapper)
     {
-        _mapper = mapper;
-        _transactionService = transactionService;
     }
-    
+
     [HttpPost("create")]
     public async Task<IActionResult> Create([FromBody] TransactionRequest transactionRequest, CancellationToken cancellationToken)
     {

@@ -8,13 +8,8 @@ namespace Wallet.API.Controllers.Tags;
 
 public class SearchTagsByPrefixController : TagBase
 {
-    private readonly ITagService _tagService;
-    private readonly IMapper _mapper;
-
-    public SearchTagsByPrefixController(ITagService tagService, IMapper mapper)
+    public SearchTagsByPrefixController(ITagService tagService, IMapper mapper) : base(tagService, mapper)
     {
-        _tagService = tagService;
-        _mapper = mapper;
     }
 
     [HttpGet("{userId:guid}/search")]

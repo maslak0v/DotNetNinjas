@@ -1,6 +1,5 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Wallet.API.Models.Categories;
 using Wallet.API.Models.Transactions;
 using Wallet.Application.Interfaces;
 
@@ -8,13 +7,8 @@ namespace Wallet.API.Controllers.Transactions;
 
 public class GetTransactionById : TransactionBase
 {
-    private readonly ITransactionService _transactionService;
-    private readonly IMapper _mapper;
-    
-    public GetTransactionById(IMapper mapper, ITransactionService transactionService)
+    public GetTransactionById(ITransactionService transactionService, IMapper mapper) : base(transactionService, mapper)
     {
-        _mapper = mapper;
-        _transactionService = transactionService;
     }
 
     [HttpGet("{id:guid}")]

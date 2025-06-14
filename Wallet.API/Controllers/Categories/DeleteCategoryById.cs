@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Wallet.Application.Interfaces;
 
@@ -5,13 +6,10 @@ namespace Wallet.API.Controllers.Categories;
 
 public class DeleteCategoryById : CategoryBase
 {
-    private readonly ICategoryService _categoryService;
-    
-    public DeleteCategoryById(ICategoryService categoryService)
+    public DeleteCategoryById(ICategoryService categoryService, IMapper mapper) : base(categoryService, mapper)
     {
-        _categoryService = categoryService;
     }
-    // Добавить валидацию по всем контроллерам 
+
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteById(int id, CancellationToken cancellationToken)
     {

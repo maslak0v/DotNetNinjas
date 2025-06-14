@@ -8,13 +8,8 @@ namespace Wallet.API.Controllers.Categories;
 
 public class UpdateCategoryById : CategoryBase
 {
-    private readonly ICategoryService _categoryService;
-    private readonly IMapper _mapper;
-
-    public UpdateCategoryById(ICategoryService categoryService, IMapper mapper)
+    public UpdateCategoryById(ICategoryService categoryService, IMapper mapper) : base(categoryService, mapper)
     {
-        _categoryService = categoryService;
-        _mapper = mapper;
     }
 
     [HttpPut("{id:int}")]

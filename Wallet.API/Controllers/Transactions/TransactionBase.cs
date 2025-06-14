@@ -1,4 +1,6 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Wallet.Application.Interfaces;
 
 namespace Wallet.API.Controllers.Transactions;
 [ApiController]
@@ -6,4 +8,12 @@ namespace Wallet.API.Controllers.Transactions;
 [ApiExplorerSettings(GroupName = "Управление транзакциями")]
 public class TransactionBase : ControllerBase
 {
+    protected readonly ITransactionService _transactionService;
+    protected readonly IMapper _mapper;
+
+    public TransactionBase(ITransactionService transactionService, IMapper mapper)
+    {
+        _transactionService = transactionService;
+        _mapper = mapper;
+    }
 }

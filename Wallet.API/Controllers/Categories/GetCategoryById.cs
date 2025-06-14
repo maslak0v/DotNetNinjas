@@ -7,13 +7,8 @@ namespace Wallet.API.Controllers.Categories;
 
 public class GetCategoryById : CategoryBase
 {
-    private readonly ICategoryService _categoryService;
-    private readonly IMapper _mapper;
-    
-    public GetCategoryById(ICategoryService categoryService, IMapper mapper)
+    public GetCategoryById(ICategoryService categoryService, IMapper mapper) : base(categoryService, mapper)
     {
-        _categoryService = categoryService;
-        _mapper = mapper;
     }
 
     [HttpGet("{id:int}")]

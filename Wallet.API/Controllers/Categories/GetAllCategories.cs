@@ -7,13 +7,8 @@ namespace Wallet.API.Controllers.Categories;
 
 public class GetAllCategories : CategoryBase
 {
-    private readonly ICategoryService _categoryService;
-    private readonly IMapper _mapper;
-    
-    public GetAllCategories(ICategoryService categoryService, IMapper mapper)
+    public GetAllCategories(ICategoryService categoryService, IMapper mapper) : base(categoryService, mapper)
     {
-        _categoryService = categoryService;
-        _mapper = mapper;
     }
 
     [HttpGet("all")]

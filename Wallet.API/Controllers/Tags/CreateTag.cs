@@ -8,15 +8,10 @@ namespace Wallet.API.Controllers.Tags;
 
 public class CreateTag : TagBase
 {
-    private readonly ITagService _tagService;
-    private readonly IMapper _mapper;
-
-    public CreateTag(IMapper mapper, ITagService tagService)
+    public CreateTag(ITagService tagService, IMapper mapper) : base(tagService, mapper)
     {
-        _mapper = mapper;
-        _tagService = tagService;
     }
-    
+
     [HttpPost("create")]
     public async Task<IActionResult> Create([FromBody] TagRequest tagRequest, CancellationToken cancellationToken)
     {

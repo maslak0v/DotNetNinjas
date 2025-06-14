@@ -7,15 +7,10 @@ namespace Wallet.API.Controllers.Tags;
 
 public class GetAllTagsByUserId : TagBase
 {
-    private readonly ITagService _tagService;
-    private readonly IMapper _mapper;
-
-    public GetAllTagsByUserId(ITagService tagService, IMapper mapper)
+    public GetAllTagsByUserId(ITagService tagService, IMapper mapper) : base(tagService, mapper)
     {
-        _tagService = tagService;
-        _mapper = mapper;
     }
-    
+
     [HttpGet("{id:guid}/all")]
     public async Task<IActionResult> GetAll([FromRoute] Guid id,  CancellationToken cancellationToken)
     {
