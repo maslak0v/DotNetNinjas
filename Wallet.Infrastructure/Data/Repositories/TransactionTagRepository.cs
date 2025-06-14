@@ -14,15 +14,16 @@ public class TransactionTagRepository : ITransactionTagRepository
     }
 
     public async Task<TransactionTag> GetByTransactionIdAsync(Guid id, CancellationToken cancellationToken) 
-        => await _context.TransactionTags.FirstOrDefaultAsync(t => t.TransactionId == id, cancellationToken);
+        => await _context.TransactionTags
+             .AsNoTracking()
+             .FirstOrDefaultAsync(t => t.TransactionId == id, cancellationToken);
 
     public async Task AddAsync(TransactionTag transactionTag, CancellationToken cancellationToken)
     {
         await _context.TransactionTags.AddAsync(transactionTag, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
     }
-
-
+    
     public async Task DeleteAsync(TransactionTag transactionTag, CancellationToken cancellationToken)
     {
         await _context.TransactionTags.AddAsync(transactionTag, cancellationToken); 

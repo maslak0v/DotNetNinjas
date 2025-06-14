@@ -14,10 +14,13 @@ public class CategoryRepository : ICategoryRepository
     }
     
     public async Task<Category?> GetByIdAsync(int id, CancellationToken cancellationToken) 
-        => await _context.Categories.FirstOrDefaultAsync(a => a.CategoryId == id, cancellationToken);
+        => await _context.Categories
+            .AsNoTracking()
+            .FirstOrDefaultAsync(a => a.CategoryId == id, cancellationToken);
 
     public async Task<IEnumerable<Category>> GetAllAsync(CancellationToken cancellationToken) 
         => await _context.Categories
+            .AsNoTracking()
             .OrderBy(c => c.Name)
             .ToListAsync(cancellationToken);
 

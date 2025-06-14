@@ -16,12 +16,14 @@ public class TransactionRepository : ITransactionRepository
     public async Task<Transaction?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return await _context.Transactions
+            .AsNoTracking()
             .FirstOrDefaultAsync(t => t.TransactionId == id && !t.IsDeleted, cancellationToken);
     }
 
     public async Task<IEnumerable<Transaction>> GetByAccountIdAsync(Guid accountId, CancellationToken cancellationToken)
     {
         return await _context.Transactions
+            .AsNoTracking()
             .Where(t => t.AccountId == accountId && !t.IsDeleted)
             .ToListAsync(cancellationToken);
     }
@@ -63,6 +65,7 @@ public class TransactionRepository : ITransactionRepository
     public async Task<IEnumerable<Transaction>> GetByDateRangeAsync(Guid accountId, DateTime startDate, DateTime endDate, int limit, CancellationToken cancellationToken)
     {
         return await _context.Transactions
+            .AsNoTracking()
             .Where(t => t.AccountId == accountId && !t.IsDeleted && t.TransactionDate >= startDate && t.TransactionDate <= endDate)
             .OrderByDescending(t => t.TransactionDate )
             .Take(limit)

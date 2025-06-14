@@ -13,11 +13,15 @@ public class AccountRepository : IAccountRepository
         _context = context;
     }
 
-    public async Task<Account?> GetByIdAsync(Guid id, CancellationToken cancellationToken ) => await _context.Account.FirstOrDefaultAsync(a => a.AccountId == id, cancellationToken);
+    public async Task<Account?> GetByIdAsync(Guid id, CancellationToken cancellationToken ) 
+        => await _context.Account
+            .AsNoTracking()
+            .FirstOrDefaultAsync(a => a.AccountId == id, cancellationToken);
    
     public async Task<IEnumerable<Account>> GetAllByUserIdAsync(Guid guid, CancellationToken cancellationToken)
     {
         return await _context.Account
+            .AsNoTracking()
             .Where(a => a.UserId == guid)
             .ToListAsync(cancellationToken);
     }
