@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.OpenApi.Models;
 
 namespace Wallet.API.Models.Transactions;
 
@@ -7,7 +8,7 @@ public class TransactionRequest
        [Required]
        public Guid AccountId { get; set; }
        [Required]
-       public byte OperationType { get; set; }
+       public OperationType OperationType { get; set; }
        [Required]
        public int CategoryId { get; set; }
        [Required]

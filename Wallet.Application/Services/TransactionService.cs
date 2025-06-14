@@ -65,11 +65,11 @@ public class TransactionService : ITransactionService
             throw new ArgumentException("Не найден аккаунт");
         }
 
-        if (transaction.OperationType == 1)
+        if (transaction.OperationType == OperationType.Income)
         {
             account.CurrentBalance += transaction.Amount;
         }
-        else if (transaction.OperationType == 2)
+        else if (transaction.OperationType == OperationType.Expense)
         {
             account.CurrentBalance -= transaction.Amount;
         }
@@ -141,11 +141,11 @@ public class TransactionService : ITransactionService
         account.CurrentBalance += existingTransaction.Amount;
     }
     
-    if (transactionDto.OperationType == 1) 
+    if (transactionDto.OperationType == OperationType.Income) 
     {
         account.CurrentBalance += transactionDto.Amount;
     }
-    else if (transactionDto.OperationType == 2) 
+    else if (transactionDto.OperationType == OperationType.Expense) 
     {
         account.CurrentBalance -= transactionDto.Amount;
     }
