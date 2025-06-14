@@ -6,8 +6,8 @@ services:
       dockerfile: FinancialTracker.Services.AuthorizeApi/Dockerfile
     env_file: ./SettingsData.env
     ports:
-       - "5000:5000"
-       - "5001:5001"
+       - "5010:5010"
+      # - "5001:5001"
     container_name: auth_webapi
     depends_on:
       - postgres_db
