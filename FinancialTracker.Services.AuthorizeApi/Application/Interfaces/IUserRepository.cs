@@ -2,7 +2,6 @@
 using FinancialTracker.Services.AuthorizeApi.Domain.Entities;
 using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Requests;
 using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Responses;
-using System.Threading.Tasks;
 
 namespace FinancialTracker.Services.AuthorizeApi.Application.Interfaces
 {
@@ -10,6 +9,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.Interfaces
     {
         Task<OperationResult> CreateUserAsync(IUserRegisterRequest userRegisterRequest);
         Task<User?> TryGetCurrentLoginUserAsync(string email, string password);
+        Task<User?> FindByIdAsync(string userId);
         Task<bool> ExistUsernameAsync(string username);
         Task<bool> ExistEmailAsync(string email);
 

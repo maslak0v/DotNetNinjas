@@ -50,7 +50,8 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Repositories
             var user = await userManager.FindByEmailAsync(email);
             if (user is null || !await userManager.CheckPasswordAsync(user, password))
                 return null;
-            return user.ToDomainUser();
+            var roles = await userManager.GetRolesAsync(user);
+            return user.ToDomainUser(roles);
         }
         public async Task<IList<string>> GetRolesForUserAsync(User domainUser)
         {
@@ -92,6 +93,17 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Repositories
             string messageAddRoles = resultAdd.Message ?? string.Empty;
             var newResult = result with { Message = $"{result?.Message ?? string.Empty} {messageAddRoles}" };            
             return newResult!;
+        }
+
+        public async Task<User?> FindByIdAsync(string userId)
+        {
+            var model = await authDb.Users.AsNoTrackingWithIdentityResolution()
+                 .Include(x => x.Roles)
+                 .FirstOrDefaultAsync(x => x.Id == userId);
+            if(model is null)
+                return null;
+            IList<string> roles = model.Roles.Select(x => x.Name!).ToList();
+            return model?.ToDomainUser(roles);
         }
     }
 }

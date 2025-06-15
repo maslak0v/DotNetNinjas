@@ -2,5 +2,5 @@
 
 namespace FinancialTracker.Services.AuthorizeApi.Domain.ValueObjects
 {
-    public record AuthResponse(string AccessToken, string RefreshToken) : IAuthResponse;
+    public record TokenResponse(string AccessToken, string RefreshToken) : ITokenResponse;
 }

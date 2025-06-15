@@ -1,5 +1,6 @@
 ﻿using FinancialTracker.Services.AuthorizeApi.Application.Interfaces;
 using FinancialTracker.Services.AuthorizeApi.Application.UseCases.Interfaces;
+using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Responses;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Contracts;
 using FinancialTracker.Services.AuthorizeApi.Presentation.Controllers.BaseControllers;
 using Microsoft.AspNetCore.Authorization;
@@ -33,7 +34,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Presentation.Controllers
 
         [HttpPost("login")]
         [AllowAnonymous]
-        public async Task<ActionResult> Login([FromBody] UserLoginRequest request)
+        public async Task<ActionResult<ITokenResponse>> Login([FromBody] UserLoginRequest request)
         {
             _logger.LogInformation("try login ..");
             var result = await useCasesFacade.UserLoginAsync(tokenService, request);

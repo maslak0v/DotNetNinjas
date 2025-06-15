@@ -1,5 +1,7 @@
 ﻿
+using FinancialTracker.Services.AuthorizeApi.Application.Features;
 using FinancialTracker.Services.AuthorizeApi.Domain.Entities;
+using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Requests;
 
 namespace FinancialTracker.Services.AuthorizeApi.Application.Interfaces
 {
@@ -11,6 +13,9 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.Interfaces
         /// <param name="userId"></param>
         /// <returns></returns>
         Task<RefreshToken> GenerateRefreshTokenAsync(string userId);
-        string GenerateAccessToken(User user, string jti, IList<string> roles);
+        string GenerateAccessToken(User user, string jti);
+        Task<RefreshToken?> FindRefreshTokenByJtiAsync(Guid jti);
+        Task Revoke(RefreshToken refreshToken);
+        Task RevokeAllForUserAsync(string userId);
     }
 }

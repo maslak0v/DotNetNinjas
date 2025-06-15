@@ -17,7 +17,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.DIInfrastructure
 
         public static async Task SeedRoles(IServiceScope scope)
         {
-            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<AuthRole>>();
             List<string> roles = [
                 Enum_BaseRoles.SUPERUSER.ToString(),
                 Enum_BaseRoles.ADMIN.ToString(),
@@ -26,7 +26,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.DIInfrastructure
             foreach (var role in roles)
                 if (!await roleManager.RoleExistsAsync(role))
                 {
-                    var result = await roleManager.CreateAsync(new IdentityRole(role));
+                    var result = await roleManager.CreateAsync(new AuthRole(role));
                     HandleIdentityResult(result, "failed role created");
                 }
         }

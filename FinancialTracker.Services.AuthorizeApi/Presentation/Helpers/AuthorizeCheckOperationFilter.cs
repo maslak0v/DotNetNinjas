@@ -5,6 +5,9 @@ using System.Reflection;
 
 namespace FinancialTracker.Services.AuthorizeApi.Presentation.Helpers
 {
+    /// <summary>
+    ///настройки авторизации для сваггера(кнопка для jwt, проверка доступа по ролям)
+    /// </summary>
     public class AuthorizeCheckOperationFilter : IOperationFilter
     {
         public void Apply(OpenApiOperation operation, OperationFilterContext context)

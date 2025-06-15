@@ -23,7 +23,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
                 }
 
                 //register
-                List<string> roles = [Enum_BaseRoles.USER.ToString()];
+                List<string> roles = [nameof(Enum_BaseRoles.USER)];
                 var result = await repository.RegisterUserAsync(request, roles);
                 Result = result;
             }

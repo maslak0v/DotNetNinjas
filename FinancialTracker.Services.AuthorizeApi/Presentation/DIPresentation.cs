@@ -20,11 +20,11 @@ namespace FinancialTracker.Services.AuthorizeApi.Presentation
                            .AllowAnyHeader();
                 });
             });
-            services.AddHttpsRedirection(options =>
-            {
-                options.RedirectStatusCode = StatusCodes.Status308PermanentRedirect;
-                options.HttpsPort = 443;
-            });
+            //services.AddHttpsRedirection(options =>
+            //{
+            //    options.RedirectStatusCode = StatusCodes.Status308PermanentRedirect;
+            //    options.HttpsPort = 443;
+            //});
             services.AddHttpContextAccessor();
             services.AddControllers();
             services.AddEndpointsApiExplorer();
@@ -65,7 +65,8 @@ namespace FinancialTracker.Services.AuthorizeApi.Presentation
                 List<Enum_BaseRoles> roles = [
                     Enum_BaseRoles.AdminAndUser,
                     Enum_BaseRoles.SUPERUSER,
-                    Enum_BaseRoles.SuperUserAndAdmin
+                    Enum_BaseRoles.SuperUserAndAdmin,
+                    Enum_BaseRoles.AllRoles,
                 ];
                 foreach (var role in roles)
                 {

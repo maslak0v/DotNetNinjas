@@ -1,5 +1,4 @@
 ﻿using FinancialTracker.Services.AuthorizeApi.Domain.Entities;
-using System.Security.Cryptography;
 
 namespace FinancialTracker.Services.AuthorizeApi.Application.Interfaces
 {
@@ -7,7 +6,8 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.Interfaces
     {
         Task SaveAsync();
         void Add(RefreshToken token);
-        void Revoke(string jti);
-        Task<RefreshToken?> FindAsync(string jti);
+        Task<RefreshToken?> FindByJtiAsync(Guid jti);
+        Task Revoke(RefreshToken refreshToken);
+        Task RevokeAllForUser(string userId);
     }
 }
