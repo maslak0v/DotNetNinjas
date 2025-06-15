@@ -43,11 +43,11 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Imlemen
         {
             if (refreshToken.IsRevoked)
                 return;
-            await tokenRepository.Revoke(refreshToken);
+            await tokenRepository.RevokeAsync(refreshToken);
             return;
         }
         public async Task RevokeAllForUserAsync(string userId)  =>
-            await tokenRepository.RevokeAllForUser(userId);
+            await tokenRepository.RevokeAllForUserAsync(userId);
         
         #region private 
 

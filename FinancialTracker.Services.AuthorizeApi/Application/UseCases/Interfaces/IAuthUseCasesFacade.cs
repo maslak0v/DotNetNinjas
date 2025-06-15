@@ -12,7 +12,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Interfaces
         Task<OperationResult<ITokenResponse>> UserLoginAsync(IAuthTokenService tokenService, IUserLoginRequest request);
         Task<OperationResult> UserLogoutAsync(IUserLogoutRequest request);
         Task<OperationResult<List<IUserResponseInfo>>> GetAllUsersAsync();
-        Task<OperationResult<ITokenResponse>> Refresh(IAuthTokenService tokenService, IRefreshRequest request);
+        Task<OperationResult<ITokenResponse>> RefreshAsync(IAuthTokenService tokenService, IRefreshRequest request);
         Task<OperationResult<ICurrentUserLoginResponse>> GetCurrentUserAsync();
         Task<OperationResult> DeleteAsync(Guid id);
     }

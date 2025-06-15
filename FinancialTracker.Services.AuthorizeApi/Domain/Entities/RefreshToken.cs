@@ -25,6 +25,11 @@ namespace FinancialTracker.Services.AuthorizeApi.Domain.Entities
             ExpiresAt = expiresAt;
             IsRevoked = isRevoked;
         }
+
+        public RefreshToken()
+        {
+        }
+
         public static RefreshToken CreateNew(string token, string userid, DateTime expiresAt)
             => new RefreshToken(token, userid, expiresAt);
         public static RefreshToken CopyData(Guid jti, string token, string userId, DateTime expiresAt, bool isRevoked)

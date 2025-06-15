@@ -22,7 +22,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Presentation.Controllers
             if (request == null || request.Jti == Guid.Empty)
                 return BadRequest("Refresh token and JTI cannot are empty");
 
-            var result = await useCasefacade.Refresh(tokenService, request);
+            var result = await useCasefacade.RefreshAsync(tokenService, request);
             if (!result.IsSuccess)
                 return UseCaseBadResultHandle(result.StatusCode, result.Message!);
             _logger.LogInformation("refresh successfully");

@@ -45,7 +45,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
                 OperationResult<List<IUserResponseInfo>>> (useCaseFabric.CreateGetAllUsers);
 
 
-        public async Task<OperationResult<ITokenResponse>> Refresh(IAuthTokenService service, IRefreshRequest request)
+        public async Task<OperationResult<ITokenResponse>> RefreshAsync(IAuthTokenService service, IRefreshRequest request)
             => await ExecuteUseCaseAsync<IRefreshUseCase, OperationResult<ITokenResponse>>(
             () => useCaseFabric.CreateRefresh(service, request));
 

@@ -26,7 +26,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Repositories
 
         public async Task SaveAsync() => await dbcontext.SaveChangesAsync();
 
-        public async Task Revoke(RefreshToken token)
+        public async Task RevokeAsync(RefreshToken token)
         {
             RefreshTokenModel tokenModel = token.EntityModelFromDomain();
             token.IsRevoked = true;
@@ -34,7 +34,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Repositories
             await dbcontext.SaveChangesAsync();
         }
 
-        public async Task RevokeAllForUser(string userId)
+        public async Task RevokeAllForUserAsync(string userId)
         {
             await dbcontext.RefreshTokens
                 .Where(t => !t.IsRevoked && userId == t.UserId)

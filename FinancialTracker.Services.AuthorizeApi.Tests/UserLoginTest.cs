@@ -42,7 +42,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Tests
                 //token repository
             var mockTokenRepository = new Mock<ITokenRepository>();
             mockTokenRepository.Setup(repo => repo.SaveAsync()).Returns(Task.CompletedTask);
-            mockTokenRepository.Setup(repo => repo.RevokeAllForUser(user.Id)).Returns(Task.CompletedTask);
+            mockTokenRepository.Setup(repo => repo.RevokeAllForUserAsync(user.Id)).Returns(Task.CompletedTask);
 
             IAuthUseCaseFabric fabric = AuthUseCaseFabricCreator.Create(mockUserRepository.Object);
             IAuthUseCasesFacade facade = AuthUseCaseFacadeCreator.Create(fabric);
@@ -53,7 +53,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Tests
 
             //Assert
             mockTokenRepository.Verify(repo => repo.SaveAsync(), Times.Once);
-            mockTokenRepository.Verify(repo => repo.RevokeAllForUser(user.Id), Times.Once);
+            mockTokenRepository.Verify(repo => repo.RevokeAllForUserAsync(user.Id), Times.Once);
             Assert.False(string.IsNullOrEmpty(result.Result!.AccessToken), "Access token should not be null or empty");
             Assert.False(string.IsNullOrEmpty(result.Result.RefreshToken), "Refresh token should not be null or empty");
         }
@@ -84,7 +84,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Tests
                 //token repository
             var mockTokenRepository = new Mock<ITokenRepository>();
             mockTokenRepository.Setup(repo => repo.SaveAsync()).Returns(Task.CompletedTask);
-            mockTokenRepository.Setup(repo => repo.RevokeAllForUser(user.Id)).Returns(Task.CompletedTask);
+            mockTokenRepository.Setup(repo => repo.RevokeAllForUserAsync(user.Id)).Returns(Task.CompletedTask);
 
             IAuthUseCaseFabric fabric = AuthUseCaseFabricCreator.Create(mockUserRepository.Object);
             IAuthUseCasesFacade facade = AuthUseCaseFacadeCreator.Create(fabric);
