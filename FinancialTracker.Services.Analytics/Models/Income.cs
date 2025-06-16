@@ -3,14 +3,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FinancialTracker.Services.Analytics.Models
 {
-    public class Revenue
+    public class Income
     {
         [Key]
-        public int RevenueId { get; set; }
+        public int IncomeId { get; set; }
         [ForeignKey("UserId")]
         public required User User { get; set; }
         [Required]
-        public DateTime RevenueTime { get; set; }
+        public DateTime IncomeTime { get; set; }
         [Required]
         public decimal Amount { get; set; }
 

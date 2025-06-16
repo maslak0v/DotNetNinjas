@@ -1,8 +1,8 @@
 ﻿namespace FinancialTracker.Services.Analytics.Models.Dto
 {
-    public class RevenueResponseDto
+    public class IncomesResponseDto
     {
-        public DateTime RevenueTime { get; set; }
+        public DateTime IncomeTime { get; set; }
         public decimal Amount { get; set; }
         public string Currency { get; set; } = "RUB";
     }

@@ -7,7 +7,7 @@ namespace FinancialTracker.Services.Analytics.Controllers
 {
     [ApiController]
     [Route("api/revenue")]
-    public class RevenueApiController(IRevenuesService service, IMapper mapper) : ControllerBase
+    public class IncomesApiController(IIncomesService service, IMapper mapper) : ControllerBase
     {
         [HttpGet]
         public async Task<IActionResult> GetAsync(
@@ -19,9 +19,9 @@ namespace FinancialTracker.Services.Analytics.Controllers
 
             try
             {
-                var revenue = await service.GetRevenuesAsync(userId, startDate, endDate);
+                var revenue = await service.GetIncomesAsync(userId, startDate, endDate);
 
-                response.Result = mapper.Map<List<RevenueResponseDto>>(revenue);
+                response.Result = mapper.Map<List<IncomesResponseDto>>(revenue);
             }
             catch (Exception ex)
             {
@@ -32,14 +32,14 @@ namespace FinancialTracker.Services.Analytics.Controllers
         }
 
         [HttpGet("by-account")]
-        public async Task<IActionResult> GetByAccountAsync([FromQuery] RevenuesRequestDto request)
+        public async Task<IActionResult> GetByAccountAsync([FromQuery] IncomesRequestDto request)
         {
             var response = new ResponseDto();
 
             try
             {
-                var revenue = await service.GetRevenuesByAccountAsync(request);
-                response.Result = mapper.Map<List<RevenueResponseDto>>(revenue);
+                var revenue = await service.GetIncomesByAccountAsync(request);
+                response.Result = mapper.Map<List<IncomesResponseDto>>(revenue);
             }
             catch (Exception ex)
             {

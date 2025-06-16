@@ -1,6 +1,6 @@
 ﻿namespace FinancialTracker.Services.Analytics.Models.Dto
 {
-    public class RevenuesRequestDto
+    public class IncomesRequestDto
     {
         public Guid UserId { get; set; }
         public DateTime StartDate { get; set; }

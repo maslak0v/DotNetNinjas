@@ -4,11 +4,11 @@ using FinancialTracker.Services.Analytics.Models.Dto;
 
 namespace FinancialTracker.Services.Analytics.Mapping
 {
-    public class RevenueMappingProfile : Profile
+    public class IncomeMappingProfile : Profile
     {
-        public RevenueMappingProfile()
+        public IncomeMappingProfile()
         {
-            CreateMap<Revenue, RevenueResponseDto>();
+            CreateMap<Income, IncomesResponseDto>();
         }
     }
 }
