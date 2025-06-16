@@ -6,7 +6,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Presentation.Controllers.BaseCo
     [ApiController]
     [ApiExplorerSettings(GroupName = "Авторизация")]
     public class AuthorizeBaseController<TController>(ILogger<TController> logger)
-        : ControllerBaseAdvance<TController>(logger)
+        : AdvanceBaseController<TController>(logger)
     {
     }
 }

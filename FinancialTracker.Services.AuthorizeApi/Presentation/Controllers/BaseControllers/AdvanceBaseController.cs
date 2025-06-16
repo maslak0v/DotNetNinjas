@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FinancialTracker.Services.AuthorizeApi.Presentation.Controllers.BaseControllers
 {
-    public class ControllerBaseAdvance<TController>(ILogger<TController> logger)
+    public class AdvanceBaseController<TController>(ILogger<TController> logger)
         : ControllerBase
     {
         protected readonly ILogger<TController> _logger = logger;

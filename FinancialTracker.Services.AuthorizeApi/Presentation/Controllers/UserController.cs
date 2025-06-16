@@ -8,7 +8,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Presentation.Controllers
 {
     public class UserController(
         IAuthUseCasesFacade useCasesFacade,
-        ILogger<UserController> logger): UserControllerBase<UserController>(logger)
+        ILogger<UserController> logger): UserBaseController<UserController>(logger)
     {
 
         /// <summary>
