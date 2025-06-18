@@ -1,4 +1,19 @@
 services:
+  financialtracker.services.analytics:
+    image: ${DOCKER_REGISTRY-}financialtrackerservices
+    build:
+      context: .
+      dockerfile: FinancialTracker.Services.Analytics/Dockerfile
+    # env_file: ./SettingsData.env
+    ports:
+      - "5030:5030"
+    container_name: analytics_webapi
+    depends_on:
+      - postgres_db
+      - financialtracker.services.authorizeapi
+    networks:
+      - my_network
+  
   financialtracker.services.authorizeapi:
     image: ${DOCKER_REGISTRY-}financialtrackerservicesauthorizeapi
     build:
@@ -35,21 +50,6 @@ services:
     env_file: ./SettingsData.env
     volumes:
       - pgadmindata:/var/lib/pgadmin
-    networks:
-      - my_network
-
-  financialtracker.services.analytics:
-    image: ${DOCKER_REGISTRY-}financialtrackerservices
-    build:
-      context: .
-      dockerfile: FinancialTracker.Services.Analytics/Dockerfile
-    env_file: ./SettingsData.env
-    ports:
-      - "5030:5030"
-    container_name: analytics_webapi
-    depends_on:
-      - postgres_db
-      - financialtracker.services.authorizeapi
     networks:
       - my_network
 
