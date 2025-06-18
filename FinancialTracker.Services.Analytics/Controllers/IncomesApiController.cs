@@ -19,9 +19,9 @@ namespace FinancialTracker.Services.Analytics.Controllers
 
             try
             {
-                var revenue = await service.GetIncomesAsync(userId, startDate, endDate);
+                var income = await service.GetIncomesAsync(userId, startDate, endDate);
 
-                response.Result = mapper.Map<List<IncomesResponseDto>>(revenue);
+                response.Result = mapper.Map<List<IncomesResponseDto>>(income);
             }
             catch (Exception ex)
             {
@@ -38,8 +38,8 @@ namespace FinancialTracker.Services.Analytics.Controllers
 
             try
             {
-                var revenue = await service.GetIncomesByAccountAsync(request);
-                response.Result = mapper.Map<List<IncomesResponseDto>>(revenue);
+                var income = await service.GetIncomesByAccountAsync(request);
+                response.Result = mapper.Map<List<IncomesResponseDto>>(income);
             }
             catch (Exception ex)
             {
