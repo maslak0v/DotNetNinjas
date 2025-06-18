@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace FinancialTracker.Services.Analytics.Controllers
 {
     [ApiController]
-    [Route("api/revenue")]
+    [Route("api/income")]
     public class IncomesApiController(IIncomesService service, IMapper mapper) : ControllerBase
     {
         [HttpGet]
