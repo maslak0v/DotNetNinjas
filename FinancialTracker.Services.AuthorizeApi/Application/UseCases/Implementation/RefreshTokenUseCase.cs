@@ -19,36 +19,22 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
         {
             try
             {
-                //если токен не проходит проверки,
+                
+                RefreshToken? refreshToken = await service.FindRefreshTokenByJtiAsync(request.Jti);
+                
+                //если токен уже истек,
                 //то требуется пройти процедуру авторизации по новой,
                 //чтобы получить валидный токен
-
-                //токен в базе соотвствует токену в запросе?
-                RefreshToken? refreshToken = await service.FindRefreshTokenByJtiAsync(request.Jti);
-                if (refreshToken is null)
+                var validationResult = await ValidateRefreshTokenAsync(refreshToken);
+                if (!validationResult.IsSuccess)
                 {
-                    Result = OperationResultCreator.Failure<ITokenResponse>
-                        (Enum_StatusCode.INVALID_TOKEN, "Token not found");
-                    return;
-                }
-                if (!string.Equals(refreshToken.Token, request.RefreshToken))
-                {
-                    Result = OperationResultCreator.Failure<ITokenResponse>
-                        (Enum_StatusCode.INVALID_TOKEN, "Tokens not equal");
+                    Result = OperationResultCreator.Failure<ITokenResponse>(
+                        validationResult.StatusCode, validationResult.Message!);
                     return;
                 }
 
-                //не истек?
-                if(!refreshToken!.IsValid())
-                {
-                    await service.Revoke(refreshToken);
-                    Result = OperationResultCreator.Failure<ITokenResponse>
-                        (Enum_StatusCode.INVALID_TOKEN, "Token is not valid");
-                    return;
-                }
-
-                //отзываем токены
-                await service.RevokeAllForUserAsync(refreshToken.UserId);
+                //отзываем токены(пока поддержка только одного устройства)
+                await service.RevokeAllForUserAsync(refreshToken!.UserId);
 
                 //ищем пользователя, т.к. для генерации новых токенов нужны его данные
                 User? user = await userRepository.FindByIdAsync(refreshToken.UserId);
@@ -68,6 +54,27 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
             {
                 Result = OperationResultCreator.FromException<ITokenResponse>(ex);
             }
+        }
+
+        private async Task<OperationResult> ValidateRefreshTokenAsync(RefreshToken? refreshToken)
+        {
+            string error = string.Empty;
+            //токен в базе соотвствует токену в запросе?
+            if (refreshToken is null)
+                error = "Token not found";
+            else if (!string.Equals(refreshToken!.Token, request.RefreshToken))
+                error = "Tokens not equal";
+
+            //не истек?
+            else if (!refreshToken.IsValid())
+            {
+                //истек - сразу отзываем
+                await service.Revoke(refreshToken);
+                error = "Token is not valid";
+            }
+            return string.IsNullOrEmpty(error)
+                ? OperationResultCreator.Success(Enum_StatusCode.OK)
+                : OperationResultCreator.Failure(Enum_StatusCode.INVALID_TOKEN, error);
         }
     }
 }
