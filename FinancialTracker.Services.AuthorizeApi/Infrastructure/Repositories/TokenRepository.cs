@@ -18,9 +18,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Repositories
         {
             var refreshTokenModel =  await dbcontext.RefreshTokens
                 .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.Jti == jti);
-            if (refreshTokenModel is null || refreshTokenModel.IsRevoked)
-                return null;
+                .FirstOrDefaultAsync(x => x.Jti == jti && !x.IsRevoked);
             return refreshTokenModel?.ToRefreshTokenDomain();
         }
 
