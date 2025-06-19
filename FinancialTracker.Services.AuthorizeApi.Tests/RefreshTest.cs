@@ -16,7 +16,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Tests
         public async Task RefreshGoodTest() 
         {
             //Arrange
-            var user = UserCreator.CreateWithRoles();
+            var user = UserCreator.CreateWithUserRole();
             var refreshToken = RefreshTokenCreator.Create(user.Id, "token");
                 //mocks
             var mockUserRepo = new Mock<IUserRepository>();
@@ -56,7 +56,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Tests
         public async Task RefreshBad_NotEqualsTest()
         {
             //Arrange
-            var user = UserCreator.CreateWithRoles();
+            var user = UserCreator.CreateWithUserRole();
             var refreshToken = RefreshTokenCreator.Create(user.Id, "token");
             //mocks
             var mockUserRepo = new Mock<IUserRepository>();

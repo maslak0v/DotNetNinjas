@@ -31,8 +31,8 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
 
                 //генерация новых токенов
                 var refreshToken = await tokenService.GenerateRefreshTokenAsync(user.Id);
-                var accesToken = tokenService.GenerateAccessToken(user, refreshToken.Jti.ToString());
-                ITokenResponse response = new TokenResponse(accesToken, refreshToken.Token);
+                var accessToken = tokenService.GenerateAccessToken(user, refreshToken.Jti.ToString());
+                ITokenResponse response = new TokenResponse(accessToken, refreshToken.Token);
                 Result = OperationResultCreator.Success(response, Enum_StatusCode.OK);
             }
             catch (Exception ex)

@@ -4,7 +4,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Tests.Helpers
 {
     internal static class UserCreator
     {
-        public static User CreateWithRoles() => new User()
+        public static User CreateWithUserRole() => new User()
         {
             Id = Guid.CreateVersion7().ToString(),
             CreateAt = DateTime.UtcNow,
