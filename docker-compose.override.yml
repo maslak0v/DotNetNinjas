@@ -6,3 +6,9 @@ services:
     
     ports:
       - "5010:5010"
+  financialtracker.services.analytics:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5030
+    ports:
+      - "5030:5030"
