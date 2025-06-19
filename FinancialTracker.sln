@@ -14,10 +14,6 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinancialTracker.Services.AuthorizeApi.Tests", "FinancialTracker.Services.AuthorizeApi.Tests\FinancialTracker.Services.AuthorizeApi.Tests.csproj", "{467BA127-05BB-DF46-83A0-4FB3F8853FBF}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinancialTracker.Services.Analytics.Tests", "FinancialTracker.Services.Analytics.Tests\FinancialTracker.Services.Analytics.Tests.csproj", "{DC76BC4F-AAA5-4D30-804F-C3818FE46161}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FinancialTracker.Services.Wallet", "FinancialTracker.Services.Wallet", "{A7128355-405F-4300-B4AB-F512F3B57E67}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wallet.Domain", "Wallet.Domain\Wallet.Domain.csproj", "{E81B7F6B-061C-4455-8C17-22AA39F88A1E}"
