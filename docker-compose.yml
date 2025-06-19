@@ -4,7 +4,7 @@ services:
     build:
       context: .
       dockerfile: FinancialTracker.Services.Analytics/Dockerfile
-    # env_file: ./SettingsData.env
+    env_file: ./SettingsData.env
     ports:
       - "5030:5030"
     container_name: analytics_webapi
