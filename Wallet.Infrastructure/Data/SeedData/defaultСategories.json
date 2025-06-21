@@ -1,0 +1,14 @@
+[
+  { "CategoryId": 1,  "Name": "Еда",           "Icon": "utensils" },
+  { "CategoryId": 2,  "Name": "Транспорт",     "Icon": "car-side" },
+  { "CategoryId": 3,  "Name": "Жилье",         "Icon": "home" },
+  { "CategoryId": 4,  "Name": "Здоровье",      "Icon": "medkit" },
+  { "CategoryId": 5,  "Name": "Развлечения",   "Icon": "gamepad" },
+  { "CategoryId": 6,  "Name": "Одежда",        "Icon": "tshirt" },
+  { "CategoryId": 7,  "Name": "Образование",   "Icon": "book" },
+  { "CategoryId": 8,  "Name": "Подарки",       "Icon": "gift" },
+  { "CategoryId": 9,  "Name": "Путешествия",   "Icon": "plane" },
+  { "CategoryId": 10, "Name": "Подписки",      "Icon": "credit-card" },
+  { "CategoryId": 11, "Name": "Дети",          "Icon": "baby-carriage" },
+  { "CategoryId": 12, "Name": "Прочее",        "Icon": "ellipsis-h" }
+]
