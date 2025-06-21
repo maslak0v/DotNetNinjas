@@ -1,4 +1,6 @@
-﻿namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Models
+﻿using FinancialTracker.Services.AuthorizeApi.Domain.Entities;
+
+namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Models
 {
     public class RefreshTokenModel
     {
@@ -9,12 +11,14 @@
         public DateTime ExpiresAt { get; set; }
         public bool IsRevoked { get; set; }
         RefreshTokenModel() { }
-        public RefreshTokenModel(string token, string userid, Guid jti, DateTime expiresAt)
+        public RefreshTokenModel(
+            string token, string userid, Guid jti, DateTime expiresAt, bool isRevoked)
         {
             Token = token;
             UserId = userid;
             ExpiresAt = expiresAt;
             Jti = jti;
+            IsRevoked = isRevoked;
         }
     }
 }

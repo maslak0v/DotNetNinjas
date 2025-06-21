@@ -4,6 +4,6 @@ using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Responses;
 
 namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Interfaces
 {
-    public interface ILoginUseCase : ICommandAsync<OperationResult<ITokenResponse>>
+    public interface IRefreshUseCase: ICommandAsync<OperationResult<ITokenResponse>>
     { }
 }

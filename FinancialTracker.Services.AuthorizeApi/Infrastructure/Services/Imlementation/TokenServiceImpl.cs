@@ -1,4 +1,5 @@
-﻿using FinancialTracker.Services.AuthorizeApi.Application.Interfaces;
+﻿
+using FinancialTracker.Services.AuthorizeApi.Application.Interfaces;
 using FinancialTracker.Services.AuthorizeApi.Domain.Entities;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Helpers;
 using Microsoft.Extensions.Options;
@@ -27,15 +28,30 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Imlemen
             return token;
         }
 
-        public string GenerateAccessToken(User user, string jti, IList<string> roles)
+        public string GenerateAccessToken(User user, string jti)
         {
-            var claims = GetClaims(user, jti, roles);
+            var claims = GetClaims(user, jti);
             var jwtsecurityToken = GenerateSecurityToken(claims);
             string token = new JwtSecurityTokenHandler().WriteToken(jwtsecurityToken);
             return token;
         }
 
-        #region private
+        public async Task<RefreshToken?>FindRefreshTokenByJtiAsync(Guid jti) 
+            => await tokenRepository.FindByJtiAsync(jti);
+
+        public async Task Revoke(RefreshToken refreshToken)
+        {
+            if (refreshToken.IsRevoked)
+                return;
+            await tokenRepository.RevokeAsync(refreshToken);
+            return;
+        }
+        public async Task RevokeAllForUserAsync(string userId)  =>
+            await tokenRepository.RevokeAllForUserAsync(userId);
+        
+        #region private 
+
+
         /// <summary>
         /// 
         /// </summary>
@@ -63,7 +79,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Imlemen
                 signingCredentials: signingCredentials);
         }
 
-        private List<Claim> GetClaims(User user, string jti, IList<string> roles)
+        private List<Claim> GetClaims(User user, string jti)
         {
             List<Claim> claims = [
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id),
@@ -71,9 +87,14 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Imlemen
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim(ClaimTypes.Name, user.UserName!)
             ];
-            var claimRoles = roles.Select(role => new Claim(ClaimTypes.Role, role));
+            var claimRoles = user.Roles.Select(role => new Claim(ClaimTypes.Role, role));
             claims.AddRange(claimRoles);
             return claims;
+        }
+
+        private bool CheckEqualsRefreshtoken(string token, RefreshToken tokenModel)
+        {
+            return string.Equals(token, tokenModel.Token);
         }
         #endregion
     }

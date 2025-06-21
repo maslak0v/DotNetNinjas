@@ -6,7 +6,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Mapping
     public static class MappingRefreshToken
     {
         public static RefreshTokenModel EntityModelFromDomain(this RefreshToken rt)
-            => new(rt.Token, rt.UserId, rt.Jti, rt.ExpiresAt);
+            => new(rt.Token, rt.UserId, rt.Jti, rt.ExpiresAt, rt.IsRevoked);
 
         public static RefreshToken ToRefreshTokenDomain(this RefreshTokenModel rtm) =>
             RefreshToken.CopyData(rtm.Jti, rtm.Token, rtm.UserId, rtm.ExpiresAt, rtm.IsRevoked);

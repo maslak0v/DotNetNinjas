@@ -40,6 +40,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.DIInfrastructure
             await dbContext.Database.MigrateAsync();
             return app;
         }
+        
         #region private
         private static void AddScopedServices(IServiceCollection services)
         {
@@ -67,7 +68,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.DIInfrastructure
                     IssuerSigningKey = new SymmetricSecurityKey(
                         Encoding.UTF8.GetBytes(jwtkey)),
                     ClockSkew = TimeSpan.Zero,
-                    RoleClaimType = ClaimTypes.Role,
+                    RoleClaimType = ClaimTypes.Role
                 };
             });
         }
@@ -87,7 +88,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.DIInfrastructure
 
         private static void SetDbContextToIdentity(IServiceCollection services)
         {
-            services.AddIdentity<AuthUser, IdentityRole>(options =>
+            services.AddIdentity<AuthUser, AuthRole>(options =>
             {
                 options.Password.RequiredLength = 8;
                 options.Password.RequireDigit = false;

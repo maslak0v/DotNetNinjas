@@ -13,30 +13,31 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
         IAuthTokenService tokenService,
         IUserLoginRequest request) : ILoginUseCase
     {
-        public OperationResult<IAuthResponse> Result { get; private set; } = null!;
+        public OperationResult<ITokenResponse> Result { get; private set; } = null!;
 
         public async Task ExecuteAsync()
         {
             try
             {
-                //try login
                 User? user = await repository.TryGetCurrentLoginUserAsync(request.Email, request.Password);
                 if (user is null)
                 {
-                    Result = OperationResultCreator.Failure<IAuthResponse>(
+                    Result = OperationResultCreator.Failure<ITokenResponse>(
                         Enum_StatusCode.UNAUTHORIZED, "Invalid data");
                     return;
                 }
-                //Create tokens for response
+                //отзыв существующих токенов при каждом входе токены отзываются
+                await tokenService.RevokeAllForUserAsync(user.Id);
+
+                //генерация новых токенов
                 var refreshToken = await tokenService.GenerateRefreshTokenAsync(user.Id);
-                var roles = await repository.GetRolesForUserAsync(user);
-                var accesToken = tokenService.GenerateAccessToken(user, refreshToken.Jti.ToString(), roles);
-                IAuthResponse response = new AuthResponse(accesToken, refreshToken.Token);
+                var accessToken = tokenService.GenerateAccessToken(user, refreshToken.Jti.ToString());
+                ITokenResponse response = new TokenResponse(accessToken, refreshToken.Token);
                 Result = OperationResultCreator.Success(response, Enum_StatusCode.OK);
             }
             catch (Exception ex)
             {
-                Result = OperationResultCreator.FromException<IAuthResponse>(ex);
+                Result = OperationResultCreator.FromException<ITokenResponse>(ex);
             }
         }
     }

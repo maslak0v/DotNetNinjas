@@ -20,8 +20,8 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
             => await ExecuteUseCaseAsync<IUserRegisterUseCase, OperationResult>(
                 () => useCaseFabric.CreateUserRegister(request));
 
-        public async Task<OperationResult<IAuthResponse>> UserLoginAsync(IAuthTokenService service, IUserLoginRequest request)
-            => await ExecuteUseCaseAsync<ILoginUseCase, OperationResult<IAuthResponse>>(
+        public async Task<OperationResult<ITokenResponse>> UserLoginAsync(IAuthTokenService service, IUserLoginRequest request)
+            => await ExecuteUseCaseAsync<ILoginUseCase, OperationResult<ITokenResponse>>(
                 () => useCaseFabric.CreateLogin(service, request));
 
         public Task<OperationResult> DeleteAsync(Guid id)
@@ -34,27 +34,21 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
             throw new NotImplementedException();
         }
 
-        public Task<OperationResult<IAuthResponse>> GetUserByIdAsync(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-       
-
         public Task<OperationResult> UserLogoutAsync(IUserLogoutRequest request)
         {
             throw new NotImplementedException();
         }
 
 
-        public Task<OperationResult<IAuthResponse>> UserUpdateAsync(IUserUpdateRequest request)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<OperationResult<List<IUserResponseInfo>>> GetAllUsersAsync() 
             => await ExecuteUseCaseAsync<IGetAllUsersUseCase,
                 OperationResult<List<IUserResponseInfo>>> (useCaseFabric.CreateGetAllUsers);
+
+
+        public async Task<OperationResult<ITokenResponse>> RefreshAsync(IAuthTokenService service, IRefreshRequest request)
+            => await ExecuteUseCaseAsync<IRefreshUseCase, OperationResult<ITokenResponse>>(
+            () => useCaseFabric.CreateRefresh(service, request));
+
 
         private async Task<TResult> ExecuteUseCaseAsync<TUsecase, TResult>(
             Func<TUsecase> createUsecase) where TUsecase : ICommandAsync<TResult>

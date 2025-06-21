@@ -1,9 +1,14 @@
 ﻿namespace FinancialTracker.Services.AuthorizeApi.Domain.ValueObjects
 {
-    public enum Enum_BaseRoles
+    [Flags]
+    public enum Enum_BaseRoles: byte
     {
-        SUPERUSER,
-        ADMIN,
-        USER
+        SUPERUSER = 1 << 0,
+        ADMIN     = 1 << 1,
+        USER      = 1 << 2,
+
+        AllRoles = SUPERUSER | ADMIN | USER,
+        SuperUserAndAdmin = SUPERUSER | ADMIN,
+        AdminAndUser = ADMIN | USER,
     }
 }
