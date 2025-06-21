@@ -19,8 +19,16 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
+        var envPath = Path.Combine(
+            AppContext.BaseDirectory, "..", "..", "..", "..", "SettingsData.env"
+        );
+        envPath = Path.GetFullPath(envPath);
+        
+        DotNetEnv.Env.Load(envPath);
+        var connectionString = Environment.GetEnvironmentVariable("PG_CONNECTION_STRING");
+
         services.AddDbContext<WalletPostgresDbContext>(options =>
-            options.UseNpgsql(Configuration.GetConnectionString("PGConnection")));
+            options.UseNpgsql(connectionString));
         
         services.AddAutoMapper(typeof(Startup));
         
