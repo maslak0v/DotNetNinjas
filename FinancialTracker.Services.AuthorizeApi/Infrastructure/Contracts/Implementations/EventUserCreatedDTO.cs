@@ -2,7 +2,7 @@
 
 namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Contracts.Implementations
 {
-    public record EventUserCtreatedDTO : IEventUserCreated
+    public record EventUserCreatedDTO : IEventUserCreated
     {
         public Guid Id { get; set; }
 
