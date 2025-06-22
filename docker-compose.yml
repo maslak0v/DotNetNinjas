@@ -9,7 +9,6 @@ services:
       - "5030:5030"
     container_name: analytics_webapi
     depends_on:
-      - postgres_db
       - financialtracker.services.authorizeapi
     networks:
       - my_network
@@ -25,9 +24,10 @@ services:
     container_name: auth_webapi
     depends_on:
       - postgres_db
+      - rabbitmq
     networks:
       - my_network
-    #command: ["dotnet", "ef", "database", "update", "--no-build", "--project", "FinancialTracker.Services.AuthorizeApi.csproj", "--startup-project", "."]
+      #command: ["dotnet", "ef", "database", "update", "--no-build", "--project", "FinancialTracker.Services.AuthorizeApi.csproj", "--startup-project", "."]
 
   postgres_db:
     image: postgres:latest
@@ -40,7 +40,8 @@ services:
       - pg_data:/var/lib/postgresql/data
     networks:
       - my_network
-  pgadmin: 
+
+  pgadmin:
     image: dpage/pgadmin4
     container_name: pgadmin4_container
     restart: always
@@ -51,10 +52,29 @@ services:
       - pgadmindata:/var/lib/pgadmin
     networks:
       - my_network
+      
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports: 
+      - "5672:5672"
+      - "15672:15672"
+    env_file: ./SettingsData.env
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: on-failure
+    networks:
+      - "my_network"
+    volumes:
+      - "rabbitmq_data:/var/lib/rabbitmq"
 
 volumes:
   pg_data:
   pgadmindata:
+  rabbitmq_data:
 
 networks:
   my_network:

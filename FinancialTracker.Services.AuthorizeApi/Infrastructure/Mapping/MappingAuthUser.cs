@@ -1,7 +1,7 @@
 ﻿using FinancialTracker.Services.AuthorizeApi.Domain.Entities;
 using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Requests;
 using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Responses;
-using FinancialTracker.Services.AuthorizeApi.Infrastructure.Contracts;
+using FinancialTracker.Services.AuthorizeApi.Infrastructure.Contracts.Implementations;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Models;
 
 namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Mapping

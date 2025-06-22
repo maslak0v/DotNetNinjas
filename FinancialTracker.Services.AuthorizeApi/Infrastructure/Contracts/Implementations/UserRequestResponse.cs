@@ -1,7 +1,7 @@
 ﻿using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Requests;
 using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Responses;
 
-namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Contracts
+namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Contracts.Implementations
 {
     public record UserResponseInfo(string Id, string Name, string Email) 
         : IUserResponseInfo;

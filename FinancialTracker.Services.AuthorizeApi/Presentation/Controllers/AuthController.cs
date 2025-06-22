@@ -1,7 +1,7 @@
 ﻿using FinancialTracker.Services.AuthorizeApi.Application.Interfaces;
 using FinancialTracker.Services.AuthorizeApi.Application.UseCases.Interfaces;
 using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Responses;
-using FinancialTracker.Services.AuthorizeApi.Infrastructure.Contracts;
+using FinancialTracker.Services.AuthorizeApi.Infrastructure.Contracts.Implementations;
 using FinancialTracker.Services.AuthorizeApi.Presentation.Controllers.BaseControllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
