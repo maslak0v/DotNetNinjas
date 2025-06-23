@@ -33,7 +33,8 @@ public static class Registrator
     {
         serviceCollection
             .AddScoped<IExpensesService, ExpensesService>()
-            .AddScoped<IBalanceService, BalanceService>();
+            .AddScoped<IBalanceService, BalanceService>()
+            .AddScoped<IAdviceService, AdviceService>();
         return serviceCollection;
     }
 
@@ -57,6 +58,7 @@ public static class Registrator
         {
             cfg.AddProfile<ExpenseMappingsProfile>();
             cfg.AddProfile<BalanceMappingsProfile>();
+            cfg.AddProfile<AdviceMappingsProfile>();
         });
 
         configuration.AssertConfigurationIsValid();
