@@ -7,8 +7,8 @@ public class GoodHabitRule : IAdviceRule
         var result = expenses.Count != 0
             ? new AdviceResult
             {
-                Title = "Отлично, что фиксируешь траты!",
-                Message = "Учёт трат"
+                Title = "Учёт трат",
+                Message = "Отлично, что фиксируешь траты!"
             }
             : new AdviceResult();
 
