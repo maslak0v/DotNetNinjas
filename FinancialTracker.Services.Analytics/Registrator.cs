@@ -2,6 +2,7 @@ using AutoMapper;
 using FinancialTracker.Services.Analytics.DataAccess;
 using FinancialTracker.Services.Analytics.DataAccess.Repositories;
 using FinancialTracker.Services.Analytics.Mapping;
+using FinancialTracker.Services.Analytics.Models.Advice.Rules;
 using FinancialTracker.Services.Analytics.Services;
 using FinancialTracker.Services.Analytics.Services.Implementation;
 using Microsoft.EntityFrameworkCore;
@@ -33,8 +34,16 @@ public static class Registrator
     {
         serviceCollection
             .AddScoped<IExpensesService, ExpensesService>()
-            .AddScoped<IBalanceService, BalanceService>()
+            .AddScoped<IBalanceService, BalanceService>();
+        return serviceCollection;
+    }
+
+    public static IServiceCollection InstallAdviceService(this IServiceCollection serviceCollection)
+    {
+        serviceCollection.AddSingleton<IAdviceRule, GoodHabitRule>();
+        serviceCollection
             .AddScoped<IAdviceService, AdviceService>();
+        
         return serviceCollection;
     }
 
