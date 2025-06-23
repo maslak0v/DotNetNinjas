@@ -4,7 +4,9 @@
       "commandName": "DockerCompose",
       "commandVersion": "1.0",
       "serviceActions": {
-        "financialtracker.services.authorizeapi": "StartDebugging"
+        "financialtracker.services.authorize": "StartDebugging",
+        "financialtracker.services.wallet": "StartDebugging",
+        "financialtracker.services.analytics": "StartDebugging"
       }
     }
   }

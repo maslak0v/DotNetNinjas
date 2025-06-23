@@ -19,14 +19,9 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        var envPath = Path.Combine(
-            AppContext.BaseDirectory, "..", "..", "..", "..", "SettingsData.env"
-        );
-        envPath = Path.GetFullPath(envPath);
-        
-        DotNetEnv.Env.Load(envPath);
-        var connectionString = Environment.GetEnvironmentVariable("PG_CONNECTION_STRING");
-
+        var connectionString = Environment.GetEnvironmentVariable("WALLET_PG_CONNECTION_STRING");
+        if (string.IsNullOrEmpty(connectionString))
+            throw new Exception("The wallet's connection strig is empty");
         services.AddDbContext<WalletPostgresDbContext>(options =>
             options.UseNpgsql(connectionString));
         
