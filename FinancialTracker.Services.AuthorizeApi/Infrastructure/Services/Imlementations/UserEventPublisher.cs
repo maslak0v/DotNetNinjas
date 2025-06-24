@@ -12,7 +12,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Imlemen
         public async Task Publish(IUserEvent userEvent)
         {
             logger.LogInformation(
-                $"Publish event [{userEvent.GetType()}]: user[{userEvent.Id}] created");
+                $"Publish event [{userEvent.GetType()}]: user[{userEvent.UserId}] created");
             await publishEndpoint.Publish(userEvent);
         }
     }

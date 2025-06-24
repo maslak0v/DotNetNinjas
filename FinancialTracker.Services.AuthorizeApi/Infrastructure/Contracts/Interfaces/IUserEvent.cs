@@ -2,6 +2,6 @@
 {
     public interface IUserEvent
     {
-        string Id { get; }
+        string UserId { get; }
     }
 }
