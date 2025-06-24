@@ -1,8 +1,7 @@
 ﻿namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Contracts.Interfaces
 {
-    public interface IEventUserCreated
+    public interface IEventUserCreated: IUserEvent
     {
-        Guid Id { get; }
         DateTime Created { get; }
         string UserName { get; }
     }

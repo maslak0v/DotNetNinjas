@@ -2,8 +2,8 @@
 
 namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Interfaces
 {
-    public interface IUserEventPublishService
+    public interface IUserEventPublisher
     {
-        Task PublishEventUserCreated(IEventUserCreated eventUserCreated);
+        Task Publish(IUserEvent userEvent);
     }
 }

@@ -51,7 +51,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.DIInfrastructure
             services.AddScoped<IAuthTokenService, TokenServiceImpl>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ITokenRepository, TokenRepository>();
-            services.AddScoped<IUserEventPublishService, UserEventPublishService>();
+            services.AddScoped<IUserEventPublisher, UserEventPublisher>();
         }
 
         private static void Registration_AuthenticationJwt(IServiceCollection services, string jwtkey, JwtSettings? jwtSettings)
