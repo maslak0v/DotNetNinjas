@@ -50,23 +50,10 @@ namespace MessageBus.Shared
         public static IServiceCollection AddBusMessage_WithConsumersFromAssembly(
             this IServiceCollection services)
         {
-            var credentialData = GetCredentialsData();
-            services.AddMassTransit(cfg =>
+            return services.AddBusMessaging(cfg =>
             {
-                var assembly = Assembly.GetExecutingAssembly();
-                cfg.AddConsumers(assembly);
-
-                cfg.UsingRabbitMq((context, busConfigurator) =>
-                {
-                    busConfigurator.Host(credentialData.host, "/", config =>
-                    {
-                        config.Username(credentialData.user);
-                        config.Password(credentialData.password);
-                    });
-                    busConfigurator.ConfigureEndpoints(context);
-                });
+                cfg.AddConsumers(Assembly.GetExecutingAssembly());
             });
-            return services;
         }
 
         private static (string user, string password, string host) GetCredentialsData()
