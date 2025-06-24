@@ -32,7 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\MassTransit.Shared\MessageBus.Shared.csproj" />
+    <ProjectReference Include="..\MessageBus.Shared\MessageBus.Shared.csproj" />
   </ItemGroup>
 
 </Project>
