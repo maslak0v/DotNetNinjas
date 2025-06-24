@@ -23,7 +23,7 @@ namespace Wallet.API
                         options => { options.AddServerHeader = false; });
                 });
 
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
 
@@ -31,11 +31,11 @@ namespace Wallet.API
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
-                var context = services.GetRequiredService<WalletPostgresDbContext>();
-                context.Database.Migrate();
+                await using var context = services.GetRequiredService<WalletPostgresDbContext>();
+                await context.Database.MigrateAsync();
             }
             
-            host.Run();
+            await host.RunAsync();
         }
     }
 }
