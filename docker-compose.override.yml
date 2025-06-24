@@ -1,5 +1,5 @@
 services:
-  financialtracker.services.authorizeapi:
+  financialtracker.services.authorize:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:5010
@@ -12,3 +12,10 @@ services:
       - ASPNETCORE_URLS=http://+:5030
     ports:
       - "5030:5030"
+
+  financialtracker.services.wallet:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5020
+    ports:
+      - "5020:5020"

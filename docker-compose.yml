@@ -1,6 +1,21 @@
 services:
+
+  financialtracker.services.wallet:
+    image: ${DOCKER_REGISTRY-}walletapiservice
+    build:
+      context: .
+      dockerfile: Wallet.API/Dockerfile
+    env_file: ./SettingsData.env
+    ports:
+      - "5020:5020"
+    container_name: wallet_webapi
+    depends_on:
+      - financialtracker.services.authorize
+    networks:
+      - my_network
+
   financialtracker.services.analytics:
-    image: ${DOCKER_REGISTRY-}financialtrackerservices
+    image: ${DOCKER_REGISTRY-}financialtrackerservicesanalytics
     build:
       context: .
       dockerfile: FinancialTracker.Services.Analytics/Dockerfile
@@ -9,11 +24,11 @@ services:
       - "5030:5030"
     container_name: analytics_webapi
     depends_on:
-      - financialtracker.services.authorizeapi
+      - financialtracker.services.wallet
     networks:
       - my_network
   
-  financialtracker.services.authorizeapi:
+  financialtracker.services.authorize:
     image: ${DOCKER_REGISTRY-}financialtrackerservicesauthorizeapi
     build:
       context: .
@@ -24,10 +39,9 @@ services:
     container_name: auth_webapi
     depends_on:
       - postgres_db
-      - rabbitmq
     networks:
       - my_network
-      #command: ["dotnet", "ef", "database", "update", "--no-build", "--project", "FinancialTracker.Services.AuthorizeApi.csproj", "--startup-project", "."]
+    #command: ["dotnet", "ef", "database", "update", "--no-build", "--project", "FinancialTracker.Services.AuthorizeApi.csproj", "--startup-project", "."]
 
   postgres_db:
     image: postgres:latest
@@ -40,8 +54,7 @@ services:
       - pg_data:/var/lib/postgresql/data
     networks:
       - my_network
-
-  pgadmin:
+  pgadmin: 
     image: dpage/pgadmin4
     container_name: pgadmin4_container
     restart: always
@@ -52,7 +65,7 @@ services:
       - pgadmindata:/var/lib/pgadmin
     networks:
       - my_network
-      
+
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
@@ -75,7 +88,7 @@ volumes:
   pg_data:
   pgadmindata:
   rabbitmq_data:
-
+  
 networks:
   my_network:
     driver: bridge
