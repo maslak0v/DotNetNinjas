@@ -1,6 +1,21 @@
 services:
+
+  financialtracker.services.wallet:
+    image: ${DOCKER_REGISTRY-}walletapiservice
+    build:
+      context: .
+      dockerfile: Wallet.API/Dockerfile
+    env_file: ./SettingsData.env
+    ports:
+      - "5020:5020"
+    container_name: wallet_webapi
+    depends_on:
+      - financialtracker.services.authorize
+    networks:
+      - my_network
+
   financialtracker.services.analytics:
-    image: ${DOCKER_REGISTRY-}financialtrackerservices
+    image: ${DOCKER_REGISTRY-}financialtrackerservicesanalytics
     build:
       context: .
       dockerfile: FinancialTracker.Services.Analytics/Dockerfile
@@ -9,12 +24,11 @@ services:
       - "5030:5030"
     container_name: analytics_webapi
     depends_on:
-      - postgres_db
-      - financialtracker.services.authorizeapi
+      - financialtracker.services.wallet
     networks:
       - my_network
   
-  financialtracker.services.authorizeapi:
+  financialtracker.services.authorize:
     image: ${DOCKER_REGISTRY-}financialtrackerservicesauthorizeapi
     build:
       context: .
