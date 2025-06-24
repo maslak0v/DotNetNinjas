@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Wallet.Application.Interfaces;
 using Wallet.Infrastructure.Data;
 
 namespace Wallet.API
@@ -33,6 +34,10 @@ namespace Wallet.API
                 var services = scope.ServiceProvider;
                 await using var context = services.GetRequiredService<WalletPostgresDbContext>();
                 await context.Database.MigrateAsync();
+                
+                // Вносим категории по умолчанию
+                var categoryService = services.GetRequiredService<ICategoryService>();
+                await categoryService.SeedDefaultCategoriesAsync(CancellationToken.None);
             }
             
             await host.RunAsync();

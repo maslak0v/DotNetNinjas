@@ -10,4 +10,5 @@ public interface ICategoryService
     public Task DeleteAsync(Category category, CancellationToken cancellationToken);
     public Task<bool> ExistsAsync(int id, CancellationToken cancellationToken);
     public Task<Category?> GetByIdAsync(int id, CancellationToken cancellationToken);
+    public Task SeedDefaultCategoriesAsync(CancellationToken cancellationToken);
 }
