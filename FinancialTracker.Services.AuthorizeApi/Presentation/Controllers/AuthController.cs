@@ -3,6 +3,7 @@ using FinancialTracker.Services.AuthorizeApi.Application.UseCases.Interfaces;
 using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Responses;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Contracts.Implementations;
 using FinancialTracker.Services.AuthorizeApi.Presentation.Controllers.BaseControllers;
+using MessageBus.Shared.Publishers.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,6 +12,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Presentation.Controllers
     public class AuthController(
         IAuthUseCasesFacade useCasesFacade,
         IAuthTokenService tokenService,
+        IMessagePublisher messagePublisher,
         ILogger<AuthController> logger) : AuthorizeBaseController<AuthController>(logger)
     {
         /// <summary>
@@ -27,7 +29,14 @@ namespace FinancialTracker.Services.AuthorizeApi.Presentation.Controllers
             if (!result.IsSuccess)
                 return UseCaseBadResultHandle(result.StatusCode, result.Message ?? string.Empty);
 
-            _logger.LogInformation("user created");
+            /*заготовка
+            IUserCreatedMessage userCreatedMessage = ... 
+            Task publish = messagePublisher.PublishAsync(userCreatedMessage);
+            logger.LogInformation(
+               $"Publish event [{userEvent.GetType()}]: user[{userEvent.UserId}] created");
+            await publish;
+            */
+
             return Created();
         }
 

@@ -35,7 +35,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinancialTracker.Services.A
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{75D44298-749A-4890-84A0-9E1C876662AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MassTransit.Shared", "..\MassTransit.Shared\MassTransit.Shared.csproj", "{47DE6C79-053D-4AE0-87F6-84C54F29D6C4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageBus.Shared", "..\MassTransit.Shared\MessageBus.Shared.csproj", "{47DE6C79-053D-4AE0-87F6-84C54F29D6C4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

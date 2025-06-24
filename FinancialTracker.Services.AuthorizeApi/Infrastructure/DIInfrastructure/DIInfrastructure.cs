@@ -4,9 +4,7 @@ using FinancialTracker.Services.AuthorizeApi.Infrastructure.Helpers;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Models;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Repositories;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Imlementation;
-using FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Imlementations;
-using FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Interfaces;
-using MassTransit.Shared;
+using MessageBus.Shared;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -51,7 +49,6 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.DIInfrastructure
             services.AddScoped<IAuthTokenService, TokenServiceImpl>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ITokenRepository, TokenRepository>();
-            services.AddScoped<IUserEventPublisher, UserEventPublisher>();
         }
 
         private static void Registration_AuthenticationJwt(IServiceCollection services, string jwtkey, JwtSettings? jwtSettings)
@@ -127,7 +124,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.DIInfrastructure
         }
 
         private static void AddMessageBroker(IServiceCollection services)
-            => services.AddMassTransitWithRabbitMQ();
+            => services.AddBusMessaging().AddDefaultPublisher();
         #endregion
     }
 }

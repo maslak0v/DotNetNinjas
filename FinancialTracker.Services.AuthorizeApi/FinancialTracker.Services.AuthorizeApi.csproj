@@ -26,11 +26,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Infrastructure\Contracts\Interfaces\" />
     <Folder Include="Infrastructure\DataAccess\Migrations\" />
+    <Folder Include="Infrastructure\Services\Interfaces\" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\MassTransit.Shared\MassTransit.Shared.csproj" />
+    <ProjectReference Include="..\..\MassTransit.Shared\MessageBus.Shared.csproj" />
   </ItemGroup>
 
 </Project>
