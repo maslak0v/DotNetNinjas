@@ -6,6 +6,7 @@ using FinancialTracker.Services.AuthorizeApi.Infrastructure.Repositories;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Imlementation;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Imlementations;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Interfaces;
+using MassTransit.Shared;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

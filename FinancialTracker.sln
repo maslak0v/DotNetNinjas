@@ -29,9 +29,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wallet.Infrastructure", "Wa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wallet.API", "Wallet.API\Wallet.API.csproj", "{D3B7606E-CED3-4B3A-959C-A2E1DC80DB6A}"
 EndProject
-Project("{9344BDBB-3E7F-41FC-A0DD-8665D75EE146}") = "FinancialTracker.Services.AuthorizeApi", "FinancialTracker.Services.AuthorizeApi\FinancialTracker.Services.AuthorizeApi.csproj", "{8409A746-F0D4-4E68-BFCE-3AD012D882C1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinancialTracker.Services.AuthorizeApi", "FinancialTracker.Services.AuthorizeApi\FinancialTracker.Services.AuthorizeApi.csproj", "{8409A746-F0D4-4E68-BFCE-3AD012D882C1}"
 EndProject
-Project("{9344BDBB-3E7F-41FC-A0DD-8665D75EE146}") = "FinancialTracker.Services.Analytics", "FinancialTracker.Services.Analytics\FinancialTracker.Services.Analytics.csproj", "{6BAF324D-11E5-4F92-A257-D87961F8C1FF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinancialTracker.Services.Analytics", "FinancialTracker.Services.Analytics\FinancialTracker.Services.Analytics.csproj", "{6BAF324D-11E5-4F92-A257-D87961F8C1FF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{75D44298-749A-4890-84A0-9E1C876662AB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MassTransit.Shared", "..\MassTransit.Shared\MassTransit.Shared.csproj", "{47DE6C79-053D-4AE0-87F6-84C54F29D6C4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,7 +55,6 @@ Global
 		{DC76BC4F-AAA5-4D30-804F-C3818FE46161}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DC76BC4F-AAA5-4D30-804F-C3818FE46161}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DC76BC4F-AAA5-4D30-804F-C3818FE46161}.Release|Any CPU.Build.0 = Release|Any CPU
-		
 		{E81B7F6B-061C-4455-8C17-22AA39F88A1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E81B7F6B-061C-4455-8C17-22AA39F88A1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E81B7F6B-061C-4455-8C17-22AA39F88A1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -76,6 +79,10 @@ Global
 		{6BAF324D-11E5-4F92-A257-D87961F8C1FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6BAF324D-11E5-4F92-A257-D87961F8C1FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6BAF324D-11E5-4F92-A257-D87961F8C1FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47DE6C79-053D-4AE0-87F6-84C54F29D6C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47DE6C79-053D-4AE0-87F6-84C54F29D6C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47DE6C79-053D-4AE0-87F6-84C54F29D6C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47DE6C79-053D-4AE0-87F6-84C54F29D6C4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -83,7 +90,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{467BA127-05BB-DF46-83A0-4FB3F8853FBF} = {36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}
 		{DC76BC4F-AAA5-4D30-804F-C3818FE46161} = {36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}
-		
 		{A7128355-405F-4300-B4AB-F512F3B57E67} = {EAEB4A0D-5AEF-41F8-8AA4-3D75F43E386A}
 		{E81B7F6B-061C-4455-8C17-22AA39F88A1E} = {A7128355-405F-4300-B4AB-F512F3B57E67}
 		{22E82EA5-1198-4C08-A5B9-AE0FC2ED065B} = {A7128355-405F-4300-B4AB-F512F3B57E67}
@@ -91,6 +97,7 @@ Global
 		{D3B7606E-CED3-4B3A-959C-A2E1DC80DB6A} = {A7128355-405F-4300-B4AB-F512F3B57E67}
 		{8409A746-F0D4-4E68-BFCE-3AD012D882C1} = {EAEB4A0D-5AEF-41F8-8AA4-3D75F43E386A}
 		{6BAF324D-11E5-4F92-A257-D87961F8C1FF} = {EAEB4A0D-5AEF-41F8-8AA4-3D75F43E386A}
+		{47DE6C79-053D-4AE0-87F6-84C54F29D6C4} = {75D44298-749A-4890-84A0-9E1C876662AB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9BA6FAB8-B54C-403F-AF9B-360FCCAB94BA}
