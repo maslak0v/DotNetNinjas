@@ -19,8 +19,11 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
+        var connectionString = Environment.GetEnvironmentVariable("WALLET_PG_CONNECTION_STRING");
+        if (string.IsNullOrEmpty(connectionString))
+            throw new Exception("The wallet's connection strig is empty");
         services.AddDbContext<WalletPostgresDbContext>(options =>
-            options.UseNpgsql(Configuration.GetConnectionString("PGConnection")));
+            options.UseNpgsql(connectionString));
         
         services.AddAutoMapper(typeof(Startup));
         
