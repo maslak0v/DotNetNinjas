@@ -17,14 +17,14 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Mapping
         public static IQueryable<IUserResponseInfo> ToResponseFormatExt(this IQueryable<AuthUser> query)
              => query.Select(x => new UserResponseInfo(x.Id, x.UserName!, x.Email!));
 
-        public static User ToDomainUser(this AuthUser user, IList<string> roles) => new()
+        public static User ToDomainUser(this AuthUser user, ICollection<string> roles) => new()
         {
             Id = user.Id,
             Email = user.Email ?? string.Empty,
             UserName = user.UserName ?? string.Empty,
             CreateAt = user.CreateAt,
             UpdateAt = user.UpdateAt,
-            Roles = roles ?? []
+            Roles = roles.ToList() ?? []
         };
 
         public static AuthUser ToAuthUser(this User user) => new()
@@ -33,7 +33,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Mapping
             Email = user.Email ?? string.Empty,
             UserName = user.UserName ?? string.Empty,
             CreateAt = user.CreateAt,
-            UpdateAt = user.UpdateAt,
+            UpdateAt = user.UpdateAt
         };
     }
 }

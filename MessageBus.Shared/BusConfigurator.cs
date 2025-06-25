@@ -16,14 +16,15 @@ namespace MessageBus.Shared
         /// <returns></returns>
         public static IServiceCollection AddBusMessaging(
             this IServiceCollection services,
-            Action<IBusRegistrationConfigurator>? configureConsumers = null)
+            Action<IBusRegistrationConfigurator>? configure = null)
         {
             var credentialData = GetCredentialsData();
 
             services.AddMassTransit(cfg =>
             {
-                configureConsumers?.Invoke(cfg);
+                configure?.Invoke(cfg);
 
+                cfg.SetKebabCaseEndpointNameFormatter();
                 cfg.UsingRabbitMq((context, busConfigurator) =>
                 {
                     busConfigurator.Host(credentialData.host, "/", config =>

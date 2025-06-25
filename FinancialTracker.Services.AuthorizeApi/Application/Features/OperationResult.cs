@@ -19,6 +19,8 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.Features
             => new OperationResult(false, statusCode, error);
         public static OperationResult<TResult> Failure<TResult>(Enum_StatusCode statusCode, string error) 
             => new OperationResult<TResult> (default, false, statusCode, error);
+        public static OperationResult<TResult> FromOtherResult<TResult>(OperationResult other)
+         => new OperationResult<TResult>(default, other.IsSuccess, other.StatusCode, other.Message);
 
         public static OperationResult FromException(Exception ex) 
             => Failure(Enum_StatusCode.INTERNAL_SERVER_ERROR, ex.MessageWithInner());

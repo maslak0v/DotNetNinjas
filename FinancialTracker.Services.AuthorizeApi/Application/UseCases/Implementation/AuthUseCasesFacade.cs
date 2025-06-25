@@ -2,6 +2,7 @@
 using FinancialTracker.Services.AuthorizeApi.Application.Features;
 using FinancialTracker.Services.AuthorizeApi.Application.Interfaces;
 using FinancialTracker.Services.AuthorizeApi.Application.UseCases.Interfaces;
+using FinancialTracker.Services.AuthorizeApi.Domain.Entities;
 using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces;
 using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Requests;
 using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Responses;
@@ -10,14 +11,13 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
 {
     public class AuthUseCasesFacade(IAuthUseCaseFabric useCaseFabric) : IAuthUseCasesFacade
     {
-
         /// <summary>
         /// Registration a new user
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<OperationResult> UserRegisterAsync(IUserRegisterRequest request)
-            => await ExecuteUseCaseAsync<IUserRegisterUseCase, OperationResult>(
+        public async Task<OperationResult<User>> UserRegisterAsync(IUserRegisterRequest request)
+            => await ExecuteUseCaseAsync<IUserRegisterUseCase, OperationResult<User>>(
                 () => useCaseFabric.CreateUserRegister(request));
 
         public async Task<OperationResult<ITokenResponse>> UserLoginAsync(IAuthTokenService service, IUserLoginRequest request)

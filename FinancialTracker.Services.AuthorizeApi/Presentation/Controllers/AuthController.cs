@@ -2,7 +2,10 @@
 using FinancialTracker.Services.AuthorizeApi.Application.UseCases.Interfaces;
 using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Responses;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Contracts.Implementations;
+using FinancialTracker.Services.AuthorizeApi.Infrastructure.Mapping;
 using FinancialTracker.Services.AuthorizeApi.Presentation.Controllers.BaseControllers;
+using MessageBus.Shared.Contracts.Implementations;
+using MessageBus.Shared.Contracts.Interfaces;
 using MessageBus.Shared.Publishers.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -25,17 +28,17 @@ namespace FinancialTracker.Services.AuthorizeApi.Presentation.Controllers
         public async Task<ActionResult> Register([FromBody] UserRegisterRequest registerRequest)
         {
             _logger.LogInformation("Registration of a new user...");
-            var result = await useCasesFacade.UserRegisterAsync(registerRequest); 
-            if (!result.IsSuccess)
-                return UseCaseBadResultHandle(result.StatusCode, result.Message ?? string.Empty);
+            var resultOperation = await useCasesFacade.UserRegisterAsync(registerRequest); 
+            if (!resultOperation.IsSuccess)
+                return UseCaseBadResultHandle(resultOperation.StatusCode, resultOperation.Message ?? string.Empty);
+            
+            var user = resultOperation.Result!;
+            IUserCreated userCreatedMessage = user.ToUserCreatedMessage();
 
-            /*заготовка
-            IUserCreatedMessage userCreatedMessage = ... 
-            Task publish = messagePublisher.PublishAsync(userCreatedMessage);
-            logger.LogInformation(
-               $"Publish event [{userEvent.GetType()}]: user[{userEvent.UserId}] created");
-            await publish;
-            */
+            _logger.LogInformation(
+               $"Publish event [{userCreatedMessage.GetType()}]: user[{user.Id}] created");
+            
+            await messagePublisher.PublishAsync(userCreatedMessage);
 
             return Created();
         }

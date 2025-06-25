@@ -1,6 +1,7 @@
 ﻿using FinancialTracker.Services.AuthorizeApi.Application.Features;
 using FinancialTracker.Services.AuthorizeApi.Application.Interfaces;
 using FinancialTracker.Services.AuthorizeApi.Application.UseCases.Interfaces;
+using FinancialTracker.Services.AuthorizeApi.Domain.Entities;
 using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Requests;
 using FinancialTracker.Services.AuthorizeApi.Domain.ValueObjects;
 
@@ -10,14 +11,14 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
         IUserRepository repository,
         IUserRegisterRequest request) : IUserRegisterUseCase
     {
-        public OperationResult Result { get; private set; } = null!;
+        public OperationResult<User> Result { get; private set; } = null!;
         public async Task ExecuteAsync()
         {
             try
             {
                 if (!string.Equals(request.Password, request.ConfirmedPassword))
                 {
-                    Result = OperationResultCreator.Failure(
+                    Result = OperationResultCreator.Failure<User>(
                         Enum_StatusCode.BAD_REQUEST, "Passwords are not equal.");
                     return;
                 }
@@ -29,7 +30,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
             }
             catch (Exception ex)
             {
-                Result = OperationResultCreator.FromException(ex);
+                Result = OperationResultCreator.FromException<User>(ex);
             }
         }
     }

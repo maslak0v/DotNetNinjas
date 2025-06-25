@@ -18,22 +18,10 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Repositories
         AuthDbContext authDb) : IUserRepository
 
     {
-        public async Task<OperationResult> CreateUserAsync(IUserRegisterRequest userDto)
-        {
-            var user = new AuthUser().FromRegisterRequest(userDto);
-            user.CreateAt = DateTime.UtcNow;
-            var result = await userManager.CreateAsync(user, userDto.Password);
-            return result.Succeeded
-                ? OperationResultCreator.Success(Enum_StatusCode.CREATED, "User created successfully")
-                : OperationResultCreator.Failure(
-                    Enum_StatusCode.BAD_REQUEST,
-                    string.Join(", ", result.Errors.Select(e => e.Description)));
-        }
-
         public async Task<bool> ExistEmailAsync(string email)
             => (await userManager.FindByEmailAsync(email)) is not null;
 
-        public async Task<bool> ExistUsernameAsync(string userName)
+        public async Task<bool> ExistUserNameAsync(string userName)
             => (await userManager.FindByNameAsync(userName)) is not null;
 
         public async Task<OperationResult<List<IUserResponseInfo>>> GetAllUsersQueryAsync()
@@ -59,21 +47,8 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Repositories
             return await userManager.GetRolesAsync(user);
         }
 
-        public async Task<OperationResult> AddRolesToUserAsync(string userName, ICollection<string> roles)
-        {
-            var user = await userManager.FindByNameAsync(userName);
-            if (user is null)
-                return OperationResultCreator.Failure(Enum_StatusCode.NOT_FOUND, "user not found");
-            var result = await userManager.AddToRolesAsync(user, roles);
-            string nameRoles = string.Join(",", roles);
-            return result.Succeeded
-                ? OperationResultCreator.Success(Enum_StatusCode.OK, $"with roles {nameRoles}")
-                : OperationResultCreator.Failure(
-                    Enum_StatusCode.BAD_REQUEST,
-                    string.Join(", ", result.Errors.Select(e => e.Description)));
-        }
 
-        public async Task<OperationResult> RegisterUserAsync(
+        public async Task<OperationResult<User>> RegisterUserAsync(
             IUserRegisterRequest request, ICollection<string> roles)
         {
             await using var transaction = await authDb.Database.BeginTransactionAsync();
@@ -81,18 +56,19 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Repositories
             if(!result.IsSuccess)
             {
                 await transaction.RollbackAsync();
-                return result;
+                return OperationResultCreator.Failure<User>(result.StatusCode, result.Message!);
             }
-            var resultAdd = await AddRolesToUserAsync(request.FullName, roles);
-            if (!resultAdd.IsSuccess)
+            var user = result.Result;
+            var resultAddRoles = await AddRolesToUserAsync(user!, roles);
+            if (!resultAddRoles.IsSuccess)
             {
                 await transaction.RollbackAsync();
-                return resultAdd;
+                return OperationResultCreator.FromOtherResult<User>(resultAddRoles);
             }
             await transaction.CommitAsync();
-            string messageAddRoles = resultAdd.Message ?? string.Empty;
-            var newResult = result with { Message = $"{result?.Message ?? string.Empty} {messageAddRoles}" };            
-            return newResult!;
+            string resultMessage = $"{result?.Message} {resultAddRoles.Message}";
+            return OperationResultCreator.Success(
+                user!.ToDomainUser(roles), result!.StatusCode, resultMessage);
         }
 
         public async Task<User?> FindByIdAsync(string userId)
@@ -104,6 +80,34 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Repositories
                 return null;
             IList<string> roles = model.Roles.Select(x => x.Name!).ToList();
             return model?.ToDomainUser(roles);
+        }
+
+        public Task<OperationResult> AddRolesToUserAsync(User userDomain, ICollection<string> roles)
+        {
+            var user = userDomain.ToAuthUser();
+            return AddRolesToUserAsync(user, roles);
+        }
+        private async Task<OperationResult> AddRolesToUserAsync(AuthUser user, ICollection<string> roles)
+        {
+            var result = await userManager.AddToRolesAsync(user, roles);
+            string nameRoles = string.Join(",", roles);
+            return result.Succeeded
+                ? OperationResultCreator.Success(Enum_StatusCode.OK, $"with roles {nameRoles}")
+                : OperationResultCreator.Failure(
+                    Enum_StatusCode.BAD_REQUEST,
+                    string.Join(", ", result.Errors.Select(e => e.Description)));
+        }
+
+        private async Task<OperationResult<AuthUser>> CreateUserAsync(IUserRegisterRequest userDto)
+        {
+            var user = new AuthUser().FromRegisterRequest(userDto);
+            user.CreateAt = DateTime.UtcNow;
+            var result = await userManager.CreateAsync(user, userDto.Password);
+            return result.Succeeded
+                ? OperationResultCreator.Success(user, Enum_StatusCode.CREATED, "User created successfully")
+                : OperationResultCreator.Failure<AuthUser>(
+                    Enum_StatusCode.BAD_REQUEST,
+                    string.Join(", ", result.Errors.Select(e => e.Description)));
         }
     }
 }
