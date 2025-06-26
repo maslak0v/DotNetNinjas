@@ -17,7 +17,7 @@ public class AdviceApiController(IAdviceService adviceService,
         [FromQuery] DateTime endDate)
     {
         if (startDate > endDate)
-            return BadRequest("Дата начала периода должна быть больше даты начала периода.");
+            return BadRequest("Дата конца периода должна быть больше даты начала периода.");
         
         var response = new ResponseDto();
         
