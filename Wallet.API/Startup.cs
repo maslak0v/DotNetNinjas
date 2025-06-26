@@ -21,7 +21,7 @@ public class Startup
     {
         var connectionString = Environment.GetEnvironmentVariable("WALLET_PG_CONNECTION_STRING");
         if (string.IsNullOrEmpty(connectionString))
-            throw new Exception("The wallet's connection strig is empty");
+            throw new Exception("The wallet's connection string is empty");
         services.AddDbContext<WalletPostgresDbContext>(options =>
             options.UseNpgsql(connectionString));
         
