@@ -2,7 +2,7 @@
 using FinancialTracker.Services.AuthorizeApi.Application.Features;
 using FinancialTracker.Services.AuthorizeApi.Application.Interfaces;
 using FinancialTracker.Services.AuthorizeApi.Application.UseCases.Interfaces;
-using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Requests;
+using FinancialTracker.Services.AuthorizeApi.Domain.Entities;
 using FinancialTracker.Services.AuthorizeApi.Domain.ValueObjects;
 using FinancialTracker.Services.AuthorizeApi.Tests.Helpers;
 using Moq;
@@ -16,7 +16,9 @@ namespace FinancialTracker.Services.AuthorizeApi.Tests
         {
             //Arrange
             List<string> roles = [Enum_BaseRoles.USER.ToString()];
-            var mockResultRegister = OperationResultCreator.Success(Enum_StatusCode.CREATED);
+
+            var mockResultRegister = OperationResultCreator.Success(
+                UserCreator.CreateWithUserRole(), Enum_StatusCode.CREATED, "created");
             var request = RequestCreator.CreateUserRegisterGoodRequest();
             var mockRepository = new Mock<IUserRepository>();
             mockRepository.Setup(repo => repo.RegisterUserAsync(request, roles))
@@ -37,9 +39,8 @@ namespace FinancialTracker.Services.AuthorizeApi.Tests
         public async Task RegisterUserBadResultTest()
         {
             //Arrenge
-
             List<string> roles = [Enum_BaseRoles.USER.ToString()];
-            var mockResult = OperationResultCreator.Failure
+            var mockResult = OperationResultCreator.Failure<User>
                 (Enum_StatusCode.BAD_REQUEST, "error message");
             var request = RequestCreator.CreateUserRegisterBadRequest();
             var mockRepository = new Mock<IUserRepository>();

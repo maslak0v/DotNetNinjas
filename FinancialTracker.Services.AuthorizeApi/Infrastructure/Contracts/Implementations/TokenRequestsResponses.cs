@@ -1,7 +1,7 @@
 ﻿using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Requests;
 using System.ComponentModel.DataAnnotations;
 
-namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Contracts
+namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Contracts.Implementations
 {
     public record RefreshRequest(
         [Required(ErrorMessage = "Refresh token is required.")]

@@ -7,16 +7,16 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.Interfaces
 {
     public interface IUserRepository
     {
-        Task<OperationResult> CreateUserAsync(IUserRegisterRequest userRegisterRequest);
+        //Task<OperationResult> CreateUserAsync(IUserRegisterRequest userRegisterRequest);
         Task<User?> TryGetCurrentLoginUserAsync(string email, string password);
         Task<User?> FindByIdAsync(string userId);
-        Task<bool> ExistUsernameAsync(string username);
+        Task<bool> ExistUserNameAsync(string username);
         Task<bool> ExistEmailAsync(string email);
 
         Task<OperationResult<List<IUserResponseInfo>>> GetAllUsersQueryAsync();
-        Task<OperationResult> AddRolesToUserAsync(string userName, ICollection<string> roles);
+        Task<OperationResult> AddRolesToUserAsync(User user, ICollection<string> roles);
         Task<IList<string>> GetRolesForUserAsync(User user);
-        Task<OperationResult> RegisterUserAsync(
+        Task<OperationResult<User>> RegisterUserAsync(
             IUserRegisterRequest request, ICollection<string> roles);
     }
 }

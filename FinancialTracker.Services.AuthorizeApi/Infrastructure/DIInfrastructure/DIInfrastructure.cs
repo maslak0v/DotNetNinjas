@@ -4,6 +4,7 @@ using FinancialTracker.Services.AuthorizeApi.Infrastructure.Helpers;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Models;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Repositories;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Imlementation;
+using MessageBus.Shared;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -27,11 +28,12 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.DIInfrastructure
 
             Registration_AuthenticationJwt(services, jwtkey, jwtSettings);
 
+            AddMessageBroker(services);
+
             AddScopedServices(services);
 
             return services;
         }
-
         public static async Task<IApplicationBuilder> ApplyMigrationsAsync(this IApplicationBuilder app)
         {
             await using var scope = app.ApplicationServices.CreateAsyncScope();
@@ -40,7 +42,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.DIInfrastructure
             await dbContext.Database.MigrateAsync();
             return app;
         }
-        
+
         #region private
         private static void AddScopedServices(IServiceCollection services)
         {
@@ -121,7 +123,8 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.DIInfrastructure
             return jwtSettings;
         }
 
-
+        private static void AddMessageBroker(IServiceCollection services)
+            => services.AddBusMessaging().AddDefaultPublisher();
         #endregion
     }
 }
