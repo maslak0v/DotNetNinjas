@@ -8,6 +8,7 @@ builder.Services.InstallDbConnection();
 
 builder.Services.InstallAutoMapper();
 builder.Services.InstallServices();
+builder.Services.InstallAdviceService();
 builder.Services.InstallRepositories();
     
 builder.Services.AddControllers();

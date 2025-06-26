@@ -2,6 +2,7 @@ using AutoMapper;
 using FinancialTracker.Services.Analytics.DataAccess;
 using FinancialTracker.Services.Analytics.DataAccess.Repositories;
 using FinancialTracker.Services.Analytics.Mapping;
+using FinancialTracker.Services.Analytics.Models.Advice.Rules;
 using FinancialTracker.Services.Analytics.Services;
 using FinancialTracker.Services.Analytics.Services.Implementation;
 using Microsoft.EntityFrameworkCore;
@@ -37,6 +38,15 @@ public static class Registrator
         return serviceCollection;
     }
 
+    public static IServiceCollection InstallAdviceService(this IServiceCollection serviceCollection)
+    {
+        serviceCollection.AddSingleton<IAdviceRule, GoodHabitRule>();
+        serviceCollection
+            .AddScoped<IAdviceService, AdviceService>();
+        
+        return serviceCollection;
+    }
+
     public static IServiceCollection InstallRepositories(this IServiceCollection serviceCollection)
     {
         serviceCollection
@@ -57,6 +67,7 @@ public static class Registrator
         {
             cfg.AddProfile<ExpenseMappingsProfile>();
             cfg.AddProfile<BalanceMappingsProfile>();
+            cfg.AddProfile<AdviceMappingsProfile>();
         });
 
         configuration.AssertConfigurationIsValid();

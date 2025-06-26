@@ -28,6 +28,7 @@ public class ExpensesApiController(IExpensesService service,
         {
             response.IsSuccess = false;
             response.Message = ex.Message;
+            return StatusCode(500, response);
         }
         return Ok(response);
     }
@@ -46,6 +47,7 @@ public class ExpensesApiController(IExpensesService service,
         {
             response.IsSuccess = false;
             response.Message = ex.Message;
+            return StatusCode(500, response);
         }
         return Ok(response);
     }

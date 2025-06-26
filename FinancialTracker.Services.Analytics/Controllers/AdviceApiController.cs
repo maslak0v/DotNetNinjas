@@ -6,22 +6,26 @@ using Microsoft.AspNetCore.Mvc;
 namespace FinancialTracker.Services.Analytics.Controllers;
 
 [ApiController]
-[Route("api/balance")]
-public class BalanceApiController(IBalanceService service,
+[Route("api/advice")]
+public class AdviceApiController(IAdviceService adviceService,
     IMapper mapper) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetAsync(
         [FromQuery] Guid userId,
-        [FromQuery] DateTime forDate)
+        [FromQuery] DateTime startDate,
+        [FromQuery] DateTime endDate)
     {
+        if (startDate > endDate)
+            return BadRequest("Дата начала периода должна быть больше даты начала периода.");
+        
         var response = new ResponseDto();
         
         try
         {
-            var balance = await service.GetBalanceAsync(userId, forDate);
+            var advices = await adviceService.GetAdviceAsync(userId, startDate, endDate);
 
-            response.Result = mapper.Map<BalanceResponseDto>(balance);
+            response.Result = mapper.Map<List<AdviceResponseDto>>(advices);
         }
         catch (Exception ex)
         {
