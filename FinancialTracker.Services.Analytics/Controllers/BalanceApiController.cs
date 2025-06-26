@@ -27,6 +27,7 @@ public class BalanceApiController(IBalanceService service,
         {
             response.IsSuccess = false;
             response.Message = ex.Message;
+            return StatusCode(500, response);
         }
         return Ok(response);
     }
