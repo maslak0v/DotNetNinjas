@@ -7,10 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\MessageBus.Shared\MessageBus.Shared.csproj" />
       <ProjectReference Include="..\Wallet.Domain\Wallet.Domain.csproj" />
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="MassTransit.Abstractions" Version="8.5.0" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.4" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.4" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.4">
