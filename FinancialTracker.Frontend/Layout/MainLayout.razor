@@ -1,0 +1,37 @@
+﻿@using FinancialTracker.Frontend.Services
+@inherits LayoutComponentBase
+@inject AuthService AuthService
+
+<div class="page">
+    <main>
+        <div class="top-row px-4 justify-content-between">
+            <a class="navbar-brand m-0" href="">Трекер финансов</a>
+            @if (isAuthenticated)
+            {
+                <a href="#" @onclick="Logout">Выйти</a>
+            }
+            else
+            {
+                <a href="/login">Войти</a>
+            }
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+
+@code {
+    private bool isAuthenticated;
+
+    protected override async Task OnInitializedAsync()
+    {
+        isAuthenticated = await AuthService.IsAuthenticated();
+    }
+
+    private async Task Logout()
+    {
+        await AuthService.Logout();
+    }
+}

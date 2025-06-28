@@ -1,0 +1,34 @@
+﻿@page "/"
+@using FinancialTracker.Frontend.Services
+@inject AuthService AuthService
+@inject NavigationManager NavigationManager
+
+@if (isAuthenticated)
+{
+    <h3>Добро пожаловать!</h3>
+    <p>Вы успешно вошли.</p>
+    <button @onclick="Logout" class="btn btn-danger">Logout</button>
+}
+else
+{
+    <p>Вы не авторизованы. <a href="/login">Войдите</a>.</p>
+}
+
+@code {
+    private bool isAuthenticated;
+
+    protected override async Task OnInitializedAsync()
+    {
+        isAuthenticated = await AuthService.IsAuthenticated();
+        
+        if (!isAuthenticated)
+        {
+            NavigationManager.NavigateTo("/login");
+        }
+    }
+
+    private async Task Logout()
+    {
+        await AuthService.Logout();
+    }
+}

@@ -1,0 +1,48 @@
+@page "/login"
+@using FinancialTracker.Frontend.Models
+@using FinancialTracker.Frontend.Services
+@inject AuthService AuthService
+@inject NavigationManager NavigationManager
+
+<h3>Вход</h3>
+
+<EditForm class="d-flex flex-column gap-1" Model="@LoginRequest" OnValidSubmit="HandleLogin">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="email">Email</label>
+        <InputText id="email" @bind-Value="LoginRequest.Email" class="form-control" />
+        <ValidationMessage For="@(() => LoginRequest.Email)" />
+    </div>
+
+    <div class="form-group">
+        <label for="password">Пароль</label>
+        <InputText id="password" type="password" @bind-Value="LoginRequest.Password" class="form-control" />
+        <ValidationMessage For="@(() => LoginRequest.Password)" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Войти</button>
+</EditForm>
+
+<p>
+    Нет аккаунта? <a href="/register">Зарегистрироваться</a>
+</p>
+
+@code {
+    private LoginRequest LoginRequest { get; set; } = new LoginRequest();
+
+    private async Task HandleLogin()
+    {
+        try
+        {
+            await AuthService.Login(LoginRequest);
+            NavigationManager.NavigateTo("/");
+        }
+        catch (Exception ex)
+        {
+            // Handle error (show message to user)
+            Console.WriteLine($"Login error: {ex.Message}");
+        }
+    }
+}
