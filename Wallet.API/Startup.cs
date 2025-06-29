@@ -1,4 +1,4 @@
-using MassTransit;
+
 using MessageBus.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -43,11 +43,8 @@ public class Startup
         services.AddScoped<IAccountService, AccountService>();
         services.AddScoped<ITagService, TagService>();
         services.AddScoped<ITransactionService, TransactionService>();
-        
-        services.AddBusMessaging(cfg =>
-        {
-            cfg.AddConsumers(typeof(UserCreatedConsumer).Assembly);
-        });
+
+        services.AddBusMessage_WithConsumersFromType(typeof(UserCreatedConsumer));
         
         services.AddControllers(); 
         services.AddEndpointsApiExplorer();

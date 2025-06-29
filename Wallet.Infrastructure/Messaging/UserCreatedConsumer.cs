@@ -23,7 +23,7 @@ public class UserCreatedConsumer : IConsumer<IUserCreated>
         var msg = context.Message;
         _logger.LogInformation($"[RabbitMQ] User created: {msg.UserId}");
        
-        var user = new Account
+        var wallet = new Account
         {
             UserId = msg.UserId, 
             Name = "Ваш первый счет",
@@ -31,6 +31,6 @@ public class UserCreatedConsumer : IConsumer<IUserCreated>
             Currency = Currency.RUB
         };
         
-        await _accountRepository.AddAsync(user, CancellationToken.None);
+        await _accountRepository.AddAsync(wallet, CancellationToken.None);
     }
 }

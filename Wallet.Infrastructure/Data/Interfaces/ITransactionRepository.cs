@@ -4,7 +4,7 @@ namespace Wallet.Infrastructure.Data.Interfaces;
 
 public interface ITransactionRepository
 {
-    Task<Transaction> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<Transaction?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
     Task<IEnumerable<Transaction>> GetByAccountIdAsync(Guid accountId, CancellationToken cancellationToken);
     Task AddAsync(Transaction transaction, CancellationToken cancellationToken);
     Task UpdateAsync(Transaction transaction, CancellationToken cancellationToken);
