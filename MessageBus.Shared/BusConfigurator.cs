@@ -44,7 +44,7 @@ namespace MessageBus.Shared
             => services.AddScoped<IMessagePublisher, MessagePublisher>();
 
         /// <summary>
-        /// Auto searching all consumers in assembly
+        /// Auto searching all consumers in same assembly
         /// </summary>
         /// <param name="services"></param>
         /// <returns></returns>
@@ -54,6 +54,23 @@ namespace MessageBus.Shared
             return services.AddBusMessaging(cfg =>
             {
                 cfg.AddConsumers(Assembly.GetExecutingAssembly());
+            });
+        }
+
+        /// <summary>
+        /// registration of consumers when they are in other library
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="consumers"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddBusMessage_WithConsumersFromType(
+            this IServiceCollection services,
+            params Type[] consumerTypes)
+        {
+            return services.AddBusMessaging(cfg =>
+            {
+                foreach (var consumerType in consumerTypes)
+                    cfg.AddConsumers(consumerType.Assembly);
             });
         }
 

@@ -1,3 +1,5 @@
+
+using MessageBus.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Wallet.Application.Interfaces;
@@ -5,6 +7,7 @@ using Wallet.Application.Services;
 using Wallet.Infrastructure.Data;
 using Wallet.Infrastructure.Data.Interfaces;
 using Wallet.Infrastructure.Data.Repositories;
+using Wallet.Infrastructure.Messaging;
 
 namespace Wallet.API;
 
@@ -40,6 +43,8 @@ public class Startup
         services.AddScoped<IAccountService, AccountService>();
         services.AddScoped<ITagService, TagService>();
         services.AddScoped<ITransactionService, TransactionService>();
+
+        services.AddBusMessage_WithConsumersFromType(typeof(UserCreatedConsumer));
         
         services.AddControllers(); 
         services.AddEndpointsApiExplorer();
