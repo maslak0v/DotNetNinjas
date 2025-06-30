@@ -7,12 +7,12 @@ using Wallet.Infrastructure.Data.Interfaces;
 
 namespace Wallet.Infrastructure.Messaging;
 
-public class UserCreatedConsumer : IConsumer<IUserCreated>
+public class UserCreatedWalletConsumer : IConsumer<IUserCreated>
 {
-    private readonly ILogger<UserCreatedConsumer> _logger;
+    private readonly ILogger<UserCreatedWalletConsumer> _logger;
     private readonly IAccountRepository _accountRepository;
     
-    public UserCreatedConsumer(ILogger<UserCreatedConsumer> logger, IAccountRepository accountRepository)
+    public UserCreatedWalletConsumer(ILogger<UserCreatedWalletConsumer> logger, IAccountRepository accountRepository)
     {
         _logger = logger;
         _accountRepository = accountRepository;

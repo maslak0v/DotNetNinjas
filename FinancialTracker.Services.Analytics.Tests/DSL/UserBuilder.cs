@@ -18,7 +18,7 @@ public class UserBuilder
         var user = new User
         {
             Name = _name,
-            Guid = _guid
+            Id = _guid
         };
 
         return user;

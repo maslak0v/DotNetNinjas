@@ -2,7 +2,6 @@
 using MessageBus.Shared.Publishers.Imlementations;
 using MessageBus.Shared.Publishers.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
 
 namespace MessageBus.Shared
 {
@@ -43,19 +42,6 @@ namespace MessageBus.Shared
             this IServiceCollection services)
             => services.AddScoped<IMessagePublisher, MessagePublisher>();
 
-        /// <summary>
-        /// Auto searching all consumers in same assembly
-        /// </summary>
-        /// <param name="services"></param>
-        /// <returns></returns>
-        public static IServiceCollection AddBusMessage_WithConsumersFromAssembly(
-            this IServiceCollection services)
-        {
-            return services.AddBusMessaging(cfg =>
-            {
-                cfg.AddConsumers(Assembly.GetExecutingAssembly());
-            });
-        }
 
         /// <summary>
         /// registration of consumers when they are in other library

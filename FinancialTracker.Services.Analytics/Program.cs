@@ -1,6 +1,4 @@
 using FinancialTracker.Services.Analytics;
-using FinancialTracker.Services.Analytics.DataAccess;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +8,8 @@ builder.Services.InstallAutoMapper();
 builder.Services.InstallServices();
 builder.Services.InstallAdviceService();
 builder.Services.InstallRepositories();
-    
+builder.Services.AddMessaging();
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
