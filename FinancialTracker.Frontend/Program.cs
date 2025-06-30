@@ -12,7 +12,6 @@ builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri("http://l
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<AuthorizedHttpClient>();
 builder.Services.AddScoped<BrowserStorage>();
-builder.Services.AddScoped<AuthService>();
 
 builder.Services.AddSingleton(builder.Configuration);
 
