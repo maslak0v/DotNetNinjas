@@ -31,13 +31,13 @@ public class WhenGetBalance
         };
 
         mockRepository.Setup(repo =>
-                repo.GetExpensesBeforeDateAsync(tommy.Guid, It.IsAny<DateTime>()))
+                repo.GetExpensesBeforeDateAsync(tommy.Id, It.IsAny<DateTime>()))
             .ReturnsAsync(allExpenses);
         var expensesService = new ExpensesService(mockRepository.Object);
         var balanceService = new BalanceService(expensesService);
         
         // Act
-        var result = await balanceService.GetBalanceAsync(tommy.Guid,
+        var result = await balanceService.GetBalanceAsync(tommy.Id,
             new DateTime(2010, 01, 01));
 
         // Assert
@@ -53,13 +53,13 @@ public class WhenGetBalance
         var allExpenses = new List<Expense> {};
 
         mockRepository.Setup(repo =>
-                repo.GetExpensesBeforeDateAsync(tommy.Guid, It.IsAny<DateTime>()))
+                repo.GetExpensesBeforeDateAsync(tommy.Id, It.IsAny<DateTime>()))
             .ReturnsAsync(allExpenses);
         var expensesService = new ExpensesService(mockRepository.Object);
         var balanceService = new BalanceService(expensesService);
         
         // Act
-        var result = await balanceService.GetBalanceAsync(tommy.Guid,
+        var result = await balanceService.GetBalanceAsync(tommy.Id,
             new DateTime(2010, 01, 01));
 
         // Assert

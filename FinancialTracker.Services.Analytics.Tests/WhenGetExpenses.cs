@@ -30,12 +30,12 @@ public class WhenGetExpenses
         };
 
         mockRepository.Setup(repo =>
-                repo.GetExpensesAsync(tommy.Guid, It.IsAny<DateTime>(), It.IsAny<DateTime>()))
-            .ReturnsAsync(allExpenses.Where(e => e.User.Guid == tommy.Guid).ToList);
+                repo.GetExpensesAsync(tommy.Id, It.IsAny<DateTime>(), It.IsAny<DateTime>()))
+            .ReturnsAsync(allExpenses.Where(e => e.User.Id == tommy.Id).ToList);
         var expensesService = new ExpensesService(mockRepository.Object);
         
         // Act
-        var result = await expensesService.GetExpensesAsync(tommy.Guid,
+        var result = await expensesService.GetExpensesAsync(tommy.Id,
             new DateTime(2019, 01, 01),
             new DateTime(2024, 01, 01));
 
@@ -53,14 +53,14 @@ public class WhenGetExpenses
         
         var mockRepository = new Mock<IExpensesRepository>();
         mockRepository.Setup(repo =>
-                repo.GetExpensesAsync(tommy.Guid, It.IsAny<DateTime>(), It.IsAny<DateTime>()))
+                repo.GetExpensesAsync(tommy.Id, It.IsAny<DateTime>(), It.IsAny<DateTime>()))
             .ReturnsAsync(emptyExpenses);
         var expensesService = new ExpensesService(mockRepository.Object);
         
         // Act
         var fromDate = new DateTime(2024, 01, 01);
         var toDate = fromDate.AddDays(-1);
-        var result = await expensesService.GetExpensesAsync(tommy.Guid,
+        var result = await expensesService.GetExpensesAsync(tommy.Id,
             fromDate, toDate);
         
         // Assert
@@ -92,12 +92,12 @@ public class WhenGetExpenses
         };
 
         mockRepository.Setup(repo =>
-                repo.GetExpensesBeforeDateAsync(tommy.Guid, It.IsAny<DateTime>()))
+                repo.GetExpensesBeforeDateAsync(tommy.Id, It.IsAny<DateTime>()))
             .ReturnsAsync(allExpenses.Where(e => e.ExpenseTime.Year <= 2010).ToList());
         var expensesService = new ExpensesService(mockRepository.Object);
         
         // Act
-        var result = await expensesService.GetExpensesBeforeDateAsync(tommy.Guid,
+        var result = await expensesService.GetExpensesBeforeDateAsync(tommy.Id,
             new DateTime(2010, 01, 01));
 
         // Assert

@@ -44,7 +44,7 @@ public class Startup
         services.AddScoped<ITagService, TagService>();
         services.AddScoped<ITransactionService, TransactionService>();
 
-        services.AddBusMessage_WithConsumersFromType(typeof(UserCreatedConsumer));
+        services.AddBusMessage_WithConsumersFromType(typeof(UserCreatedWalletConsumer));
         
         services.AddControllers(); 
         services.AddEndpointsApiExplorer();
