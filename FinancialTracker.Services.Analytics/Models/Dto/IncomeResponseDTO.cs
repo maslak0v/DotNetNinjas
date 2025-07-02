@@ -1,8 +1,8 @@
-using Wallet.Domain.Entities;
+﻿using Wallet.Domain.Entities;
 
 namespace FinancialTracker.Services.Analytics.Models.Dto;
 
-public class ExpenseResponseDto
+public class IncomeResponseDTO
 {
     public DateTime ExpenseTime { get; set; }
     public decimal Amount { get; set; }
