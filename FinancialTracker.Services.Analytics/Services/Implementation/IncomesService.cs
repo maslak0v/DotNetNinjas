@@ -18,11 +18,6 @@ public class IncomesService(IIncomesRepository incomesRepository) : IIncomesServ
 
     public async Task<List<Income>> GetIncomesByAccountAsync(IncomesRequestDTO request)
     {
-        if (request.StartDate > request.EndDate)
-        {
-            throw new ArgumentException("Дата начала периода не может быть позже даты окончания");
-        }
-
         return await incomesRepository.GetIncomesByAccountAsync(request);
     }
 }

@@ -16,28 +16,38 @@ public class IncomeApiController (IIncomesService service,
         [FromQuery] DateTime startDate,
         [FromQuery] DateTime endDate)
     {
-        var responce = new ResponseDto();
-
+        var response = new ResponseDto();
+        if(startDate > endDate)
+        {
+            response.IsSuccess = false;
+            response.Message = "Error: Start date must be earlier than or equal to end date.";
+            return BadRequest(response);
+        }
         try
         {
             var incomes = await service.GetIncomesAsync(userId, startDate, endDate);
 
-            responce.Result = mapper.Map<List<IncomeResponseDTO>>(incomes);
+            response.Result = mapper.Map<List<IncomeResponseDTO>>(incomes);
         }
         catch (Exception ex)
         {
-            responce.IsSuccess = false;
-            responce.Message = ex.Message;
-            return StatusCode(500, responce);
+            response.IsSuccess = false;
+            response.Message = ex.Message;
+            return StatusCode(500, response);
         }
-        return Ok(responce);
+        return Ok(response);
     }
 
     [HttpGet("by-account")]
     public async Task<IActionResult> GetByAccountAsync([FromQuery] IncomesRequestDTO request)
     {
         var response = new ResponseDto();
-
+        if (request.StartDate > request.EndDate)
+        {
+            response.IsSuccess = false;
+            response.Message = "Error: Start date must be earlier than or equal to end date.";
+            return BadRequest(response);
+        }
         try
         {
             var incomes = await service.GetIncomesByAccountAsync(request);

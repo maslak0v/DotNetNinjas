@@ -36,7 +36,7 @@ public static class Registrator
     {
         serviceCollection
             .AddScoped<IExpensesService, ExpensesService>()
-            .AddScoped<IIncomesRepository, IncomesRepository>()
+            .AddScoped<IIncomesService, IncomesService>()
             .AddScoped<IBalanceService, BalanceService>();
         return serviceCollection;
     }

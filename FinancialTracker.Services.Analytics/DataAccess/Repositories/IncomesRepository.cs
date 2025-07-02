@@ -10,7 +10,7 @@ public class IncomesRepository(AppDbContext db) : IIncomesRepository
     {
         var query = db.Set<Income>().AsNoTracking();
         return await query
-            .Where(x => x.User.Id == userId &&
+            .Where(x => x.UserId == userId &&
                         x.IncomeTime >= startDate.ToUniversalTime() &&
                         x.IncomeTime <= endDate.ToUniversalTime())
             .ToListAsync();
@@ -20,7 +20,7 @@ public class IncomesRepository(AppDbContext db) : IIncomesRepository
     {
         var query = db.Set<Income>().AsNoTracking();
         return await query
-            .Where(x => x.User.Id == userId &&
+            .Where(x => x.UserId == userId &&
                         x.IncomeTime <= date.ToUniversalTime())
             .ToListAsync();
     }
@@ -29,7 +29,7 @@ public class IncomesRepository(AppDbContext db) : IIncomesRepository
     {
         var query = db.Set<Income>().AsNoTracking();
         return await query
-            .Where(x => x.User.Id == request.UserId &&
+            .Where(x => x.UserId == request.UserId &&
                         x.AccountId == request.AccountId &&
                         x.IncomeTime >= request.StartDate.ToUniversalTime() &&
                         x.IncomeTime <= request.EndDate.ToUniversalTime())

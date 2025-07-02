@@ -10,7 +10,7 @@ public class ExpensesRepository(AppDbContext db) : IExpensesRepository
     {
         var query = db.Set<Expense>().AsNoTracking();
         return await query
-            .Where(x => x.User.Id == userId &&
+            .Where(x => x.UserId == userId &&
                        x.ExpenseTime >= startDate.ToUniversalTime()
                         && x.ExpenseTime <= endDate.ToUniversalTime())
             .ToListAsync();
@@ -20,7 +20,7 @@ public class ExpensesRepository(AppDbContext db) : IExpensesRepository
     {
         var query = db.Set<Expense>().AsNoTracking();
         return await query
-            .Where(x => x.User.Id == userId &&
+            .Where(x => x.UserId == userId &&
                         x.ExpenseTime <= date.ToUniversalTime())
             .ToListAsync();
     }
@@ -29,7 +29,7 @@ public class ExpensesRepository(AppDbContext db) : IExpensesRepository
     {
         var query = db.Set<Expense>().AsNoTracking();
         return await query
-            .Where(x => x.User.Id == request.UserId &&
+            .Where(x => x.UserId == request.UserId &&
                        x.AccountId == request.AccountId &&
                        x.ExpenseTime >= request.StartDate.ToUniversalTime() &&
                        x.ExpenseTime <= request.EndDate.ToUniversalTime())

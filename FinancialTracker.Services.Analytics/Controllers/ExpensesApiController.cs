@@ -17,7 +17,12 @@ public class ExpensesApiController(IExpensesService service,
         [FromQuery] DateTime endDate)
     {
         var response = new ResponseDto();
-        
+        if (startDate > endDate)
+        {
+            response.IsSuccess = false;
+            response.Message = "Error: Start date must be earlier than or equal to end date.";
+            return BadRequest(response);
+        }
         try
         {
             var expenses = await service.GetExpensesAsync(userId, startDate, endDate);
@@ -37,7 +42,12 @@ public class ExpensesApiController(IExpensesService service,
     public async Task<IActionResult> GetByAccountAsync([FromQuery] ExpensesRequestDto request)
     {
         var response = new ResponseDto();
-        
+        if (request.StartDate > request.EndDate)
+        {
+            response.IsSuccess = false;
+            response.Message = "Error: Start date must be earlier than or equal to end date.";
+            return BadRequest(response);
+        }
         try
         {
             var expenses = await service.GetExpensesByAccountAsync(request);
