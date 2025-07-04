@@ -1,16 +1,15 @@
-
+﻿
 
 namespace FinancialTracker.Services.Analytics.Models;
 
-public class Expense
+public class Income
 {
-    public int ExpenseId { get; set; }
-    public DateTime ExpenseTime { get; set; }
+    public int IncomeId { get; set; }
+    public DateTime IncomeTime { get; set; }
     public decimal Amount { get; set; }
     public Guid AccountId { get; set; }
-    public string? Category { get; set; }
     public Guid UserId { get; set; }
+    public string? Category { get; set; }
     public string Currency { get; set; } = "RUB";
-    // Навигация
     public User User { get; set; } = null!;
 }

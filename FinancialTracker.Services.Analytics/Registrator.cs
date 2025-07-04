@@ -36,6 +36,7 @@ public static class Registrator
     {
         serviceCollection
             .AddScoped<IExpensesService, ExpensesService>()
+            .AddScoped<IIncomesService, IncomesService>()
             .AddScoped<IBalanceService, BalanceService>();
         return serviceCollection;
     }
@@ -57,7 +58,8 @@ public static class Registrator
     {
         serviceCollection
             .AddScoped<IExpensesRepository, ExpensesRepository>()
-            .AddScoped<IUserRepository,UserRepository>();
+            .AddScoped<IIncomesRepository, IncomesRepository>()
+            .AddScoped<IUserRepository, UserRepository>();
 
         return serviceCollection;
     }
@@ -73,6 +75,7 @@ public static class Registrator
         var configuration = new MapperConfiguration(cfg =>
         {
             cfg.AddProfile<ExpenseMappingsProfile>();
+            cfg.AddProfile<IncomeMappingsProfile>();
             cfg.AddProfile<BalanceMappingsProfile>();
             cfg.AddProfile<AdviceMappingsProfile>();
         });

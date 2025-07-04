@@ -18,11 +18,6 @@ public class ExpensesService (IExpensesRepository expensesRepository): IExpenses
 
     public async Task<List<Expense>> GetExpensesByAccountAsync(ExpensesRequestDto request)
     {
-        if (request.StartDate > request.EndDate)
-        {
-            throw new ArgumentException("Дата начала периода не может быть позже даты окончания");
-        }
-
         return await expensesRepository.GetExpensesByAccountAsync(request);
     }
 }

@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using FinancialTracker.Services.Analytics.Models.Dto;
 using FinancialTracker.Services.Analytics.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace FinancialTracker.Services.Analytics.Controllers;
 
 [ApiController]
-[Route("api/expenses")]
-public class ExpensesApiController(IExpensesService service,
+[Route("api/incomes")]
+public class IncomeApiController (IIncomesService service,
     IMapper mapper) : ControllerBase
 {
     [HttpGet]
@@ -17,7 +17,7 @@ public class ExpensesApiController(IExpensesService service,
         [FromQuery] DateTime endDate)
     {
         var response = new ResponseDto();
-        if (startDate > endDate)
+        if(startDate > endDate)
         {
             response.IsSuccess = false;
             response.Message = "Error: Start date must be earlier than or equal to end date.";
@@ -25,9 +25,9 @@ public class ExpensesApiController(IExpensesService service,
         }
         try
         {
-            var expenses = await service.GetExpensesAsync(userId, startDate, endDate);
+            var incomes = await service.GetIncomesAsync(userId, startDate, endDate);
 
-            response.Result = mapper.Map<List<ExpenseResponseDto>>(expenses);
+            response.Result = mapper.Map<List<IncomeResponseDTO>>(incomes);
         }
         catch (Exception ex)
         {
@@ -39,7 +39,7 @@ public class ExpensesApiController(IExpensesService service,
     }
 
     [HttpGet("by-account")]
-    public async Task<IActionResult> GetByAccountAsync([FromQuery] ExpensesRequestDto request)
+    public async Task<IActionResult> GetByAccountAsync([FromQuery] IncomesRequestDTO request)
     {
         var response = new ResponseDto();
         if (request.StartDate > request.EndDate)
@@ -50,8 +50,8 @@ public class ExpensesApiController(IExpensesService service,
         }
         try
         {
-            var expenses = await service.GetExpensesByAccountAsync(request);
-            response.Result = mapper.Map<List<ExpenseResponseDto>>(expenses);
+            var incomes = await service.GetIncomesByAccountAsync(request);
+            response.Result = mapper.Map<List<IncomeResponseDTO>>(incomes);
         }
         catch (Exception ex)
         {
