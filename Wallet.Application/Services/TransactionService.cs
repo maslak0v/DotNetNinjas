@@ -1,5 +1,5 @@
 using AutoMapper;
-using Wallet.Application.Dto;
+using Wallet.Application.Dto.Transactions;
 using Wallet.Application.Interfaces;
 using Wallet.Domain.Entities;
 using Wallet.Domain.Enums;

@@ -1,15 +1,10 @@
-using Wallet.Domain.Entities;
+using Wallet.Application.Dto.Tags;
 
 namespace Wallet.Application.Interfaces;
 
 public interface ITagService
 {
-    Task AddAsync(Tag tag, CancellationToken cancellationToken);
-    
-    Task<Tag?> GetTagByIdAsync(Guid tagId, CancellationToken cancellationToken);
-    
-    Task<IEnumerable<Tag>> GetAllUserTagsAsync(Guid userId, CancellationToken cancellationToken);
-
+    Task AddAsync(TagDto tag, CancellationToken cancellationToken);
     // Поиск тегов юзера по названию
-    Task<IEnumerable<Tag>> SearchTagsByPrefixAsync(Guid userId, string prefix, int limit, CancellationToken cancellationToken);
+    Task<IEnumerable<TagDto>> SearchTagsByPrefixAsync(Guid userId, string? prefix, int limit, int page, CancellationToken cancellationToken);
 }
