@@ -1,8 +1,8 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Wallet.API.Models.Categories;
+using Wallet.Application.Dto.Categories;
 using Wallet.Application.Interfaces;
-using Wallet.Domain.Entities;
 
 namespace Wallet.API.Controllers.Categories;
 
@@ -14,10 +14,10 @@ public class UpdateCategoryById : CategoryBase
 
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] CategoryRequest categoryRequest, CancellationToken cancellationToken)
-    {
-        var category = _mapper.Map<Category>(categoryRequest);
-        category.CategoryId = id; 
-
+    {   
+        var category = _mapper.Map<CategoryUpdateDto>(categoryRequest);
+        category.CategoryId = id;
+        
         await _categoryService.UpdateAsync(category, cancellationToken);
 
         return NoContent();
