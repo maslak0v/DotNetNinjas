@@ -17,5 +17,6 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.Interfaces
         Task<RefreshToken?> FindRefreshTokenByJtiAsync(Guid jti);
         Task Revoke(RefreshToken refreshToken);
         Task RevokeAllForUserAsync(string userId);
+        Task<bool> IsRevokedRefreshTokenAsync(string jti);
     }
 }

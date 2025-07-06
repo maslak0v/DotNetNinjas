@@ -4,11 +4,13 @@ using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Responses;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Contracts.Implementations;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Mapping;
 using FinancialTracker.Services.AuthorizeApi.Presentation.Controllers.BaseControllers;
-using MessageBus.Shared.Contracts.Implementations;
+using FinancialTracker.Services.AuthorizeApi.Presentation.Helpers;
 using MessageBus.Shared.Contracts.Interfaces;
 using MessageBus.Shared.Publishers.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace FinancialTracker.Services.AuthorizeApi.Presentation.Controllers
 {
@@ -59,5 +61,24 @@ namespace FinancialTracker.Services.AuthorizeApi.Presentation.Controllers
             return Ok(result.Result);
         }
 
+        [HttpPost("logout")]
+        [Authorize(Policy = nameof(Enum_AuthPolicy.CanAccess_AllAuthUsers))]
+        public async Task<ActionResult> Logout()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            _logger.LogInformation($"User [{userId}] logout");
+
+            if (string.IsNullOrEmpty(userId))
+                return BadRequest("user id is null or empty (claim \"sub\" not found)");
+
+            var result = await useCasesFacade.UserLogoutAsync(userId, tokenService);
+
+            if (!result.IsSuccess)
+            {
+                _logger.LogWarning(message: result.Message!);
+                return UseCaseBadResultHandle(result.StatusCode, result.Message!);
+            }
+            return NoContent();
+        }
     }
 }

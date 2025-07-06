@@ -1,7 +1,7 @@
 ﻿
-
 using FinancialTracker.Services.AuthorizeApi.Domain.ValueObjects;
 using FinancialTracker.Services.AuthorizeApi.Presentation.Helpers;
+using FinancialTracker.Services.AuthorizeApi.Presentation.Middlewares;
 using Microsoft.OpenApi.Models;
 
 namespace FinancialTracker.Services.AuthorizeApi.Presentation
@@ -77,6 +77,9 @@ namespace FinancialTracker.Services.AuthorizeApi.Presentation
             });
             return services;
         }
+
+        public static IApplicationBuilder UseCheckRevokedTokenMiddleware(this IApplicationBuilder app)
+            => app.UseMiddleware<DenyRevokedJti>();
     }
 
 }
