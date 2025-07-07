@@ -68,7 +68,7 @@ public class WhenGetIncomes
     }
 
     [Test]
-    public async Task BeforeDate_ReturnsIncomesOnlyBeforeDate()
+    public async Task UpToDate_ReturnsIncomesBeforeDateAndOnDate()
     {
         // Arrange
         var mockRepository = new Mock<IIncomesRepository>();
@@ -86,22 +86,22 @@ public class WhenGetIncomes
         {
             tommyIncomes2009, tommyIncomes2010, tommyIncomes2011
         };
-        var incomesBefore2010 = new List<Income>
+        var incomesUpTo2010 = new List<Income>
         {
             tommyIncomes2009, tommyIncomes2010
         };
 
         mockRepository.Setup(repo =>
-                repo.GetIncomesBeforeDateAsync(tommy.Id, It.IsAny<DateTime>()))
+                repo.GetIncomesUpToDateAsync(tommy.Id, It.IsAny<DateTime>()))
             .ReturnsAsync(allIncomes.Where(e => e.IncomeTime.Year <= 2010).ToList());
         var incomeService = new IncomesService(mockRepository.Object);
         
         // Act
-        var result = await incomeService.GetIncomesBeforeDateAsync(tommy.Id,
+        var result = await incomeService.GetIncomesUpToDateAsync(tommy.Id,
             new DateTime(2010, 01, 01));
 
         // Assert
-        Assert.That(result, Is.EqualTo(incomesBefore2010));
+        Assert.That(result, Is.EqualTo(incomesUpTo2010));
     }
     
     private User CreateUser(string name)

@@ -16,12 +16,12 @@ public class IncomesRepository(AppDbContext db) : IIncomesRepository
             .ToListAsync();
     }
 
-    public async Task<List<Income>> GetIncomesBeforeDateAsync(Guid userId, DateTime date)
+    public async Task<List<Income>> GetIncomesUpToDateAsync(Guid userId, DateTime upToDate)
     {
         var query = db.Set<Income>().AsNoTracking();
         return await query
             .Where(x => x.UserId == userId &&
-                        x.IncomeTime <= date.ToUniversalTime())
+                        x.IncomeTime <= upToDate.ToUniversalTime())
             .ToListAsync();
     }
 

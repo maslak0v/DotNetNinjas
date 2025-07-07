@@ -25,7 +25,7 @@ public interface IExpensesRepository
     /// Получить список расходов до указанной даты включительно
     /// </summary>
     /// <param name="userId"> Guid пользователя </param>
-    /// <param name="beforeDate"> Дата, до которой получаем расходы </param>
+    /// <param name="upToDate"> Дата, до которой получаем расходы (включительно)</param>
     /// <returns> Список расходов </returns>
-    Task<List<Expense>> GetExpensesBeforeDateAsync(Guid userId, DateTime beforeDate);
+    Task<List<Expense>> GetExpensesUpToDateAsync(Guid userId, DateTime upToDate);
 }

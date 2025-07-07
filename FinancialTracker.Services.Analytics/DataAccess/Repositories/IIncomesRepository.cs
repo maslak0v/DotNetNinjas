@@ -25,7 +25,7 @@ public interface IIncomesRepository
     /// Получить список доходов до указанной даты включительно
     /// </summary>
     /// <param name="userId">Guid пользователя</param>
-    /// <param name="beforeDate">Дата, до которой получаем доходы</param>
+    /// <param name="upToDate">Дата, до которой получаем доходы (включительно)</param>
     /// <returns>Список доходов</returns>
-    Task<List<Income>> GetIncomesBeforeDateAsync(Guid userId, DateTime beforeDate);
+    Task<List<Income>> GetIncomesUpToDateAsync(Guid userId, DateTime upToDate);
 }

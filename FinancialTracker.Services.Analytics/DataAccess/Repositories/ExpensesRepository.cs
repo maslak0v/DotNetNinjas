@@ -16,12 +16,12 @@ public class ExpensesRepository(AppDbContext db) : IExpensesRepository
             .ToListAsync();
     }
     
-    public async Task<List<Expense>> GetExpensesBeforeDateAsync(Guid userId, DateTime date)
+    public async Task<List<Expense>> GetExpensesUpToDateAsync(Guid userId, DateTime upToDate)
     {
         var query = db.Set<Expense>().AsNoTracking();
         return await query
             .Where(x => x.UserId == userId &&
-                        x.ExpenseTime <= date.ToUniversalTime())
+                        x.ExpenseTime <= upToDate.ToUniversalTime())
             .ToListAsync();
     }
 
