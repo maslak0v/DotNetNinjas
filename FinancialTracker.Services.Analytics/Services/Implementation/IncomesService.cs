@@ -11,9 +11,9 @@ public class IncomesService(IIncomesRepository incomesRepository) : IIncomesServ
         return await incomesRepository.GetIncomesAsync(userId, startDate, endDate);
     }
 
-    public async Task<List<Income>> GetIncomesBeforeDateAsync(Guid userId, DateTime beforeDate)
+    public async Task<List<Income>> GetIncomesUpToDateAsync(Guid userId, DateTime upToDate)
     {
-        return await incomesRepository.GetIncomesBeforeDateAsync(userId, beforeDate);
+        return await incomesRepository.GetIncomesUpToDateAsync(userId, upToDate);
     }
 
     public async Task<List<Income>> GetIncomesByAccountAsync(IncomesRequestDTO request)
