@@ -11,4 +11,9 @@ public class Create
     {
         return new ExpenseBuilder();
     }
+    
+    public static IncomeBuilder Income()
+    {
+        return new IncomeBuilder();
+    }
 }
