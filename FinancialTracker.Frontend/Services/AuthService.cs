@@ -1,5 +1,5 @@
 using System.Net.Http.Json;
-using System.Net.Http.Headers;
+using System.Text.Json;
 using FinancialTracker.Frontend.Models;
 using Microsoft.AspNetCore.Components;
 
@@ -38,15 +38,40 @@ public class AuthService
         await _browserStorage.RemoveAsync("refreshToken");
         _navigationManager.NavigateTo("/login");
     }
-    
-    public async Task Register(RegisterRequest request)
+
+    public async Task<HttpResponseMessage> Register(RegisterRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync("api/authorize/register", request);
         
         if (!response.IsSuccessStatusCode)
         {
-            throw new Exception("Registration failed");
+            // Пытаемся прочитать ошибку в формате JSON
+            try
+            {
+                var errorResponse = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+                if (errorResponse?.Errors != null)
+                {
+                    var allErrors = errorResponse.Errors
+                        .SelectMany(e => e.Value)
+                        .ToList();
+    
+                    if (allErrors.Any())
+                    {
+                        throw new ApplicationException(string.Join("\n", allErrors));
+                    }
+                }
+            }
+            catch (JsonException)
+            {
+                // Если не получилось распарсить JSON, читаем как plain text
+                var errorContent = await response.Content.ReadAsStringAsync();
+                throw new ApplicationException(string.IsNullOrWhiteSpace(errorContent) 
+                    ? "Registration failed" 
+                    : errorContent);
+            }
         }
+
+        return response;
     }
     
     public async Task RefreshToken()

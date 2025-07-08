@@ -4,36 +4,45 @@
 @inject AuthService AuthService
 @inject NavigationManager NavigationManager
 
-<h3>Вход</h3>
+<div class="m-auto w-25">
+    <h3>Вход</h3>
+    
+    <EditForm class="d-flex flex-column gap-1" Model="@LoginRequest" OnValidSubmit="HandleLogin">
+        <DataAnnotationsValidator/>
+        <ValidationSummary/>
 
-<EditForm class="d-flex flex-column gap-1" Model="@LoginRequest" OnValidSubmit="HandleLogin">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+        <div class="form-group">
+            <label for="email">Email</label>
+            <InputText id="email" @bind-Value="LoginRequest.Email" class="form-control"/>
+            <ValidationMessage For="@(() => LoginRequest.Email)"/>
+        </div>
 
-    <div class="form-group">
-        <label for="email">Email</label>
-        <InputText id="email" @bind-Value="LoginRequest.Email" class="form-control" />
-        <ValidationMessage For="@(() => LoginRequest.Email)" />
-    </div>
+        <div class="form-group">
+            <label for="password">Пароль</label>
+            <InputText id="password" type="password" @bind-Value="LoginRequest.Password" class="form-control"/>
+            <ValidationMessage For="@(() => LoginRequest.Password)"/>
+        </div>
 
-    <div class="form-group">
-        <label for="password">Пароль</label>
-        <InputText id="password" type="password" @bind-Value="LoginRequest.Password" class="form-control" />
-        <ValidationMessage For="@(() => LoginRequest.Password)" />
-    </div>
+        <button type="submit" class="btn btn-primary mt-4 mb-2">Войти</button>
 
-    <button type="submit" class="btn btn-primary">Войти</button>
-</EditForm>
+        @if (_errorMessage != null)
+        {
+            <div class="text-danger">
+                @_errorMessage
+            </div>
+        }
+    </EditForm>
 
-<p>
-    Нет аккаунта? <a href="/register">Зарегистрироваться</a>
-</p>
+    <p>Нет аккаунта? <a href="/register">Зарегистрироваться</a></p>
+</div>
 
 @code {
-    private LoginRequest LoginRequest { get; set; } = new LoginRequest();
-
+    private LoginRequest LoginRequest { get; } = new ();
+    private string _errorMessage = string.Empty;
+    
     private async Task HandleLogin()
     {
+        _errorMessage = string.Empty;
         try
         {
             await AuthService.Login(LoginRequest);
@@ -41,6 +50,7 @@
         }
         catch (Exception ex)
         {
+            _errorMessage = ex.Message;
             // Handle error (show message to user)
             Console.WriteLine($"Login error: {ex.Message}");
         }
