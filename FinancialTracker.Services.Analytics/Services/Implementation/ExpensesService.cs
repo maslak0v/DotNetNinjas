@@ -11,9 +11,9 @@ public class ExpensesService (IExpensesRepository expensesRepository): IExpenses
         return await expensesRepository.GetExpensesAsync(userId, startDate, endDate);
     }
     
-    public async Task<List<Expense>> GetExpensesBeforeDateAsync(Guid userId, DateTime beforeDate)
+    public async Task<List<Expense>> GetExpensesUpToDateAsync(Guid userId, DateTime upToDate)
     {
-        return await expensesRepository.GetExpensesBeforeDateAsync(userId, beforeDate);
+        return await expensesRepository.GetExpensesUpToDateAsync(userId, upToDate);
     }
 
     public async Task<List<Expense>> GetExpensesByAccountAsync(ExpensesRequestDto request)

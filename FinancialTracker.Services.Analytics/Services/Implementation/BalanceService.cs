@@ -6,7 +6,7 @@ public class BalanceService(IExpensesService expensesService) : IBalanceService
     {
         var startBalance = 0;
         
-        var expenses = await expensesService.GetExpensesBeforeDateAsync(userId, forDate);
+        var expenses = await expensesService.GetExpensesUpToDateAsync(userId, forDate);
         var sumOfExpenses = expenses.Sum(e => e.Amount);
         
         return (startBalance - sumOfExpenses);
