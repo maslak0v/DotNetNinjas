@@ -5,7 +5,7 @@ namespace FinancialTracker.Services.Analytics.Tests.DSL;
 public class IncomeBuilder
 {
     private readonly Guid _accountId = Guid.NewGuid();
-    private readonly int _incomeId = 0;
+    private readonly Guid _incomeId = Guid.NewGuid();
     private decimal _amount = 0;
     private DateTime _dateTime;
     private User _user = new User();
