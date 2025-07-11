@@ -1,0 +1,20 @@
+namespace MessageBus.Shared.Contracts.Interfaces;
+
+public interface ITransactionCreatedEvent : IMessage
+{
+    public Guid UserId { get; }
+    
+    public Guid AccountId { get; }
+    
+    public Guid TransactionId { get; }
+
+    public string OperationType { get; }
+
+    public int CategoryId { get; }
+
+    public string CategoryName { get; }
+
+    public DateTime TransactionDate { get; }
+    
+    public decimal Amount { get; }
+}

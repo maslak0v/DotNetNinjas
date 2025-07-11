@@ -51,7 +51,13 @@ public static class Registrator
     }
     public static IServiceCollection AddMessaging(this IServiceCollection services)
     {
-        return services.AddBusMessage_WithConsumersFromType(typeof(UserCreatedAnaliticsConsumer));
+        Type[] consumers = new[]
+        {
+            typeof(UserCreatedConsumer),
+            typeof(TransactionCreatedConsumer)
+        };
+        
+        return services.AddBusMessage_WithConsumersFromType(consumers);
     }
 
     public static IServiceCollection InstallRepositories(this IServiceCollection serviceCollection)
