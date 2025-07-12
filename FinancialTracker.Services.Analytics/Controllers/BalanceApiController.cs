@@ -7,10 +7,12 @@ namespace FinancialTracker.Services.Analytics.Controllers;
 
 [ApiController]
 [Route("api/balance")]
+[ApiExplorerSettings(GroupName = "Balance & Finances")]
 public class BalanceApiController(IBalanceService service,
     IMapper mapper) : ControllerBase
 {
     [HttpGet]
+    [ApiExplorerSettings(GroupName = "User Balance")]
     public async Task<IActionResult> GetAsync(
         [FromQuery] Guid userId,
         [FromQuery] DateTime forDate)
