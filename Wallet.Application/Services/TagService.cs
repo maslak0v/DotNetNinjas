@@ -22,9 +22,9 @@ public class TagService : ITagService
         await _tagRepository.CreateAsync(tag, cancellationToken); 
     }
     
-    public async Task<IEnumerable<TagDto>> SearchTagsByPrefixAsync(Guid userId, string? prefix, int limit, int page, CancellationToken cancellationToken)
+    public async Task<IEnumerable<TagDto>> SearchUserTagsByPrefixAsync(Guid userId, string? prefix, int limit, int page, CancellationToken cancellationToken)
     {
-        var tegs = await _tagRepository.SearchTagsByPrefixAsync(userId, prefix, limit, page, cancellationToken);
-        return _mapper.Map<IEnumerable<TagDto>>(tegs);
+        var tags = await _tagRepository.SearchUserTagsByPrefixAsync(userId, prefix, limit, page, cancellationToken);
+        return _mapper.Map<IEnumerable<TagDto>>(tags);
     }
 }

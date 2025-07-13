@@ -18,9 +18,9 @@ public class CreateAccount : AccountBase
     }
 
     [HttpPost("create")]
-    public async Task<IActionResult> Create([FromBody] AccountRequest аccountRequest, CancellationToken cancellationToken)
+    public async Task<IActionResult> Create([FromBody] AccountRequest accountRequest, CancellationToken cancellationToken)
     {
-        var account = _mapper.Map<AccountDto>(аccountRequest);
+        var account = _mapper.Map<AccountDto>(accountRequest);
         
         await _accountService.AddAsync(account, cancellationToken);
         return NoContent();

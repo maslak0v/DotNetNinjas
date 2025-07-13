@@ -37,9 +37,9 @@ public class AccountService :  IAccountService
         await _accountRepository.UpdateAsync(updatedAccount, cancellationToken);
     }
 
-    public async Task SoftDeleteAsync(AccountDto account, CancellationToken cancellationToken)
+    public async Task SoftDeleteAsync(Guid id, CancellationToken cancellationToken)
     {
-        var deletedAccount = await _accountRepository.GetByIdAsync(account.AccountId, cancellationToken);
+        var deletedAccount = await _accountRepository.GetByIdAsync(id, cancellationToken);
         if (deletedAccount != null)
         {
             deletedAccount.IsDeleted = true;

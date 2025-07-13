@@ -6,9 +6,9 @@ using Wallet.Application.Interfaces;
 
 namespace Wallet.API.Controllers.Tags;
 
-public class SearchTagsByPrefixController : TagBase
+public class SearchUserTagsByPrefixController : TagBase
 {
-    public SearchTagsByPrefixController(ITagService tagService, IMapper mapper) : base(tagService, mapper)
+    public SearchUserTagsByPrefixController(ITagService tagService, IMapper mapper) : base(tagService, mapper)
     {
     }
 
@@ -18,12 +18,10 @@ public class SearchTagsByPrefixController : TagBase
         [FromQuery] string? prefix,
         CancellationToken cancellationToken,
         [FromQuery][Range(1, 100, ErrorMessage = "Недопустимый лимит выборки")] int limit = 20,
-        [FromQuery][Range(1, int.MaxValue, ErrorMessage = "Недопустимый номер страницы")] int page = 1)
+        [FromQuery][Range(1, 200, ErrorMessage = "Недопустимый номер страницы")] int page = 1)
     {
-        if (page < 1)
-            page = 1;
 
-        var tags = await _tagService.SearchTagsByPrefixAsync(userId, prefix, limit, page, cancellationToken);
+        var tags = await _tagService.SearchUserTagsByPrefixAsync(userId, prefix, limit, page, cancellationToken);
         var response = _mapper.Map<List<TagResponse>>(tags);
 
         return Ok(response);

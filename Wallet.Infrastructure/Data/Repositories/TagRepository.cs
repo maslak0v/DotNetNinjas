@@ -18,12 +18,12 @@ public class TagRepository : ITagRepository
         await _context.Tags.AddAsync(tag, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
     }
-    public async Task<Tag?> GetTagIdByNameAsync(string title, Guid userId, CancellationToken cancellationToken) 
+    public async Task<Tag?> GetUserTagByNameAsync(string name, Guid userId, CancellationToken cancellationToken) 
         => await _context.Tags
             .AsNoTracking()
-            .FirstOrDefaultAsync(t => t.Name == title && t.UserId == userId, cancellationToken);
+            .FirstOrDefaultAsync(t => t.Name == name && t.UserId == userId, cancellationToken);
 
-    public async Task<IEnumerable<Tag>> SearchTagsByPrefixAsync(Guid userId, string prefix, int limit, int page, CancellationToken cancellationToken)
+    public async Task<IEnumerable<Tag>> SearchUserTagsByPrefixAsync(Guid userId, string prefix, int limit, int page, CancellationToken cancellationToken)
     {
         int skip = (page - 1) * limit;
 
