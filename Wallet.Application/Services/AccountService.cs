@@ -7,7 +7,7 @@ using Wallet.Infrastructure.Data.Interfaces;
 
 namespace Wallet.Application.Services;
 
-public class AccountService :  IAccountService
+public class AccountService : IAccountService
 {
     private readonly IAccountRepository _accountRepository;
     private readonly IMapper _mapper;
@@ -19,10 +19,10 @@ public class AccountService :  IAccountService
     }
 
     public async Task<IEnumerable<AccountDto>> GetAllByUserIdAsync(Guid id, CancellationToken cancellationToken)
-    { 
-       var accounts = await _accountRepository.GetAllByUserIdAsync(id, cancellationToken);
-       var result = _mapper.Map<IEnumerable<AccountDto>>(accounts);
-       return result;
+    {
+        var accounts = await _accountRepository.GetAllByUserIdAsync(id, cancellationToken);
+        var result = _mapper.Map<IEnumerable<AccountDto>>(accounts);
+        return result;
     }
 
     public async Task AddAsync(AccountDto account, CancellationToken cancellationToken)
@@ -33,7 +33,7 @@ public class AccountService :  IAccountService
     }
 
     public async Task UpdateAsync(AccountDto account, CancellationToken cancellationToken)
-    { 
+    {
         var updatedAccount = _mapper.Map<Account>(account);
         await _accountRepository.UpdateAsync(updatedAccount, cancellationToken);
     }
@@ -41,17 +41,14 @@ public class AccountService :  IAccountService
     public async Task<OperationResult> SoftDeleteAsync(Guid id, CancellationToken cancellationToken)
     {
         var deletedAccount = await _accountRepository.GetByIdAsync(id, cancellationToken);
-        if (deletedAccount is not null)
-        {
-            deletedAccount.IsDeleted = true;
-            await _accountRepository.SoftDelete(deletedAccount, cancellationToken);
-            return OperationResult.Success(Enum_StatusCode.NoContent);
-        }
-        else
+        if (deletedAccount is null)
             return OperationResult.Failure(Enum_StatusCode.NotFound, $"id:{id} not found");
+        deletedAccount.IsDeleted = true;
+        await _accountRepository.SoftDelete(deletedAccount, cancellationToken);
+        return OperationResult.Success(Enum_StatusCode.NoContent);
     }
-    
-    public async Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken) 
+
+    public async Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken)
         => await _accountRepository.ExistsAsync(id, cancellationToken);
 
     public async Task<AccountDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
