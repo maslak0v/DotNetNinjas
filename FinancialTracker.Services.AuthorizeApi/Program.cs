@@ -29,7 +29,9 @@ app.Lifetime.ApplicationStarted.Register(async () =>
 
 // app.UseHttpsRedirection();
 app.UseCors("AllowAllOrigins");
+
 app.UseAuthentication();
+app.UseCheckRevokedTokenMiddleware();
 app.UseAuthorization();
 
 app.MapControllers();

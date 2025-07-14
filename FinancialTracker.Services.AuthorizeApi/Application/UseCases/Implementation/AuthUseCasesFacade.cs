@@ -34,10 +34,8 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
             throw new NotImplementedException();
         }
 
-        public Task<OperationResult> UserLogoutAsync(IUserLogoutRequest request)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<OperationResult> UserLogoutAsync(string userId, IAuthTokenService service)
+            => await ExecuteUseCaseAsync<ILogoutUseCase, OperationResult>(() => useCaseFabric.CreateLogout(userId, service));
 
 
         public async Task<OperationResult<List<IUserResponseInfo>>> GetAllUsersAsync() 

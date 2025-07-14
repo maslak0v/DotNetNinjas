@@ -36,7 +36,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Imlemen
             return token;
         }
 
-        public async Task<RefreshToken?>FindRefreshTokenByJtiAsync(Guid jti) 
+        public async Task<RefreshToken?> FindRefreshTokenByJtiAsync(Guid jti)
             => await tokenRepository.FindByJtiAsync(jti);
 
         public async Task Revoke(RefreshToken refreshToken)
@@ -46,9 +46,18 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Imlemen
             await tokenRepository.RevokeAsync(refreshToken);
             return;
         }
-        public async Task RevokeAllForUserAsync(string userId)  =>
+        public async Task RevokeAllForUserAsync(string userId) =>
             await tokenRepository.RevokeAllForUserAsync(userId);
-        
+
+        public async Task<bool> IsRevokedRefreshTokenAsync(string jti)
+        {
+            bool result = Guid.TryParse(jti, out Guid jtiGuid);
+            if (!result)
+                return true; // like token revoked
+            var token = await tokenRepository.FindByJtiAsync(jtiGuid);
+            return !token?.IsValid() ?? true;
+        }
+
         #region private 
 
 
@@ -82,7 +91,6 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Imlemen
         private List<Claim> GetClaims(User user, string jti)
         {
             List<Claim> claims = [
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id),
                 new Claim(JwtRegisteredClaimNames.Jti, jti),
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim(ClaimTypes.Name, user.UserName!)
@@ -92,10 +100,6 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Imlemen
             return claims;
         }
 
-        private bool CheckEqualsRefreshtoken(string token, RefreshToken tokenModel)
-        {
-            return string.Equals(token, tokenModel.Token);
-        }
         #endregion
     }
 }
