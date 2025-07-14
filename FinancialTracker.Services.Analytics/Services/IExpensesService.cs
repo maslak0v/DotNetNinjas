@@ -28,4 +28,11 @@ public interface IExpensesService
     /// <param name="request">Параметры запроса</param>
     /// <returns>Список расходов</returns>
     Task<List<Expense>> GetExpensesByAccountAsync(ExpensesRequestDto request);
+
+    /// <summary>
+    /// Добавить новый расход
+    /// </summary>
+    /// <param name="expense">Расход</param>
+    /// <returns></returns>
+    Task AddAsync(ExpenseDto expense);
 }

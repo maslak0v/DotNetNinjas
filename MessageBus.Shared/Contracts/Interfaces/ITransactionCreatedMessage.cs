@@ -1,6 +1,6 @@
 namespace MessageBus.Shared.Contracts.Interfaces;
 
-public interface ITransactionCreatedEvent : IMessage
+public interface ITransactionCreatedMessage : IMessage
 {
     public Guid UserId { get; }
     

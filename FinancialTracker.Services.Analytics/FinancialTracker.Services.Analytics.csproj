@@ -28,7 +28,7 @@
       <ProjectReference Include="..\MessageBus.Shared\MessageBus.Shared.csproj" />
     </ItemGroup>
     <ItemGroup>
-      <Folder Include="DataAccess\Migrations\" />
+      <Folder Include="Migrations\" />
     </ItemGroup>
 
 </Project>

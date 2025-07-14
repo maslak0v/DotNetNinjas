@@ -1,10 +1,11 @@
+using AutoMapper;
 using FinancialTracker.Services.Analytics.DataAccess.Repositories;
 using FinancialTracker.Services.Analytics.Models;
 using FinancialTracker.Services.Analytics.Models.Dto;
 
 namespace FinancialTracker.Services.Analytics.Services.Implementation;
 
-public class ExpensesService (IExpensesRepository expensesRepository): IExpensesService
+public class ExpensesService (IExpensesRepository expensesRepository, IMapper mapper): IExpensesService
 {
     public async Task<List<Expense>> GetExpensesAsync(Guid userId, DateTime startDate, DateTime endDate)
     {
@@ -19,5 +20,11 @@ public class ExpensesService (IExpensesRepository expensesRepository): IExpenses
     public async Task<List<Expense>> GetExpensesByAccountAsync(ExpensesRequestDto request)
     {
         return await expensesRepository.GetExpensesByAccountAsync(request);
+    }
+
+    public async Task AddAsync(ExpenseDto expenseDto)
+    {
+        var expense = mapper.Map<Expense>(expenseDto);
+        await expensesRepository.AddAsync(expense);
     }
 }

@@ -8,20 +8,40 @@ namespace FinancialTracker.Services.Analytics.Messaging;
 public class TransactionCreatedConsumer(
     ILogger<TransactionCreatedConsumer> logger,
     IExpensesService expensesService,
-    IIncomesService incomesService) : IConsumer<ITransactionCreatedEvent>
+    IIncomesService incomesService) : IConsumer<ITransactionCreatedMessage>
 {
-    public async Task Consume(ConsumeContext<ITransactionCreatedEvent> context)
+    public async Task Consume(ConsumeContext<ITransactionCreatedMessage> context)
     {
         var message = context.Message;
-        var messageType = message.GetType();
+        
+        logger.LogInformation($"[RabbitMQ] Transaction created: UserId={message.UserId};" +
+                              $"TransactionId={message.TransactionId}.\n" +
+                              $"Info: {message.GetInfo()}"
+                              );
+
+        switch (message.OperationType)
+        {
+            case "Income":
+                break;
+            case "Expense":
+                var expense = message.ToExpenseDto();
+                await expensesService.AddAsync(expense);
+                break;
+            default:
+                logger.LogError($"[TransactionCreatedConsumer] Invalid operation type: {message.OperationType}");
+                break;
+        };
+    }
+
+    private static string GetInfo(ITransactionCreatedMessage message)
+    {
         var info = "";
+        var messageType = message.GetType();
         foreach (var prop in messageType.GetProperties())
         {
             info += $"{prop.Name}={prop.GetValue(message)};";
         }
-        
-        logger.LogInformation($"[RabbitMQ] Transaction created: UserId={message.UserId};" +
-                              $"TransactionId={message.TransactionId}.\n" +
-                              $"Info: {info}");
+
+        return info;
     }
 }

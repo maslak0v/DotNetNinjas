@@ -35,4 +35,10 @@ public class ExpensesRepository(AppDbContext db) : IExpensesRepository
                        x.ExpenseTime <= request.EndDate.ToUniversalTime())
             .ToListAsync();
     }
+    
+    public async Task AddAsync(Expense expense)
+    {
+        db.Expenses.Add(expense);
+        await db.SaveChangesAsync();
+    }
 }
