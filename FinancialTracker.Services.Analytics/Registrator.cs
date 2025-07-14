@@ -54,7 +54,7 @@ public static class Registrator
         Type[] consumers = new[]
         {
             typeof(UserCreatedConsumer),
-            typeof(TransactionCreatedConsumer)
+            typeof(ExpenseCreatedConsumer)
         };
         
         return services.AddBusMessage_WithConsumersFromType(consumers);
@@ -84,6 +84,7 @@ public static class Registrator
             cfg.AddProfile<IncomeMappingsProfile>();
             cfg.AddProfile<BalanceMappingsProfile>();
             cfg.AddProfile<AdviceMappingsProfile>();
+            cfg.AddProfile<MessageMappingsProfile>();
         });
 
         configuration.AssertConfigurationIsValid();

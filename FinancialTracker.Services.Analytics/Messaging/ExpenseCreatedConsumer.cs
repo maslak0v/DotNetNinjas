@@ -1,4 +1,6 @@
+using AutoMapper;
 using FinancialTracker.Services.Analytics.DataAccess.Repositories;
+using FinancialTracker.Services.Analytics.Models.Dto;
 using FinancialTracker.Services.Analytics.Services;
 using MassTransit;
 using MessageBus.Shared.Contracts.Interfaces;
@@ -7,7 +9,9 @@ namespace FinancialTracker.Services.Analytics.Messaging;
 
 public class ExpenseCreatedConsumer(
     ILogger<ExpenseCreatedConsumer> logger,
-    IExpensesService expensesService) : IConsumer<IExpenseCreatedMessage>
+    IExpensesService expensesService,
+    IMapper mapper) 
+    : IConsumer<IExpenseCreatedMessage>
 {
     public async Task Consume(ConsumeContext<IExpenseCreatedMessage> context)
     {
@@ -18,7 +22,7 @@ public class ExpenseCreatedConsumer(
                               $"Info: {message.GetInfo()}"
                               );
 
-        var expense = message.ToExpenseDto();
+        var expense = mapper.Map<ExpenseDto>(message);
         await expensesService.AddAsync(expense);
     }
 }
