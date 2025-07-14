@@ -1,5 +1,6 @@
 using AutoMapper;
 using Wallet.Application.Dto.Accounts;
+using Wallet.Application.Helpers;
 using Wallet.Application.Interfaces;
 using Wallet.Domain.Entities;
 using Wallet.Infrastructure.Data.Interfaces;
@@ -37,14 +38,17 @@ public class AccountService :  IAccountService
         await _accountRepository.UpdateAsync(updatedAccount, cancellationToken);
     }
 
-    public async Task SoftDeleteAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<OperationResult> SoftDeleteAsync(Guid id, CancellationToken cancellationToken)
     {
         var deletedAccount = await _accountRepository.GetByIdAsync(id, cancellationToken);
-        if (deletedAccount != null)
+        if (deletedAccount is not null)
         {
             deletedAccount.IsDeleted = true;
             await _accountRepository.SoftDelete(deletedAccount, cancellationToken);
+            return OperationResult.Success(Enum_StatusCode.NoContent);
         }
+        else
+            return OperationResult.Failure(Enum_StatusCode.NotFound, $"id:{id} not found");
     }
     
     public async Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken) 

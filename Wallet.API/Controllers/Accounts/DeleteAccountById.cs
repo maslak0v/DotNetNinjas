@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Wallet.API.Helpers;
 using Wallet.Application.Interfaces;
 
 namespace Wallet.API.Controllers.Accounts;
@@ -15,7 +16,8 @@ public class DeleteAccountById : AccountBase
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteAccountByIdAsync(Guid id, CancellationToken cancellationToken)
     {
-        await _accountService.SoftDeleteAsync(id, cancellationToken);
-        return Ok();
+        var result = await _accountService.SoftDeleteAsync(id, cancellationToken);
+        var response = ResponseCreator.Create(result);
+        return response;
     }
 }
