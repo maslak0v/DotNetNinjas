@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using Wallet.Application.Interfaces.Repositories;
 using Wallet.Domain.Entities;
-using Wallet.Infrastructure.Data.Interfaces;
 
 namespace Wallet.Infrastructure.Data.Repositories;
 

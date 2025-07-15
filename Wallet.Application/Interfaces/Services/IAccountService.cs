@@ -1,7 +1,7 @@
 using Wallet.Application.Dto.Accounts;
 using Wallet.Application.Helpers;
 
-namespace Wallet.Application.Interfaces;
+namespace Wallet.Application.Interfaces.Services;
 
 public interface IAccountService
 {

@@ -1,11 +1,11 @@
 using AutoMapper;
 using Wallet.Application.Dto.Accounts;
 using Wallet.Application.Helpers;
-using Wallet.Application.Interfaces;
+using Wallet.Application.Interfaces.Repositories;
+using Wallet.Application.Interfaces.Services;
 using Wallet.Domain.Entities;
-using Wallet.Infrastructure.Data.Interfaces;
 
-namespace Wallet.Application.Services;
+namespace Wallet.Infrastructure.Services;
 
 public class AccountService : IAccountService
 {

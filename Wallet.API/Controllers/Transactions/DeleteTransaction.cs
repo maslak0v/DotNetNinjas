@@ -1,6 +1,6 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Wallet.Application.Interfaces;
+using Wallet.Application.Interfaces.Services;
 
 namespace Wallet.API.Controllers.Transactions;
 

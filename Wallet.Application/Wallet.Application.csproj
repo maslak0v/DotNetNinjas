@@ -8,7 +8,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Wallet.Domain\Wallet.Domain.csproj" />
-      <ProjectReference Include="..\Wallet.Infrastructure\Wallet.Infrastructure.csproj" />
     </ItemGroup>
 
     <ItemGroup>
