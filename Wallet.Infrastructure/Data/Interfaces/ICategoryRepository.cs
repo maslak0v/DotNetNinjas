@@ -10,4 +10,5 @@ public interface ICategoryRepository
     Task UpdateAsync(Category category, CancellationToken cancellationToken);
     Task DeleteAsync(Category category, CancellationToken cancellationToken);
     Task<bool> ExistsAsync(int id, CancellationToken cancellationToken);
+    Task ResetIdentityAsync(CancellationToken cancellationToken);
 }

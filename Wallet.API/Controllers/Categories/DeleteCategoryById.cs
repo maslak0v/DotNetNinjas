@@ -13,14 +13,7 @@ public class DeleteCategoryById : CategoryBase
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteById(int id, CancellationToken cancellationToken)
     {
-        var category = await _categoryService.GetByIdAsync(id, cancellationToken);
-
-        if (category != null)
-        {
-            await _categoryService.DeleteAsync(category, cancellationToken);
-            return NoContent();
-        }
-        
-        return NotFound();
+        await _categoryService.DeleteAsync(id, cancellationToken);
+        return NoContent();
     }
 }

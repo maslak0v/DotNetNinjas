@@ -1,5 +1,6 @@
 using AutoMapper;
 using Wallet.API.Models.Accounts;
+using Wallet.Application.Dto.Accounts;
 using Wallet.Domain.Entities;
 
 namespace Wallet.API.Mappings;
@@ -8,13 +9,13 @@ public class AccountApiMappings : Profile
 {
     public AccountApiMappings()
     {
-        CreateMap<AccountRequest, Account>()
-            .ForMember(a => a.Transactions, opt => opt.Ignore());
+        CreateMap<AccountRequest, AccountDto>();
 
-        CreateMap<Account, AccountResponse>();
+        CreateMap<AccountDto, AccountResponse>();
+
+        CreateMap<UpdateAccountRequest, AccountDto>()
+            .ForMember(a => a.UpdatedAt, opt => opt.MapFrom(_ => DateTime.UtcNow));
         
-        CreateMap<UpdateAccountRequest, Account>()
-            .ForMember(a => a.UpdatedAt, opt => opt.MapFrom(_ => DateTime.UtcNow))
-            .ForMember(a => a.Transactions, opt => opt.Ignore());
+        CreateMap<AccountDto, Account>().ReverseMap();
     }
 }

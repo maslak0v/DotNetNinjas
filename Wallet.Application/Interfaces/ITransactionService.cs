@@ -1,5 +1,4 @@
-using Wallet.Application.Dto;
-using Wallet.Domain.Entities;
+using Wallet.Application.Dto.Transactions;
 
 namespace Wallet.Application.Interfaces;
 

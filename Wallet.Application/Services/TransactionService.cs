@@ -1,5 +1,5 @@
 using AutoMapper;
-using Wallet.Application.Dto;
+using Wallet.Application.Dto.Transactions;
 using Wallet.Application.Interfaces;
 using Wallet.Domain.Entities;
 using Wallet.Domain.Enums;
@@ -11,18 +11,14 @@ public class TransactionService : ITransactionService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ITransactionRepository _transactionRepository;
-    private readonly ITransactionTagRepository _transactionTagRepository;
     private readonly IAccountRepository _accountRepository;
-    private readonly ITagRepository _tagRepository;
     private readonly IMapper _mapper;
 
-    public TransactionService(IUnitOfWork unitOfWork, ITransactionRepository transactionRepository, ITransactionTagRepository transactionTagRepository, IAccountRepository accountRepository, ITagRepository tagRepository, IMapper mapper)
+    public TransactionService(IUnitOfWork unitOfWork, ITransactionRepository transactionRepository, IAccountRepository accountRepository, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _transactionRepository = transactionRepository;
-        _transactionTagRepository = transactionTagRepository;
         _accountRepository = accountRepository;
-        _tagRepository = tagRepository;
         _mapper = mapper;
     }
 
@@ -79,7 +75,7 @@ public class TransactionService : ITransactionService
         await _unitOfWork.AccountRepository.UpdateAsync(account, cancellationToken);
         
         // Получаем или создаем тег
-        var tag = await _unitOfWork.TagRepository.GetTagIdByNameAsync(transaction.Tag, account.UserId, cancellationToken);
+        var tag = await _unitOfWork.TagRepository.GetUserTagByNameAsync(transaction.Tag, account.UserId, cancellationToken);
 
         if (tag == null)
         {
@@ -155,7 +151,7 @@ public class TransactionService : ITransactionService
 
     // Обновляем тег
     var tag = await _unitOfWork.TagRepository
-        .GetTagIdByNameAsync(transactionDto.Tag, account.UserId, cancellationToken);
+        .GetUserTagByNameAsync(transactionDto.Tag, account.UserId, cancellationToken);
 
     if (tag == null)
     {

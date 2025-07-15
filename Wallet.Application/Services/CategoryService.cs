@@ -1,3 +1,5 @@
+using AutoMapper;
+using Wallet.Application.Dto.Categories;
 using Wallet.Application.Interfaces;
 using Wallet.Domain.Defaults;
 using Wallet.Domain.Entities;
@@ -8,14 +10,18 @@ namespace Wallet.Application.Services;
 public class CategoryService: ICategoryService
 {
     private readonly ICategoryRepository _categoryRepository;
-
-    public CategoryService(ICategoryRepository categoryRepository)
+    private readonly IMapper _mapper;
+    public CategoryService(ICategoryRepository categoryRepository, IMapper mapper)
     {
         _categoryRepository = categoryRepository;
+        _mapper = mapper;
     }
 
-    public async Task<Category?> GetByIdAsync(int id, CancellationToken cancellationToken) 
-        => await _categoryRepository.GetByIdAsync(id, cancellationToken);
+    public async Task<CategoryDto?> GetByIdAsync(int id, CancellationToken cancellationToken)
+    {
+        var category = await  _categoryRepository.GetByIdAsync(id, cancellationToken);
+        return _mapper.Map<CategoryDto>(category);
+    }
     public async Task SeedDefaultCategoriesAsync(CancellationToken cancellationToken)
     {
         foreach (var defaultCategory in DefaultCategories.List)
@@ -47,22 +53,45 @@ public class CategoryService: ICategoryService
                 }
             }
         }
+        
+        await _categoryRepository.ResetIdentityAsync(cancellationToken);
     }
-    public async Task<IEnumerable<Category>> GetAllAsync(CancellationToken cancellationToken) 
-        => await _categoryRepository.GetAllAsync(cancellationToken);
 
-    public async Task AddAsync(Category category, CancellationToken cancellationToken) 
-        => await _categoryRepository.AddAsync(category, cancellationToken);
+    public async Task<IEnumerable<CategoryDto>> GetAllAsync(CancellationToken cancellationToken)
+    {
+        var categories = await _categoryRepository.GetAllAsync(cancellationToken);
+        return _mapper.Map<IEnumerable<CategoryDto>>(categories);
+    }
 
-    public async Task UpdateAsync(Category category, CancellationToken cancellationToken) 
-        => await _categoryRepository.UpdateAsync(category, cancellationToken); 
+    public async Task AddAsync(CategoryDto category, CancellationToken cancellationToken)
+    {
+        var categoryEntity = _mapper.Map<Category>(category);
+        await _categoryRepository.AddAsync(categoryEntity, cancellationToken);
+    }
 
-    public async Task DeleteAsync(Category category, CancellationToken cancellationToken) 
-        => await _categoryRepository.DeleteAsync(category, cancellationToken);
+    public async Task UpdateAsync(CategoryUpdateDto category, CancellationToken cancellationToken)
+    {
+        var categoryEntity = _mapper.Map<Category>(category);
+        await _categoryRepository.UpdateAsync(categoryEntity, cancellationToken);
+    }
+
+    public async Task DeleteAsync(int id, CancellationToken cancellationToken)
+    {
+        var category = await _categoryRepository.GetByIdAsync(id, cancellationToken);
+        
+        if (category == null)
+        {
+            throw new InvalidOperationException($"Категория с id {id} не найдена.");
+        }
+        await _categoryRepository.DeleteAsync(category, cancellationToken);
+    }
 
     public async Task<bool> ExistsAsync(int id, CancellationToken cancellationToken) 
         => await _categoryRepository.ExistsAsync(id, cancellationToken);
 
-    public async Task<Category?> GetById(int id, CancellationToken cancellationToken)
-        => await _categoryRepository.GetByIdAsync(id, cancellationToken);
+    public async Task<CategoryDto?> GetById(int id, CancellationToken cancellationToken)
+    {
+        var category = await _categoryRepository.GetByIdAsync(id, cancellationToken);
+        return _mapper.Map<CategoryDto>(category);
+    }
 }
