@@ -7,7 +7,7 @@ namespace FinancialTracker.Services.Analytics.Controllers;
 
 [ApiController]
 [Route("api/advice")]
-[ApiExplorerSettings(GroupName = "Operation History")]
+[ApiExplorerSettings(GroupName = "Рекомендации")]
 public class AdviceApiController(IAdviceService adviceService,
     IMapper mapper) : ControllerBase
 {

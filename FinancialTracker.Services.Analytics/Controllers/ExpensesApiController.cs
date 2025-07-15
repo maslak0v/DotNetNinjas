@@ -7,12 +7,11 @@ namespace FinancialTracker.Services.Analytics.Controllers;
 
 [ApiController]
 [Route("api/expenses")]
-[ApiExplorerSettings(GroupName = "Balance & Finances")]
+[ApiExplorerSettings(GroupName = "Расходы")]
 public class ExpensesApiController(IExpensesService service,
     IMapper mapper) : ControllerBase
 {
     [HttpGet]
-    [ApiExplorerSettings(GroupName =  "General Expenses")]
     public async Task<IActionResult> GetAsync(
         [FromQuery] Guid userId,
         [FromQuery] DateTime startDate,
@@ -41,7 +40,6 @@ public class ExpensesApiController(IExpensesService service,
     }
 
     [HttpGet("by-account")]
-    [ApiExplorerSettings(GroupName = "Account-Based Expenses")]
     public async Task<IActionResult> GetByAccountAsync([FromQuery] ExpensesRequestDto request)
     {
         var response = new ResponseDto();

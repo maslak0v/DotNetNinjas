@@ -7,12 +7,11 @@ namespace FinancialTracker.Services.Analytics.Controllers;
 
 [ApiController]
 [Route("api/incomes")]
-[ApiExplorerSettings(GroupName = "Balance & Finances")]
+[ApiExplorerSettings(GroupName = "Доходы")]
 public class IncomeApiController (IIncomesService service,
     IMapper mapper) : ControllerBase
 {
     [HttpGet]
-    [ApiExplorerSettings(GroupName = "General Incomes")]
     public async Task<IActionResult> GetAsync(
         [FromQuery] Guid userId,
         [FromQuery] DateTime startDate,
@@ -41,7 +40,6 @@ public class IncomeApiController (IIncomesService service,
     }
 
     [HttpGet("by-account")]
-    [ApiExplorerSettings(GroupName = "Account-Based Incomes")]
     public async Task<IActionResult> GetByAccountAsync([FromQuery] IncomesRequestDTO request)
     {
         var response = new ResponseDto();

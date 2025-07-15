@@ -31,6 +31,7 @@ namespace MessageBus.Shared
                         config.Username(credentialData.user);
                         config.Password(credentialData.password);
                     });
+
                     busConfigurator.ConfigureEndpoints(context);
                 });
             });

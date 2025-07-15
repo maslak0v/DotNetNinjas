@@ -73,7 +73,7 @@ public class WhenGetBalance
             new DateTime(2010, 01, 01));
 
         // Assert
-        Assert.That(result, Is.EqualTo(1110));
+        Assert.That(result, Is.EqualTo(10 + 100 + 1000));
     }
 
     [Test]
@@ -105,7 +105,7 @@ public class WhenGetBalance
             new DateTime(2010, 01, 01));
 
         // Assert
-        Assert.That(result, Is.EqualTo(3890));
+        Assert.That(result, Is.EqualTo(5000 - (10 + 100 + 1000)));
     }
 
     [Test]

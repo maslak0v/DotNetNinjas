@@ -1,32 +1,27 @@
 {
-  "$schema": "http://json.schemastore.org/launchsettings.json",
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:61112",
-      "sslPort": 44322
-    }
-  },
   "profiles": {
     "http": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",
-      "applicationUrl": "http://localhost:7005",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
+      "applicationUrl": "http://localhost:7005",
       "dotnetRunMessages": true
     },
     "https": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",
-      "applicationUrl": "https://localhost:7136;http://localhost:7005",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ANALYTICS_DB_CONNECTION_STRING": "Server=localhost;Port=5432;Database=FinancialTracker;User Id=postgres;Password=Vlad!v0st0k.!;",
+        "RABBITMQ_DEFAULT_USER": "aed",
+        "RABBITMQ_DEFAULT_PASS": "Vlad!v0st0k.!",
+        "RABBITMQ__HOST": "localhost"
       },
+      "applicationUrl": "https://localhost:7136;http://localhost:7005",
       "dotnetRunMessages": true
     },
     "IIS Express": {
@@ -36,6 +31,15 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
+    }
+  },
+  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:61112",
+      "sslPort": 44322
     }
   }
 }
