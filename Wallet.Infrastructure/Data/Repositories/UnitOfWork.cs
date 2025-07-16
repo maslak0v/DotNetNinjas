@@ -1,4 +1,5 @@
-using Wallet.Infrastructure.Data.Interfaces;
+
+using Wallet.Application.Interfaces.Repositories;
 
 namespace Wallet.Infrastructure.Data.Repositories;
 

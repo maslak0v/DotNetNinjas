@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Wallet.API.Models.Tags;
-using Wallet.Application.Interfaces;
+using Wallet.Application.Interfaces.Services;
 
 namespace Wallet.API.Controllers.Tags;
 

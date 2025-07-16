@@ -2,7 +2,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Wallet.API.Models.Transactions;
 using Wallet.Application.Dto.Transactions;
-using Wallet.Application.Interfaces;
+using Wallet.Application.Interfaces.Services;
 
 namespace Wallet.API.Controllers.Transactions;
 

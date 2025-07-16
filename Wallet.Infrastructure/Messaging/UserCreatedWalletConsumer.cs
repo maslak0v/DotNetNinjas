@@ -1,9 +1,9 @@
 using MassTransit;
 using MessageBus.Shared.Contracts.Interfaces;
 using Microsoft.Extensions.Logging;
+using Wallet.Application.Interfaces.Repositories;
 using Wallet.Domain.Entities;
 using Wallet.Domain.Enums;
-using Wallet.Infrastructure.Data.Interfaces;
 
 namespace Wallet.Infrastructure.Messaging;
 

@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\MessageBus.Shared\MessageBus.Shared.csproj" />
+      <ProjectReference Include="..\Wallet.Application\Wallet.Application.csproj" />
       <ProjectReference Include="..\Wallet.Domain\Wallet.Domain.csproj" />
     </ItemGroup>
 

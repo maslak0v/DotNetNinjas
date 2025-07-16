@@ -1,6 +1,6 @@
 using Wallet.Application.Dto.Transactions;
 
-namespace Wallet.Application.Interfaces;
+namespace Wallet.Application.Interfaces.Services;
 
 public interface ITransactionService
 {

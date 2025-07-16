@@ -2,7 +2,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Wallet.API.Models.Tags;
 using Wallet.Application.Dto.Tags;
-using Wallet.Application.Interfaces;
+using Wallet.Application.Interfaces.Services;
 
 
 namespace Wallet.API.Controllers.Tags;

@@ -1,4 +1,4 @@
-namespace Wallet.Infrastructure.Data.Interfaces;
+namespace Wallet.Application.Interfaces.Repositories;
 
 public interface IUnitOfWork
 {
