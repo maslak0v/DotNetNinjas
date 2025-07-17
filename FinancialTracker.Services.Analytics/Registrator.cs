@@ -51,7 +51,13 @@ public static class Registrator
     }
     public static IServiceCollection AddMessaging(this IServiceCollection services)
     {
-        return services.AddBusMessage_WithConsumersFromType(typeof(UserCreatedAnaliticsConsumer));
+        Type[] consumers = new[]
+        {
+            typeof(UserCreatedConsumer),
+            typeof(ExpenseCreatedConsumer)
+        };
+        
+        return services.AddBusMessage_WithConsumersFromType(consumers);
     }
 
     public static IServiceCollection InstallRepositories(this IServiceCollection serviceCollection)
@@ -78,6 +84,7 @@ public static class Registrator
             cfg.AddProfile<IncomeMappingsProfile>();
             cfg.AddProfile<BalanceMappingsProfile>();
             cfg.AddProfile<AdviceMappingsProfile>();
+            cfg.AddProfile<MessageMappingsProfile>();
         });
 
         configuration.AssertConfigurationIsValid();

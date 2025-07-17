@@ -1,4 +1,6 @@
+using AutoMapper;
 using FinancialTracker.Services.Analytics.DataAccess.Repositories;
+using FinancialTracker.Services.Analytics.Mapping;
 using FinancialTracker.Services.Analytics.Models;
 using FinancialTracker.Services.Analytics.Services.Implementation;
 using FinancialTracker.Services.Analytics.Tests.DSL;
@@ -8,6 +10,18 @@ namespace FinancialTracker.Services.Analytics.Tests;
 
 public class WhenGetExpenses
 {
+    private readonly IMapper _mapper;
+    
+    public WhenGetExpenses()
+    {
+        var config = new MapperConfiguration(cfg =>
+        {
+            cfg.AddProfile<ExpenseMappingsProfile>();
+        });
+
+        _mapper = config.CreateMapper();
+    }
+    
     [SetUp]
     public void Setup()
     {
@@ -32,7 +46,7 @@ public class WhenGetExpenses
         mockRepository.Setup(repo =>
                 repo.GetExpensesAsync(tommy.Id, It.IsAny<DateTime>(), It.IsAny<DateTime>()))
             .ReturnsAsync(allExpenses.Where(e => e.User.Id == tommy.Id).ToList);
-        var expensesService = new ExpensesService(mockRepository.Object);
+        var expensesService = new ExpensesService(mockRepository.Object, _mapper);
         
         // Act
         var result = await expensesService.GetExpensesAsync(tommy.Id,
@@ -55,7 +69,7 @@ public class WhenGetExpenses
         mockRepository.Setup(repo =>
                 repo.GetExpensesAsync(tommy.Id, It.IsAny<DateTime>(), It.IsAny<DateTime>()))
             .ReturnsAsync(emptyExpenses);
-        var expensesService = new ExpensesService(mockRepository.Object);
+        var expensesService = new ExpensesService(mockRepository.Object, _mapper);
         
         // Act
         var fromDate = new DateTime(2024, 01, 01);
@@ -94,7 +108,7 @@ public class WhenGetExpenses
         mockRepository.Setup(repo =>
                 repo.GetExpensesUpToDateAsync(tommy.Id, It.IsAny<DateTime>()))
             .ReturnsAsync(allExpenses.Where(e => e.ExpenseTime.Year <= 2010).ToList());
-        var expensesService = new ExpensesService(mockRepository.Object);
+        var expensesService = new ExpensesService(mockRepository.Object, _mapper);
         
         // Act
         var result = await expensesService.GetExpensesUpToDateAsync(tommy.Id,
