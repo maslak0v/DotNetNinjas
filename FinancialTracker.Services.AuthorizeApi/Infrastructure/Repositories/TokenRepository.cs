@@ -14,29 +14,29 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Repositories
             var tokenModel = token.EntityModelFromDomain();
             dbcontext.RefreshTokens.Add(tokenModel);
         }
-        public async Task<RefreshToken?> FindByJtiAsync(Guid jti)
+        public async Task<RefreshToken?> FindByJtiAsync(Guid jti, CancellationToken cancellationToken)
         {
             var refreshTokenModel =  await dbcontext.RefreshTokens
                 .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.Jti == jti && !x.IsRevoked);
+                .FirstOrDefaultAsync(x => x.Jti == jti && !x.IsRevoked, cancellationToken);
             return refreshTokenModel?.ToRefreshTokenDomain();
         }
 
-        public async Task SaveAsync() => await dbcontext.SaveChangesAsync();
+        public async Task SaveAsync(CancellationToken cancellationToken) => await dbcontext.SaveChangesAsync(cancellationToken);
 
-        public async Task RevokeAsync(RefreshToken token)
+        public async Task RevokeAsync(RefreshToken token, CancellationToken cancellationToken)
         {
             RefreshTokenModel tokenModel = token.EntityModelFromDomain();
             token.IsRevoked = true;
             dbcontext.RefreshTokens.Update(tokenModel);
-            await dbcontext.SaveChangesAsync();
+            await dbcontext.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task RevokeAllForUserAsync(string userId)
+        public async Task RevokeAllForUserAsync(string userId, CancellationToken cancellationToken)
         {
             await dbcontext.RefreshTokens
                 .Where(t => !t.IsRevoked && userId == t.UserId)
-                .ExecuteUpdateAsync(t => t.SetProperty(p => p.IsRevoked, true));
+                .ExecuteUpdateAsync(t => t.SetProperty(p => p.IsRevoked, true), cancellationToken);
         }
     }
 }

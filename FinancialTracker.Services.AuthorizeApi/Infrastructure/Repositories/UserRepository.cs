@@ -18,22 +18,22 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Repositories
         AuthDbContext authDb) : IUserRepository
 
     {
-        public async Task<bool> ExistEmailAsync(string email)
+        public async Task<bool> ExistEmailAsync(string email, CancellationToken cancellationToken)
             => (await userManager.FindByEmailAsync(email)) is not null;
 
-        public async Task<bool> ExistUserNameAsync(string userName)
+        public async Task<bool> ExistUserNameAsync(string userName, CancellationToken cancellationToken)
             => (await userManager.FindByNameAsync(userName)) is not null;
 
-        public async Task<OperationResult<List<IUserResponseInfo>>> GetAllUsersQueryAsync()
+        public async Task<OperationResult<List<IUserResponseInfo>>> GetAllUsersQueryAsync(CancellationToken cancellationToken)
         {
             List<IUserResponseInfo> data = await userManager.Users
                 .AsNoTracking()
                 .ToResponseFormatExt()
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
             return OperationResultCreator.Success(data, Enum_StatusCode.OK);
         }
 
-        public async Task<User?> TryGetCurrentLoginUserAsync(string email, string password)
+        public async Task<User?> TryGetCurrentLoginUserAsync(string email, string password, CancellationToken cancellationToken)
         {
             var user = await userManager.FindByEmailAsync(email);
             if (user is null || !await userManager.CheckPasswordAsync(user, password))
@@ -41,7 +41,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Repositories
             var roles = await userManager.GetRolesAsync(user);
             return user.ToDomainUser(roles);
         }
-        public async Task<IList<string>> GetRolesForUserAsync(User domainUser)
+        public async Task<IList<string>> GetRolesForUserAsync(User domainUser, CancellationToken cancellationToken)
         {
             var user = domainUser.ToAuthUser();
             return await userManager.GetRolesAsync(user);
@@ -49,43 +49,43 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Repositories
 
 
         public async Task<OperationResult<User>> RegisterUserAsync(
-            IUserRegisterRequest request, ICollection<string> roles)
+            IUserRegisterRequest request, ICollection<string> roles, CancellationToken cancellationToken)
         {
             await using var transaction = await authDb.Database.BeginTransactionAsync();
-            var result = await CreateUserAsync(request);
+            var result = await CreateUserAsync(request, cancellationToken);
             if(!result.IsSuccess)
             {
-                await transaction.RollbackAsync();
+                await transaction.RollbackAsync(cancellationToken);
                 return OperationResultCreator.Failure<User>(result.StatusCode, result.Message!);
             }
             var user = result.Result;
             var resultAddRoles = await AddRolesToUserAsync(user!, roles);
             if (!resultAddRoles.IsSuccess)
             {
-                await transaction.RollbackAsync();
+                await transaction.RollbackAsync(cancellationToken);
                 return OperationResultCreator.FromOtherResult<User>(resultAddRoles);
             }
-            await transaction.CommitAsync();
+            await transaction.CommitAsync(cancellationToken);
             string resultMessage = $"{result?.Message} {resultAddRoles.Message}";
             return OperationResultCreator.Success(
                 user!.ToDomainUser(roles), result!.StatusCode, resultMessage);
         }
 
-        public async Task<User?> FindByIdAsync(string userId)
+        public async Task<User?> FindByIdAsync(string userId, CancellationToken cancellationToken)
         {
             var model = await authDb.Users.AsNoTrackingWithIdentityResolution()
                  .Include(x => x.Roles)
-                 .FirstOrDefaultAsync(x => x.Id == userId);
+                 .FirstOrDefaultAsync(x => x.Id == userId, cancellationToken);
             if(model is null)
                 return null;
             IList<string> roles = model.Roles.Select(x => x.Name!).ToList();
             return model?.ToDomainUser(roles);
         }
 
-        public Task<OperationResult> AddRolesToUserAsync(User userDomain, ICollection<string> roles)
+        public async Task<OperationResult> AddRolesToUserAsync(User userDomain, ICollection<string> roles, CancellationToken cancellationToken)
         {
             var user = userDomain.ToAuthUser();
-            return AddRolesToUserAsync(user, roles);
+            return await AddRolesToUserAsync(user, roles);
         }
         private async Task<OperationResult> AddRolesToUserAsync(AuthUser user, ICollection<string> roles)
         {
@@ -98,7 +98,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Repositories
                     string.Join(", ", result.Errors.Select(e => e.Description)));
         }
 
-        private async Task<OperationResult<AuthUser>> CreateUserAsync(IUserRegisterRequest userDto)
+        private async Task<OperationResult<AuthUser>> CreateUserAsync(IUserRegisterRequest userDto, CancellationToken cancellationToken)
         {
             var user = new AuthUser().FromRegisterRequest(userDto);
             user.CreateAt = DateTime.UtcNow;

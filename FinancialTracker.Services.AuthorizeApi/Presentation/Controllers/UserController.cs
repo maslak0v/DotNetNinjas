@@ -17,10 +17,10 @@ namespace FinancialTracker.Services.AuthorizeApi.Presentation.Controllers
         /// <returns></returns>
         [HttpGet]
         [Authorize(Policy = nameof(Enum_AuthPolicy.CanAccess_AdminAndSuperUser))]
-        public async Task<ActionResult> GetAllUsers()
+        public async Task<ActionResult> GetAllUsers(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Get all users");
-            var result = await useCasesFacade.GetAllUsersAsync();
+            var result = await useCasesFacade.GetAllUsersAsync(cancellationToken);
             if (!result.IsSuccess)
                 return UseCaseBadResultHandle(result.StatusCode, result.Message ?? string.Empty);
             _logger.LogInformation($"found {result.Result!.Count} elements");

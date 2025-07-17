@@ -20,15 +20,15 @@ namespace FinancialTracker.Services.AuthorizeApi.Tests
             var refreshToken = RefreshTokenCreator.Create(user.Id, "token");
                 //mocks
             var mockUserRepo = new Mock<IUserRepository>();
-            mockUserRepo.Setup(repo => repo.FindByIdAsync(It.IsAny<string>()))
+            mockUserRepo.Setup(repo => repo.FindByIdAsync(It.IsAny<string>(), CancellationToken.None))
                 .ReturnsAsync(user);
 
             var mockTokenRepo = new Mock<ITokenRepository>();
-            mockTokenRepo.Setup(repo => repo.FindByJtiAsync(It.IsAny<Guid>()))
+            mockTokenRepo.Setup(repo => repo.FindByJtiAsync(It.IsAny<Guid>(), CancellationToken.None))
                 .ReturnsAsync(refreshToken);
-            mockTokenRepo.Setup(repo => repo.RevokeAsync(refreshToken))
+            mockTokenRepo.Setup(repo => repo.RevokeAsync(refreshToken, CancellationToken.None))
                 .Returns(Task.CompletedTask);
-            mockTokenRepo.Setup(repo => repo.RevokeAllForUserAsync(user.Id))
+            mockTokenRepo.Setup(repo => repo.RevokeAllForUserAsync(user.Id, CancellationToken.None))
                 .Returns(Task.CompletedTask);
 
             var options = new Mock<IOptions<JwtSettings>>();
@@ -43,7 +43,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Tests
             var tokenService = AuthTokenServiceCreator.Create(options.Object, mockTokenRepo.Object);
 
             //Act
-            var response = await facade.RefreshAsync(tokenService, request.Object);
+            var response = await facade.RefreshAsync(tokenService, request.Object, CancellationToken.None);
 
             //Assert
             Assert.True(response.IsSuccess);
@@ -60,15 +60,15 @@ namespace FinancialTracker.Services.AuthorizeApi.Tests
             var refreshToken = RefreshTokenCreator.Create(user.Id, "token");
             //mocks
             var mockUserRepo = new Mock<IUserRepository>();
-            mockUserRepo.Setup(repo => repo.FindByIdAsync(It.IsAny<string>()))
+            mockUserRepo.Setup(repo => repo.FindByIdAsync(It.IsAny<string>(), CancellationToken.None))
                 .ReturnsAsync(user);
 
             var mockTokenRepo = new Mock<ITokenRepository>();
-            mockTokenRepo.Setup(repo => repo.FindByJtiAsync(Guid.NewGuid()))
+            mockTokenRepo.Setup(repo => repo.FindByJtiAsync(Guid.NewGuid(), CancellationToken.None))
                 .ReturnsAsync(refreshToken);
-            mockTokenRepo.Setup(repo => repo.RevokeAsync(refreshToken))
+            mockTokenRepo.Setup(repo => repo.RevokeAsync(refreshToken, CancellationToken.None))
                 .Returns(Task.CompletedTask);
-            mockTokenRepo.Setup(repo => repo.RevokeAllForUserAsync(user.Id))
+            mockTokenRepo.Setup(repo => repo.RevokeAllForUserAsync(user.Id, CancellationToken.None))
                 .Returns(Task.CompletedTask);
 
             var options = new Mock<IOptions<JwtSettings>>();
@@ -83,7 +83,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Tests
             var tokenService = AuthTokenServiceCreator.Create(options.Object, mockTokenRepo.Object);
 
             //Act
-            var response = await facade.RefreshAsync(tokenService, request.Object);
+            var response = await facade.RefreshAsync(tokenService, request.Object, CancellationToken.None);
 
             //Assert
             Assert.NotNull(response);

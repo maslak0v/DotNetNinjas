@@ -12,11 +12,11 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.Interfaces
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        Task<RefreshToken> GenerateRefreshTokenAsync(string userId);
+        Task<RefreshToken> GenerateRefreshTokenAsync(string userId, CancellationToken cancellationToken);
         string GenerateAccessToken(User user, string jti);
-        Task<RefreshToken?> FindRefreshTokenByJtiAsync(Guid jti);
-        Task Revoke(RefreshToken refreshToken);
-        Task RevokeAllForUserAsync(string userId);
-        Task<bool> IsRevokedRefreshTokenAsync(string jti);
+        Task<RefreshToken?> FindRefreshTokenByJtiAsync(Guid jti, CancellationToken cancellationToken);
+        Task Revoke(RefreshToken refreshToken, CancellationToken cancellationToken);
+        Task RevokeAllForUserAsync(string userId, CancellationToken cancellationToken);
+        Task<bool> IsRevokedRefreshTokenAsync(string jti, CancellationToken cancellationToken);
     }
 }
