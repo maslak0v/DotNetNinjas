@@ -21,14 +21,14 @@ namespace FinancialTracker.Services.AuthorizeApi.Tests
                 UserCreator.CreateWithUserRole(), Enum_StatusCode.CREATED, "created");
             var request = RequestCreator.CreateUserRegisterGoodRequest();
             var mockRepository = new Mock<IUserRepository>();
-            mockRepository.Setup(repo => repo.RegisterUserAsync(request, roles))
+            mockRepository.Setup(repo => repo.RegisterUserAsync(request, roles, CancellationToken.None))
                 .ReturnsAsync(mockResultRegister);
 
             IAuthUseCaseFabric fabric = AuthUseCaseFabricCreator.Create(mockRepository.Object);
             IAuthUseCasesFacade useCasesFacade = AuthUseCaseFacadeCreator.Create(fabric);
 
             //Act
-            var result = await useCasesFacade.UserRegisterAsync(request);
+            var result = await useCasesFacade.UserRegisterAsync(request, CancellationToken.None);
 
             //Assert
             Assert.True(result.IsSuccess);
@@ -44,14 +44,14 @@ namespace FinancialTracker.Services.AuthorizeApi.Tests
                 (Enum_StatusCode.BAD_REQUEST, "error message");
             var request = RequestCreator.CreateUserRegisterBadRequest();
             var mockRepository = new Mock<IUserRepository>();
-            mockRepository.Setup(repo => repo.RegisterUserAsync(request, roles))
+            mockRepository.Setup(repo => repo.RegisterUserAsync(request, roles, CancellationToken.None))
                 .ReturnsAsync(mockResult);
 
             IAuthUseCaseFabric fabric = AuthUseCaseFabricCreator.Create(mockRepository.Object);
             IAuthUseCasesFacade useCasesFacade = AuthUseCaseFacadeCreator.Create(fabric);
 
             //Act
-            var result = await useCasesFacade.UserRegisterAsync(request);
+            var result = await useCasesFacade.UserRegisterAsync(request, CancellationToken.None);
 
             //Assert
             Assert.False(result.IsSuccess);

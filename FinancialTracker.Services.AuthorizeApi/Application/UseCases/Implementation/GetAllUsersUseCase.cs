@@ -10,11 +10,11 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
     {
         public OperationResult<List<IUserResponseInfo>> Result { get; private set; } = null!;
 
-        public async Task ExecuteAsync()
+        public async Task ExecuteAsync(CancellationToken cancellationToken)
         {
             try
             {
-                Result = await userRepository.GetAllUsersQueryAsync();
+                Result = await userRepository.GetAllUsersQueryAsync(cancellationToken);
             }
             catch (Exception ex)
             {

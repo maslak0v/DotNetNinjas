@@ -8,15 +8,15 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.Interfaces
     public interface IUserRepository
     {
         //Task<OperationResult> CreateUserAsync(IUserRegisterRequest userRegisterRequest);
-        Task<User?> TryGetCurrentLoginUserAsync(string email, string password);
-        Task<User?> FindByIdAsync(string userId);
-        Task<bool> ExistUserNameAsync(string username);
-        Task<bool> ExistEmailAsync(string email);
+        Task<User?> TryGetCurrentLoginUserAsync(string email, string password, CancellationToken cancellationToken);
+        Task<User?> FindByIdAsync(string userId, CancellationToken cancellationToken);
+        Task<bool> ExistUserNameAsync(string username, CancellationToken cancellationToken);
+        Task<bool> ExistEmailAsync(string email, CancellationToken cancellationToken);
 
-        Task<OperationResult<List<IUserResponseInfo>>> GetAllUsersQueryAsync();
-        Task<OperationResult> AddRolesToUserAsync(User user, ICollection<string> roles);
-        Task<IList<string>> GetRolesForUserAsync(User user);
+        Task<OperationResult<List<IUserResponseInfo>>> GetAllUsersQueryAsync(CancellationToken cancellationToken);
+        Task<OperationResult> AddRolesToUserAsync(User user, ICollection<string> roles, CancellationToken cancellationToken);
+        Task<IList<string>> GetRolesForUserAsync(User user, CancellationToken cancellationToken);
         Task<OperationResult<User>> RegisterUserAsync(
-            IUserRegisterRequest request, ICollection<string> roles);
+            IUserRegisterRequest request, ICollection<string> roles, CancellationToken cancellationToken);
     }
 }
