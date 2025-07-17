@@ -11,11 +11,11 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
     {
         public OperationResult Result { get; private set; } = null!;
 
-        public async Task ExecuteAsync()
+        public async Task ExecuteAsync(CancellationToken cancellationToken)
         {
             try
             {
-                await tokenService.RevokeAllForUserAsync(userId);
+                await tokenService.RevokeAllForUserAsync(userId, cancellationToken);
                 Result = OperationResultCreator.Success(Enum_StatusCode.NO_CONTENT);
             }
             catch (Exception ex)

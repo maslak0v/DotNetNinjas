@@ -16,7 +16,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Tests
 
             var mockTokenRepository = new Mock<ITokenRepository>();
             mockTokenRepository
-                .Setup(repo => repo.RevokeAllForUserAsync(user.Id))
+                .Setup(repo => repo.RevokeAllForUserAsync(user.Id, CancellationToken.None))
                 .Returns(Task.CompletedTask);
 
             var fabric = AuthUseCaseFabricCreator.Create(mockUserRepository.Object);
@@ -26,10 +26,10 @@ namespace FinancialTracker.Services.AuthorizeApi.Tests
                 mockTokenRepository.Object);
 
             //Act
-            await facade.UserLogoutAsync(user.Id, tokenService);
+            await facade.UserLogoutAsync(user.Id, tokenService, CancellationToken.None);
 
             //Assert
-            mockTokenRepository.Verify(repo => repo.RevokeAllForUserAsync(user.Id), Times.Once);
+            mockTokenRepository.Verify(repo => repo.RevokeAllForUserAsync(user.Id, CancellationToken.None), Times.Once);
             mockTokenRepository.VerifyNoOtherCalls();
             mockUserRepository.VerifyNoOtherCalls();    
         }

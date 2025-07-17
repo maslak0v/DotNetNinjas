@@ -2,7 +2,7 @@
 {
     public interface ICommandAsync<TResult>
     {
-        Task ExecuteAsync();
+        Task ExecuteAsync(CancellationToken cancellationToken);
         TResult Result { get; }
     }
 }

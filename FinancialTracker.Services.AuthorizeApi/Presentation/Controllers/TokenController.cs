@@ -16,13 +16,14 @@ namespace FinancialTracker.Services.AuthorizeApi.Presentation.Controllers
     {
         [HttpPost("refresh")]
         [AllowAnonymous]
-        public async Task<ActionResult<ITokenResponse>> Refresh([FromBody]RefreshRequest request)
+        public async Task<ActionResult<ITokenResponse>> Refresh(
+            [FromBody]RefreshRequest request, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Request for refresh token..");
             if (request == null || request.Jti == Guid.Empty)
                 return BadRequest("Refresh token and JTI cannot are empty");
 
-            var result = await useCasefacade.RefreshAsync(tokenService, request);
+            var result = await useCasefacade.RefreshAsync(tokenService, request, cancellationToken);
             if (!result.IsSuccess)
                 return UseCaseBadResultHandle(result.StatusCode, result.Message!);
             _logger.LogInformation("refresh successfully");

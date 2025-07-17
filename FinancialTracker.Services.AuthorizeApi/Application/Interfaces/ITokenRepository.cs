@@ -4,10 +4,10 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.Interfaces
 {
     public interface ITokenRepository
     {
-        Task SaveAsync();
+        Task SaveAsync(CancellationToken cancellationToken);
         void Add(RefreshToken token);
-        Task<RefreshToken?> FindByJtiAsync(Guid jti);
-        Task RevokeAsync(RefreshToken refreshToken);
-        Task RevokeAllForUserAsync(string userId);
+        Task<RefreshToken?> FindByJtiAsync(Guid jti, CancellationToken cancellationToken);
+        Task RevokeAsync(RefreshToken refreshToken, CancellationToken cancellationToken);
+        Task RevokeAllForUserAsync(string userId, CancellationToken cancellationToken);
     }
 }

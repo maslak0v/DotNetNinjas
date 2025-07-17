@@ -49,7 +49,8 @@ namespace FinancialTracker.Services.AuthorizeApi.Presentation.Middlewares
 
             var jti = httpContext.User.FindFirst(JwtRegisteredClaimNames.Jti)?.Value;
             var tokenService = httpContext.RequestServices.GetRequiredService<IAuthTokenService>();
-            return !string.IsNullOrEmpty(jti) && !await tokenService.IsRevokedRefreshTokenAsync(jti);
+            CancellationToken cancellationToken = httpContext.RequestAborted;
+            return !string.IsNullOrEmpty(jti) && !await tokenService.IsRevokedRefreshTokenAsync(jti, cancellationToken);
         }
         private static class ErrorMessage
         {
