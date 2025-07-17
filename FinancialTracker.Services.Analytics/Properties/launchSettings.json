@@ -16,10 +16,10 @@
       "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ANALYTICS_DB_CONNECTION_STRING": "Server=localhost;Port=5432;Database=FinancialTracker;User Id=postgres;Password=Vlad!v0st0k.!;",
-        "RABBITMQ_DEFAULT_USER": "aed",
-        "RABBITMQ_DEFAULT_PASS": "Vlad!v0st0k.!",
-        "RABBITMQ__HOST": "localhost"
+        "ANALYTICS_DB_CONNECTION_STRING": "",
+        "RABBITMQ_DEFAULT_USER": "",
+        "RABBITMQ_DEFAULT_PASS": "",
+        "RABBITMQ__HOST": ""
       },
       "applicationUrl": "https://localhost:7136;http://localhost:7005",
       "dotnetRunMessages": true
