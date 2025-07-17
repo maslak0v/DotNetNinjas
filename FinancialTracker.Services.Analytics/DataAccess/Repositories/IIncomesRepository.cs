@@ -28,4 +28,11 @@ public interface IIncomesRepository
     /// <param name="upToDate">Дата, до которой получаем доходы (включительно)</param>
     /// <returns>Список доходов</returns>
     Task<List<Income>> GetIncomesUpToDateAsync(Guid userId, DateTime upToDate);
+    
+    /// <summary>
+    /// Добавить новый доход
+    /// </summary>
+    /// <param name="income">Доход</param>
+    /// <returns></returns>
+    Task AddAsync(Income income);
 }

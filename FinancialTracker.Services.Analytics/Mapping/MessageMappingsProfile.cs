@@ -10,5 +10,8 @@ public class MessageMappingsProfile : Profile
     {
         CreateMap<IExpenseCreatedMessage, ExpenseDto>()
             .ForMember(dto => dto.Category, opt => opt.MapFrom(m => m.CategoryName));
+        CreateMap<IIncomeCreatedMessage, IncomeDto>()
+            .ForMember(dto => dto.Category, opt => opt.MapFrom(m => m.CategoryName));
+
     }
 }

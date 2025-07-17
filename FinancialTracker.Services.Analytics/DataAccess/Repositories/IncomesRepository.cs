@@ -35,4 +35,10 @@ public class IncomesRepository(AppDbContext db) : IIncomesRepository
                         x.IncomeTime <= request.EndDate.ToUniversalTime())
             .ToListAsync();
     }
+    
+    public async Task AddAsync(Income income)
+    {
+        db.Incomes.Add(income);
+        await db.SaveChangesAsync();
+    }
 }
