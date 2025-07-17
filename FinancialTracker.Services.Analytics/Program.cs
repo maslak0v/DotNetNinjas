@@ -1,4 +1,6 @@
 using FinancialTracker.Services.Analytics;
+using System.Text.Json;
+using WebInfrastructure.Shared.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,12 +12,15 @@ builder.Services.InstallAdviceService();
 builder.Services.InstallRepositories();
 builder.Services.AddMessaging();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+}); ;
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -23,6 +28,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
     await app.ApplyMigrationsAsync();
 }
+
+app.UsegGlobalExceptionMiddleware();
 
 app.UseHttpsRedirection();
 app.MapControllers();
