@@ -2,6 +2,8 @@ using AutoMapper;
 using FinancialTracker.Services.Analytics.Models.Dto;
 using FinancialTracker.Services.Analytics.Services;
 using Microsoft.AspNetCore.Mvc;
+using Primitives.Shared.DTOs;
+using Primitives.Shared.Exceptions;
 
 namespace FinancialTracker.Services.Analytics.Controllers;
 
@@ -16,49 +18,22 @@ public class ExpensesApiController(IExpensesService service,
         [FromQuery] DateTime startDate,
         [FromQuery] DateTime endDate)
     {
-        var response = new ResponseDto();
         if (startDate > endDate)
-        {
-            response.IsSuccess = false;
-            response.Message = "Error: Start date must be earlier than or equal to end date.";
-            return BadRequest(response);
-        }
-        try
-        {
-            var expenses = await service.GetExpensesAsync(userId, startDate, endDate);
+            throw new BadRequestException("Error: Start date must be earlier than or equal to end date.");
 
-            response.Result = mapper.Map<List<ExpenseResponseDto>>(expenses);
-        }
-        catch (Exception ex)
-        {
-            response.IsSuccess = false;
-            response.Message = ex.Message;
-            return StatusCode(500, response);
-        }
+        var expenses = await service.GetExpensesAsync(userId, startDate, endDate);
+        var response = new ResponseDto(mapper.Map<List<ExpenseResponseDto>>(expenses));
         return Ok(response);
     }
 
     [HttpGet("by-account")]
     public async Task<IActionResult> GetByAccountAsync([FromQuery] ExpensesRequestDto request)
     {
-        var response = new ResponseDto();
         if (request.StartDate > request.EndDate)
-        {
-            response.IsSuccess = false;
-            response.Message = "Error: Start date must be earlier than or equal to end date.";
-            return BadRequest(response);
-        }
-        try
-        {
-            var expenses = await service.GetExpensesByAccountAsync(request);
-            response.Result = mapper.Map<List<ExpenseResponseDto>>(expenses);
-        }
-        catch (Exception ex)
-        {
-            response.IsSuccess = false;
-            response.Message = ex.Message;
-            return StatusCode(500, response);
-        }
+            throw new BadRequestException("Error: Start date must be earlier than or equal to end date.");
+
+        var expenses = await service.GetExpensesByAccountAsync(request);
+        var response = new ResponseDto(mapper.Map<List<ExpenseResponseDto>>(expenses));
         return Ok(response);
     }
 }
