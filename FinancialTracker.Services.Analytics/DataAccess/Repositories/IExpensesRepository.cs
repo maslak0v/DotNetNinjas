@@ -28,4 +28,11 @@ public interface IExpensesRepository
     /// <param name="upToDate"> Дата, до которой получаем расходы (включительно)</param>
     /// <returns> Список расходов </returns>
     Task<List<Expense>> GetExpensesUpToDateAsync(Guid userId, DateTime upToDate);
+    
+    /// <summary>
+    /// Добавить новый расход
+    /// </summary>
+    /// <param name="expense">Расход</param>
+    /// <returns></returns>
+    Task AddAsync(Expense expense);
 }

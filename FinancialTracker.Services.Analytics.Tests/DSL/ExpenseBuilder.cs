@@ -5,7 +5,7 @@ namespace FinancialTracker.Services.Analytics.Tests.DSL;
 public class ExpenseBuilder
 {
     private readonly Guid _accountId = Guid.NewGuid();
-    private readonly int _expenseId = 0;
+    private readonly Guid _expenseId = Guid.NewGuid();
     private decimal _amount = 0;
     private DateTime _dateTime;
     private User _user = new User();

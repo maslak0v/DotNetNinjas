@@ -9,11 +9,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace FinancialTracker.Services.Analytics.DataAccess.Repositories
+namespace FinancialTracker.Services.Analytics.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250702121715_AddIncomes")]
-    partial class AddIncomes
+    [Migration("20250711124423_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,11 +27,9 @@ namespace FinancialTracker.Services.Analytics.DataAccess.Repositories
 
             modelBuilder.Entity("FinancialTracker.Services.Analytics.Models.Expense", b =>
                 {
-                    b.Property<int>("ExpenseId")
+                    b.Property<Guid>("ExpenseId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ExpenseId"));
+                        .HasColumnType("uuid");
 
                     b.Property<Guid>("AccountId")
                         .HasColumnType("uuid");
@@ -63,11 +61,9 @@ namespace FinancialTracker.Services.Analytics.DataAccess.Repositories
 
             modelBuilder.Entity("FinancialTracker.Services.Analytics.Models.Income", b =>
                 {
-                    b.Property<int>("IncomeId")
+                    b.Property<Guid>("IncomeId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IncomeId"));
+                        .HasColumnType("uuid");
 
                     b.Property<Guid>("AccountId")
                         .HasColumnType("uuid");

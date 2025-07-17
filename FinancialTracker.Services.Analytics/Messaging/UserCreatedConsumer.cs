@@ -5,8 +5,8 @@ using MessageBus.Shared.Contracts.Interfaces;
 
 namespace FinancialTracker.Services.Analytics.Messaging
 {
-    public class UserCreatedAnaliticsConsumer(
-        ILogger<UserCreatedAnaliticsConsumer> logger,
+    public class UserCreatedConsumer(
+        ILogger<UserCreatedConsumer> logger,
         IUserRepository userRepository) : IConsumer<IUserCreated>
     {
         public async Task Consume(ConsumeContext<IUserCreated> context)

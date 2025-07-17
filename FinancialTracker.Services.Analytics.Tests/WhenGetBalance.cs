@@ -1,4 +1,6 @@
+using AutoMapper;
 using FinancialTracker.Services.Analytics.DataAccess.Repositories;
+using FinancialTracker.Services.Analytics.Mapping;
 using FinancialTracker.Services.Analytics.Models;
 using FinancialTracker.Services.Analytics.Services.Implementation;
 using FinancialTracker.Services.Analytics.Tests.DSL;
@@ -8,6 +10,18 @@ namespace FinancialTracker.Services.Analytics.Tests;
 
 public class WhenGetBalance
 {
+    private readonly IMapper _mapper;
+    
+    public WhenGetBalance()
+    {
+        var config = new MapperConfiguration(cfg =>
+        {
+            cfg.AddProfile<ExpenseMappingsProfile>();
+        });
+
+        _mapper = config.CreateMapper();
+    }
+    
     [SetUp]
     public void Setup()
     {
@@ -33,7 +47,7 @@ public class WhenGetBalance
         mockRepository.Setup(repo =>
                 repo.GetExpensesUpToDateAsync(tommy.Id, It.IsAny<DateTime>()))
             .ReturnsAsync(allExpenses);
-        var expensesService = new ExpensesService(mockRepository.Object);
+        var expensesService = new ExpensesService(mockRepository.Object, _mapper);
         var balanceService = new BalanceService(expensesService);
         
         // Act
@@ -55,7 +69,7 @@ public class WhenGetBalance
         mockRepository.Setup(repo =>
                 repo.GetExpensesUpToDateAsync(tommy.Id, It.IsAny<DateTime>()))
             .ReturnsAsync(allExpenses);
-        var expensesService = new ExpensesService(mockRepository.Object);
+        var expensesService = new ExpensesService(mockRepository.Object, _mapper);
         var balanceService = new BalanceService(expensesService);
         
         // Act

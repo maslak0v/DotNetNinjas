@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace FinancialTracker.Services.Analytics.DataAccess.Migrations
+namespace FinancialTracker.Services.Analytics.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     partial class AppDbContextModelSnapshot : ModelSnapshot
@@ -24,11 +24,9 @@ namespace FinancialTracker.Services.Analytics.DataAccess.Migrations
 
             modelBuilder.Entity("FinancialTracker.Services.Analytics.Models.Expense", b =>
                 {
-                    b.Property<int>("ExpenseId")
+                    b.Property<Guid>("ExpenseId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ExpenseId"));
+                        .HasColumnType("uuid");
 
                     b.Property<Guid>("AccountId")
                         .HasColumnType("uuid");
@@ -60,11 +58,9 @@ namespace FinancialTracker.Services.Analytics.DataAccess.Migrations
 
             modelBuilder.Entity("FinancialTracker.Services.Analytics.Models.Income", b =>
                 {
-                    b.Property<int>("IncomeId")
+                    b.Property<Guid>("IncomeId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IncomeId"));
+                        .HasColumnType("uuid");
 
                     b.Property<Guid>("AccountId")
                         .HasColumnType("uuid");
