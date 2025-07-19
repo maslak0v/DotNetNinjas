@@ -1,5 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Wallet.Application.Helpers;
 
 namespace Wallet.API.Helpers
@@ -12,6 +11,17 @@ namespace Wallet.API.Helpers
                 Enum_StatusCode.NotFound => new NotFoundResult(),
                 Enum_StatusCode.NoContent => new NoContentResult(),
                 Enum_StatusCode.OK => new OkObjectResult(result.Message),
+                Enum_StatusCode.BadRequest => new BadRequestObjectResult(result.Message),
+                Enum_StatusCode.ServerError => new ObjectResult(result.Message) { StatusCode = (int)result.StatusCode },
+                _ => new ObjectResult(result.Message) { StatusCode = (int)result.StatusCode }
+            };
+        
+        public static ActionResult Create<T>(OperationResult<T> result)
+            => result.StatusCode switch
+            {
+                Enum_StatusCode.NotFound => new NotFoundResult(),
+                Enum_StatusCode.NoContent => new NoContentResult(),
+                Enum_StatusCode.OK => new OkObjectResult(result.Result),
                 Enum_StatusCode.BadRequest => new BadRequestObjectResult(result.Message),
                 Enum_StatusCode.ServerError => new ObjectResult(result.Message) { StatusCode = (int)result.StatusCode },
                 _ => new ObjectResult(result.Message) { StatusCode = (int)result.StatusCode }

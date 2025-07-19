@@ -1,4 +1,5 @@
 using AutoMapper;
+using MessageBus.Shared.Publishers.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Wallet.API.Models.Transactions;
 using Wallet.Application.Dto.Transactions;
@@ -8,7 +9,12 @@ namespace Wallet.API.Controllers.Transactions;
 
 public class UpdateTransactionById : TransactionBase
 {
-    public UpdateTransactionById(ITransactionService transactionService, IMapper mapper) : base(transactionService, mapper)
+    public UpdateTransactionById(
+        ITransactionService transactionService, 
+        IMapper mapper, 
+        ILogger<TransactionBase> logger, 
+        IMessagePublisher messagePublisher) 
+        : base(transactionService, mapper, logger, messagePublisher)
     {
     }
 

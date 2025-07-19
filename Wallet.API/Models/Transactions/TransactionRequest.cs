@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
-using Microsoft.OpenApi.Models;
+using Wallet.Domain.Enums;
+
 
 namespace Wallet.API.Models.Transactions;
 
@@ -7,7 +8,9 @@ public class TransactionRequest
 {
        [Required]
        public Guid AccountId { get; set; }
+
        [Required]
+       [Range(1, int.MaxValue, ErrorMessage = "Недопустимый тип операции (OperationType)")]
        public OperationType OperationType { get; set; }
        [Required]
        public int CategoryId { get; set; }

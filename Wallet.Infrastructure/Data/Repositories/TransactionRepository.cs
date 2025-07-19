@@ -17,6 +17,8 @@ public class TransactionRepository : ITransactionRepository
     {
         return await _context.Transactions
             .AsNoTracking()
+            .Include(t => t.Account)    
+            .Include(t => t.Category)   
             .FirstOrDefaultAsync(t => t.TransactionId == id && !t.IsDeleted, cancellationToken);
     }
 
@@ -47,11 +49,8 @@ public class TransactionRepository : ITransactionRepository
     {
         var transaction = await _context.Transactions
             .FirstOrDefaultAsync(t => t.TransactionId == id && !t.IsDeleted, cancellationToken);
-
-        if (transaction == null)
-            throw new KeyNotFoundException($"Не найдена транзакция");
-
-        transaction.IsDeleted = true;
+        
+        transaction!.IsDeleted = true;
         _context.Transactions.Update(transaction);
         await _context.SaveChangesAsync(cancellationToken);
     }

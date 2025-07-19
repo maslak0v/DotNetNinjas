@@ -1,20 +1,46 @@
 using AutoMapper;
+using MessageBus.Shared.Contracts.Implementations;
+using MessageBus.Shared.Contracts.Interfaces;
+using MessageBus.Shared.Publishers.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Wallet.API.Helpers;
 using Wallet.Application.Interfaces.Services;
 
 namespace Wallet.API.Controllers.Transactions;
 
 public class DeleteTransaction : TransactionBase
 {
-    public DeleteTransaction(ITransactionService transactionService, IMapper mapper) : base(transactionService, mapper)
+    public DeleteTransaction(
+        ITransactionService transactionService,
+        IMapper mapper,
+        ILogger<TransactionBase> logger,
+        IMessagePublisher messagePublisher)
+        : base(transactionService, mapper, logger, messagePublisher)
     {
     }
 
     [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> Create( Guid id, CancellationToken cancellationToken)
+    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
-        await _transactionService.DeleteAsync(id, cancellationToken);
+        _logger.LogInformation($"Удаление транзакции {id}...");
+    
+        var resultOperation = await _transactionService.DeleteAsync(id, cancellationToken);
+
+        if (resultOperation.IsSuccess)
+        {
+            var transactionDeletedMessage = new TransactionEvents.TransactionDeletedMessage(
+                MessageId: Guid.NewGuid(),
+                Timestamp: DateTime.UtcNow,
+                TransactionId: id
+            );
         
-        return Ok();
+            _logger.LogInformation(
+                $"Publishing event [{nameof(IDeleteTransactionMessage)}]: " +
+                $"transaction [{id}] deleted");
+            
+            await messagePublisher.PublishAsync(transactionDeletedMessage);
+        }    
+    
+        return ResponseCreator.Create(resultOperation);
     }
 }

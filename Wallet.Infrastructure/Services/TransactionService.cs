@@ -1,5 +1,6 @@
 using AutoMapper;
 using Wallet.Application.Dto.Transactions;
+using Wallet.Application.Helpers;
 using Wallet.Application.Interfaces.Repositories;
 using Wallet.Application.Interfaces.Services;
 using Wallet.Domain.Entities;
@@ -51,60 +52,66 @@ public class TransactionService : ITransactionService
     }
 
 
-    public async Task<Guid> CreateAsync(TransactionDto transaction, CancellationToken cancellationToken)
+    public async Task<OperationResult<Guid>> CreateAsync(TransactionDto transaction, CancellationToken cancellationToken)
     {
-        // Получаем аккаунт
-        var account = await _unitOfWork.AccountRepository.GetByIdAsync(transaction.AccountId, cancellationToken);
-        
-        if (account == null)
+        try
         {
-            throw new ArgumentException("Не найден аккаунт");
-        }
+            var account = await _unitOfWork.AccountRepository.GetByIdAsync(transaction.AccountId, cancellationToken);
+            if (account == null)
+                return OperationResult<Guid>.Failure(Enum_StatusCode.NotFound, $"Аккаунт не найден: {transaction.AccountId}");
 
-        if (transaction.OperationType == OperationType.Income)
-        {
-            account.CurrentBalance += transaction.Amount;
-        }
-        else if (transaction.OperationType == OperationType.Expense)
-        {
-            account.CurrentBalance -= transaction.Amount;
-        }
-        
-        account.UpdatedAt = DateTime.UtcNow;
-        
-        await _unitOfWork.AccountRepository.UpdateAsync(account, cancellationToken);
-        
-        // Получаем или создаем тег
-        var tag = await _unitOfWork.TagRepository.GetUserTagByNameAsync(transaction.Tag, account.UserId, cancellationToken);
-
-        if (tag == null)
-        {
-            var newTag = new Tag
+            // Обновляем баланс
+            if (transaction.OperationType == OperationType.Income)
             {
-                Name = transaction.Tag,
-                UserId = account.UserId
+                account.CurrentBalance += transaction.Amount;
+            }
+            else if (transaction.OperationType == OperationType.Expense)
+            {
+                account.CurrentBalance -= transaction.Amount;
+            }
+            else
+            {
+                return OperationResult<Guid>.Failure(Enum_StatusCode.NotFound, $"Вид поступлений не найден: {transaction.OperationType}");
+            }
+            
+            account.UpdatedAt = DateTime.UtcNow;
+            await _unitOfWork.AccountRepository.UpdateAsync(account, cancellationToken);
+
+            // Работа с тегом
+            var tag = await _unitOfWork.TagRepository.GetUserTagByNameAsync(transaction.Tag, account.UserId, cancellationToken);
+            if (tag == null)
+            {
+                tag = new Tag
+                {
+                    Name = transaction.Tag,
+                    UserId = account.UserId
+                };
+                await _unitOfWork.TagRepository.CreateAsync(tag, cancellationToken);
+            }
+
+            // Создаем транзакцию
+            var newTransaction = _mapper.Map<Transaction>(transaction);
+            await _unitOfWork.TransactionRepository.AddAsync(newTransaction, cancellationToken);
+
+            // Связь транзакции с тегом
+            var transactionTag = new TransactionTag
+            {
+                TransactionId = newTransaction.TransactionId,
+                TagId = tag.TagId
             };
+            await _unitOfWork.TransactionTagRepository.AddAsync(transactionTag, cancellationToken);
 
-            await _unitOfWork.TagRepository.CreateAsync(newTag, cancellationToken);
-            tag = newTag;
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            return OperationResult<Guid>.Success(
+                Enum_StatusCode.OK,
+                newTransaction.TransactionId,  // Добавлен ID транзакции
+                "Транзакция успешно создана");
         }
-        
-        // Создаем транзакцию
-        var newTransaction = _mapper.Map<Transaction>(transaction);
-        
-        await _unitOfWork.TransactionRepository.AddAsync(newTransaction, cancellationToken);
-
-        // Создаем связь транзакции с тегом
-        var transactionTag = new TransactionTag
+        catch (Exception ex)
         {
-            TransactionId = newTransaction.TransactionId,
-            TagId = tag.TagId
-        };
-        await _unitOfWork.TransactionTagRepository.AddAsync(transactionTag, cancellationToken);
-        
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-        return newTransaction.TransactionId;
+            return OperationResult<Guid>.FromException(ex);
+        }
     }
 
     public async Task UpdateAsync(Guid id, TransactionDto transactionDto, CancellationToken cancellationToken)
@@ -191,36 +198,42 @@ public class TransactionService : ITransactionService
     
     }
 
-    public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<OperationResult> DeleteAsync(Guid id, CancellationToken cancellationToken)
     {
-        var transaction = await _transactionRepository.GetByIdAsync(id, cancellationToken);
-
-        if (transaction == null)
-            throw new ArgumentException("Транзакция не найдена");
-
-        var account = await _accountRepository.GetByIdAsync(transaction.AccountId, cancellationToken);
-
-        if (account == null)
-            throw new ArgumentException("Аккаунт не найден");
-
-        // Отменяем влияние транзакции на баланс
-        if (transaction.OperationType == OperationType.Income)
+        try
         {
-            account.CurrentBalance -= transaction.Amount;
+            var transaction = await _transactionRepository.GetByIdAsync(id, cancellationToken);
+            if (transaction == null)
+                return OperationResult.Failure(Enum_StatusCode.NotFound, $"Транзакция не найдена id : {id}");
+
+            var account = await _accountRepository.GetByIdAsync(transaction.AccountId, cancellationToken);
+            if (account == null)
+                return OperationResult.Failure(Enum_StatusCode.NotFound, "Аккаунт не найден");
+
+            // Отменяем влияние транзакции на баланс
+            if (transaction.OperationType == OperationType.Income)
+            {
+                account.CurrentBalance -= transaction.Amount;
+            }
+            else if (transaction.OperationType == OperationType.Expense)
+            {
+                account.CurrentBalance += transaction.Amount;
+            }
+
+            account.UpdatedAt = DateTime.UtcNow;
+            transaction.IsDeleted = true;
+            transaction.UpdatedAt = DateTime.UtcNow;
+
+            await _unitOfWork.AccountRepository.UpdateAsync(account, cancellationToken);
+            await _unitOfWork.TransactionRepository.UpdateAsync(transaction, cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            return OperationResult.Success(Enum_StatusCode.OK, "Транзакция успешно удалена");
         }
-        else if (transaction.OperationType == OperationType.Expense)
+        catch (Exception ex)
         {
-            account.CurrentBalance += transaction.Amount;
+            return OperationResult.FromException(ex);
         }
-
-        account.UpdatedAt = DateTime.UtcNow;
-        transaction.IsDeleted = true;
-        transaction.UpdatedAt = DateTime.UtcNow;
-
-      
-        await _unitOfWork.AccountRepository.UpdateAsync(account, cancellationToken);
-        await _unitOfWork.TransactionRepository.UpdateAsync(transaction, cancellationToken);
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
     public Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken) 
