@@ -1,5 +1,4 @@
 using AutoMapper;
-using MessageBus.Shared.Publishers.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Wallet.Application.Interfaces.Services;
 
@@ -12,13 +11,10 @@ public class TransactionBase : ControllerBase
     protected readonly ITransactionService _transactionService;
     protected readonly IMapper _mapper;
     protected readonly ILogger<TransactionBase> _logger;
-    protected readonly IMessagePublisher messagePublisher;
-
-    public TransactionBase(ITransactionService transactionService, IMapper mapper, ILogger<TransactionBase> logger, IMessagePublisher messagePublisher)
+    public TransactionBase(ITransactionService transactionService, IMapper mapper, ILogger<TransactionBase> logger)
     {
         _transactionService = transactionService;
         _mapper = mapper;
         _logger = logger;
-        this.messagePublisher = messagePublisher;
     }
 }

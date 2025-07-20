@@ -1,35 +1,70 @@
-
+using Microsoft.EntityFrameworkCore.Storage;
 using Wallet.Application.Interfaces.Repositories;
 
 namespace Wallet.Infrastructure.Data.Repositories;
 
-public class UnitOfWork : IUnitOfWork
+public class UnitOfWork : IUnitOfWork, IAsyncDisposable
 {
-    private WalletPostgresDbContext _context;
-    
-    private IAccountRepository _accountRepository;
-    private ITagRepository _tagRepository;
-    private ITransactionTagRepository _transactionTagRepository;
-    private ITransactionRepository _transactionRepository;
+    private readonly WalletPostgresDbContext _context;
+    private bool _disposed;
 
-    public IAccountRepository AccountRepository => _accountRepository;
-    public ITagRepository TagRepository => _tagRepository;
-    public ITransactionRepository TransactionRepository => _transactionRepository;
-    public ITransactionTagRepository TransactionTagRepository => _transactionTagRepository;
-    
-    
     public UnitOfWork(WalletPostgresDbContext context)
     {
-        _context = context;
-        _accountRepository = new AccountRepository(context);
-        _tagRepository = new TagRepository(context);
-        _transactionTagRepository = new TransactionTagRepository(context);
-        _transactionRepository = new TransactionRepository(context);
+        _context = context ?? throw new ArgumentNullException(nameof(context));
+        AccountRepository = new AccountRepository(_context);
+        TagRepository = new TagRepository(_context);
+        TransactionTagRepository = new TransactionTagRepository(_context);
+        TransactionRepository = new TransactionRepository(_context);
     }
-    
-    public async Task SaveChangesAsync(CancellationToken cancellationToken)
+
+    public IAccountRepository AccountRepository { get; }
+    public ITagRepository TagRepository { get; }
+    public ITransactionTagRepository TransactionTagRepository { get; }
+    public ITransactionRepository TransactionRepository { get; }
+
+    public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        await _context.SaveChangesAsync(cancellationToken);
+        return await _context.SaveChangesAsync(cancellationToken);
     }
-    
+
+    public async Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
+    {
+        return await _context.Database.BeginTransactionAsync(cancellationToken);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposed)
+        {
+            if (disposing)
+            {
+                _context.Dispose();
+            }
+            _disposed = true;
+        }
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await DisposeAsync(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual async ValueTask DisposeAsync(bool disposing)
+    {
+        if (!_disposed)
+        {
+            if (disposing)
+            {
+                await _context.DisposeAsync();
+            }
+            _disposed = true;
+        }
+    }
 }

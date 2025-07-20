@@ -1,5 +1,4 @@
 using AutoMapper;
-using MessageBus.Shared.Publishers.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Wallet.API.Models.Transactions;
 using Wallet.Application.Interfaces.Services;
@@ -11,9 +10,8 @@ public class GetTransactionById : TransactionBase
     public GetTransactionById(
         ITransactionService transactionService, 
         IMapper mapper, 
-        ILogger<TransactionBase> logger, 
-        IMessagePublisher messagePublisher) 
-        : base(transactionService, mapper, logger, messagePublisher)
+        ILogger<TransactionBase> logger) 
+        : base(transactionService, mapper, logger)
     {
     }
 

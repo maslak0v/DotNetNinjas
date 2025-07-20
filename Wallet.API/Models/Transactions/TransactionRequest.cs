@@ -10,7 +10,7 @@ public class TransactionRequest
        public Guid AccountId { get; set; }
 
        [Required]
-       [Range(1, int.MaxValue, ErrorMessage = "Недопустимый тип операции (OperationType)")]
+       [Range(1, byte.MaxValue, ErrorMessage = "Недопустимый тип операции (OperationType)")]
        public OperationType OperationType { get; set; }
        [Required]
        public int CategoryId { get; set; }

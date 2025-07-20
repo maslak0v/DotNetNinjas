@@ -23,19 +23,17 @@ public class TransactionApiMappings : Profile
             .ForMember(dest => dest.TransactionDate, opt => opt.MapFrom(src => src.TransactionDate))
             .ForMember(dest => dest.OperationType, opt => opt.MapFrom(src => (byte)src.OperationType))
             .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.CategoryId))
-            .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
+            .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category != null ? src.Category.Name : null))
             .ForMember(dest => dest.AccountId, opt => opt.MapFrom(src => src.AccountId))
-            .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.Account.UserId))
+            .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.Account != null ? src.Account.UserId : (Guid?)null))
             .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.Amount))
             .ForMember(dest => dest.Comment, opt => opt.MapFrom(src => src.Comment))
             .ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.Image))
-            // Тег - первый попавшийся из списка (или null)
+            // Безопасное получение тега
             .ForMember(dest => dest.Tag, 
-                opt => opt.MapFrom(src => src.TransactionTags
-                    .Select(tt => tt.Tag.Name)
-                    .FirstOrDefault()
-                ))
-            ;
+                opt => opt.MapFrom(src => src.TransactionTags != null && src.TransactionTags.Any() 
+                    ? src.TransactionTags.First().Tag.Name 
+                    : null));
         CreateMap<TransactionDtoResponse, TransactionResponse>();
     }
 }

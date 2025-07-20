@@ -13,13 +13,31 @@ public class TransactionRepository : ITransactionRepository
         _context = context;
     }
 
-    public async Task<Transaction?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+
+    public async Task<Transaction?> GetByIdAsync(
+        Guid id, 
+        CancellationToken cancellationToken, 
+        bool includeRelated = true, 
+        bool noTracking = true)
     {
-        return await _context.Transactions
-            .AsNoTracking()
-            .Include(t => t.Account)    
-            .Include(t => t.Category)   
-            .FirstOrDefaultAsync(t => t.TransactionId == id && !t.IsDeleted, cancellationToken);
+        var query = _context.Transactions
+            .Where(t => t.TransactionId == id && !t.IsDeleted);
+
+        if (includeRelated)
+        {
+            query = query
+                .Include(t => t.Account)
+                .Include(t => t.Category)
+                .Include(t => t.TransactionTags)
+                .ThenInclude(tt => tt.Tag); 
+        }
+
+        if (noTracking)
+        {
+            query = query.AsNoTracking();
+        }
+
+        return await query.FirstOrDefaultAsync(cancellationToken);
     }
 
     public async Task<IEnumerable<Transaction>> GetByAccountIdAsync(Guid accountId, CancellationToken cancellationToken)

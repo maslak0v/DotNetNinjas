@@ -11,9 +11,8 @@ public class GetAllTransactionByIdAccountId : TransactionBase
     public GetAllTransactionByIdAccountId(
         ITransactionService transactionService, 
         IMapper mapper, 
-        ILogger<TransactionBase> logger, 
-        IMessagePublisher messagePublisher) 
-        : base(transactionService, mapper, logger, messagePublisher)
+        ILogger<TransactionBase> logger) 
+        : base(transactionService, mapper, logger)
     {
     }
 

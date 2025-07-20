@@ -10,13 +10,15 @@ namespace Wallet.API.Controllers.Transactions;
 
 public class DeleteTransaction : TransactionBase
 {
+    private readonly IMessagePublisher  _messagePublisher;
+    
     public DeleteTransaction(
         ITransactionService transactionService,
         IMapper mapper,
-        ILogger<TransactionBase> logger,
-        IMessagePublisher messagePublisher)
-        : base(transactionService, mapper, logger, messagePublisher)
+        ILogger<TransactionBase> logger, IMessagePublisher messagePublisher)
+        : base(transactionService, mapper, logger)
     {
+        _messagePublisher = messagePublisher;
     }
 
     [HttpDelete("{id:guid}")]
@@ -38,7 +40,7 @@ public class DeleteTransaction : TransactionBase
                 $"Publishing event [{nameof(IDeleteTransactionMessage)}]: " +
                 $"transaction [{id}] deleted");
             
-            await messagePublisher.PublishAsync(transactionDeletedMessage);
+            await _messagePublisher.PublishAsync(transactionDeletedMessage);
         }    
     
         return ResponseCreator.Create(resultOperation);

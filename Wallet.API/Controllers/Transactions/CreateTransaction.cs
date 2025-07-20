@@ -12,13 +12,15 @@ namespace Wallet.API.Controllers.Transactions;
 
 public class CreateTransaction: TransactionBase
 {
+    private readonly IMessagePublisher  _messagePublisher;
+    
     public CreateTransaction(
         ITransactionService transactionService, 
         IMapper mapper, 
-        ILogger<TransactionBase> logger, 
-        IMessagePublisher messagePublisher) 
-        : base(transactionService, mapper, logger, messagePublisher)
+        ILogger<TransactionBase> logger, IMessagePublisher messagePublisher) 
+        : base(transactionService, mapper, logger)
     {
+        _messagePublisher = messagePublisher;
     }
     
     [HttpPost("create")]
@@ -35,45 +37,42 @@ public class CreateTransaction: TransactionBase
             return ResponseCreator.Create(createResult);
         }
         
-        var transactionId = Guid.Parse(createResult.Result.ToString());
-        var transaction = await _transactionService.GetByIdAsync(transactionId , cancellationToken);
-        
         if (transactionRequest.OperationType == OperationType.Expense)
         {
             var expenseMessage = new TransactionEvents.ExpenseCreatedMessage(
                 MessageId: Guid.NewGuid(),
                 Timestamp: DateTime.UtcNow,
-                ExpenseId: transaction.TransactionId,
-                UserId: transaction.UserId,
-                AccountId: transaction.AccountId,
-                CategoryName: transaction.CategoryName,
-                ExpenseTime: transaction.TransactionDate,
-                Amount: transaction.Amount
+                ExpenseId: createResult.Result.TransactionId,
+                UserId: createResult.Result.UserId,
+                AccountId: createResult.Result.AccountId,
+                CategoryName: createResult.Result.CategoryName,
+                ExpenseTime: createResult.Result.TransactionDate,
+                Amount: createResult.Result.Amount
             );
             
             _logger.LogInformation(
-                $"Publishing event [Create expense]: created Id: {transactionId}");
+                $"Publishing event [Create expense]: created Id: {createResult.Result}");
 
-            await messagePublisher.PublishAsync(expenseMessage);
+            await _messagePublisher.PublishAsync(expenseMessage);
         }
         else
         {
             var incomeMessage = new TransactionEvents.IncomeCreatedMessage(
                 MessageId: Guid.NewGuid(),
                 Timestamp: DateTime.UtcNow,
-                IncomeId: transaction.TransactionId,
-                UserId: transaction.UserId,
-                AccountId: transaction.AccountId,
-                CategoryName: transaction.CategoryName,
-                IncomeTime: transaction.TransactionDate,
-                Amount: transaction.Amount
+                IncomeId: createResult.Result.TransactionId,
+                UserId: createResult.Result.UserId,
+                AccountId: createResult.Result.AccountId,
+                CategoryName: createResult.Result.CategoryName,
+                IncomeTime: createResult.Result.TransactionDate,
+                Amount: createResult.Result.Amount
             );
             _logger.LogInformation(
-                $"Publishing event [Create income]: created Id: {transactionId}");
+                $"Publishing event [Create income]: created Id: {createResult.Result}");
 
-            await messagePublisher.PublishAsync(incomeMessage);
+            await _messagePublisher.PublishAsync(incomeMessage);
         }
-        
-        return ResponseCreator.Create<Guid>(createResult);
+
+        return Ok();
     }
 }

@@ -12,7 +12,10 @@ public class OperationResult<T> : OperationResult
         Result = result;
     }
 
-    public static OperationResult<T> Success(Enum_StatusCode statusCode, T result, string? message = null)
+    public static OperationResult<T> Success(
+        T result, 
+        Enum_StatusCode statusCode = Enum_StatusCode.OK,
+        string? message = null)
         => new OperationResult<T>(true, statusCode, message, result);
 
     public new static OperationResult<T> Failure(Enum_StatusCode statusCode, string message)
