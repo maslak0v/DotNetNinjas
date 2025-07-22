@@ -54,7 +54,8 @@ public static class Registrator
         Type[] consumers = new[]
         {
             typeof(UserCreatedConsumer),
-            typeof(ExpenseCreatedConsumer)
+            typeof(ExpenseCreatedConsumer),
+            typeof(IncomeCreatedConsumer)
         };
         
         return services.AddBusMessage_WithConsumersFromType(consumers);
