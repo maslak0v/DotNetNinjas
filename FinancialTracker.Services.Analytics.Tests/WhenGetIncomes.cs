@@ -1,4 +1,6 @@
+using AutoMapper;
 using FinancialTracker.Services.Analytics.DataAccess.Repositories;
+using FinancialTracker.Services.Analytics.Mapping;
 using FinancialTracker.Services.Analytics.Models;
 using FinancialTracker.Services.Analytics.Services.Implementation;
 using FinancialTracker.Services.Analytics.Tests.DSL;
@@ -8,6 +10,18 @@ namespace FinancialTracker.Services.Analytics.Tests;
 
 public class WhenGetIncomes
 {
+    private readonly IMapper _mapper;
+
+    public WhenGetIncomes()
+    {
+        var config = new MapperConfiguration(cfg =>
+        {
+            cfg.AddProfile<IncomeMappingsProfile>();
+        });
+
+        _mapper = config.CreateMapper();
+    }
+    
     [SetUp]
     public void Setup()
     {
@@ -32,7 +46,7 @@ public class WhenGetIncomes
         mockRepository.Setup(repo =>
                 repo.GetIncomesAsync(tommy.Id, It.IsAny<DateTime>(), It.IsAny<DateTime>()))
             .ReturnsAsync(allIncomes.Where(e => e.User.Id == tommy.Id).ToList);
-        var incomesService = new IncomesService(mockRepository.Object);
+        var incomesService = new IncomesService(mockRepository.Object, _mapper);
         
         // Act
         var result = await incomesService.GetIncomesAsync(tommy.Id,
@@ -55,7 +69,7 @@ public class WhenGetIncomes
         mockRepository.Setup(repo =>
                 repo.GetIncomesAsync(tommy.Id, It.IsAny<DateTime>(), It.IsAny<DateTime>()))
             .ReturnsAsync(emptyIncomes);
-        var incomeService = new IncomesService(mockRepository.Object);
+        var incomeService = new IncomesService(mockRepository.Object, _mapper);
         
         // Act
         var fromDate = new DateTime(2024, 01, 01);
@@ -94,7 +108,7 @@ public class WhenGetIncomes
         mockRepository.Setup(repo =>
                 repo.GetIncomesUpToDateAsync(tommy.Id, It.IsAny<DateTime>()))
             .ReturnsAsync(allIncomes.Where(e => e.IncomeTime.Year <= 2010).ToList());
-        var incomeService = new IncomesService(mockRepository.Object);
+        var incomeService = new IncomesService(mockRepository.Object, _mapper);
         
         // Act
         var result = await incomeService.GetIncomesUpToDateAsync(tommy.Id,

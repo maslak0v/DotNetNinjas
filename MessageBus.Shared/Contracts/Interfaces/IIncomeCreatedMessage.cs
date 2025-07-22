@@ -1,4 +1,4 @@
-﻿namespace MessageBus.Shared.Contracts.Interfaces;
+namespace MessageBus.Shared.Contracts.Interfaces;
 
 public interface IIncomeCreatedMessage : IMessage
 {
