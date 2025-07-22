@@ -18,7 +18,7 @@ namespace FinancialTracker.Services.Analytics.Messaging
                 Name = context.Message.Name
             };
 
-            await userRepository.AddAsync(user);
+            await userRepository.AddAsync(user, CancellationToken.None);
 
         }
     }

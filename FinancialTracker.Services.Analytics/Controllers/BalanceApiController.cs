@@ -14,9 +14,10 @@ public class BalanceApiController(IBalanceService service,
     [HttpGet]
     public async Task<IActionResult> GetAsync(
         [FromQuery] Guid userId,
-        [FromQuery] DateTime forDate)
+        [FromQuery] DateTime forDate,
+        CancellationToken cancellationToken)
     {
-        var balance = await service.GetBalanceAsync(userId, forDate);
+        var balance = await service.GetBalanceAsync(userId, forDate, cancellationToken);
         var response = new ResponseDto(mapper.Map<BalanceResponseDto>(balance));
 
         return Ok(response);

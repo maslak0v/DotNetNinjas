@@ -44,14 +44,15 @@ public class WhenGetExpenses
         };
 
         mockRepository.Setup(repo =>
-                repo.GetExpensesAsync(tommy.Id, It.IsAny<DateTime>(), It.IsAny<DateTime>()))
+                repo.GetExpensesAsync(tommy.Id, It.IsAny<DateTime>(), It.IsAny<DateTime>(), CancellationToken.None))
             .ReturnsAsync(allExpenses.Where(e => e.User.Id == tommy.Id).ToList);
         var expensesService = new ExpensesService(mockRepository.Object, _mapper);
         
         // Act
         var result = await expensesService.GetExpensesAsync(tommy.Id,
             new DateTime(2019, 01, 01),
-            new DateTime(2024, 01, 01));
+            new DateTime(2024, 01, 01),
+            CancellationToken.None);
 
         // Assert
         Assert.That(result.Count, Is.EqualTo(1));
@@ -67,7 +68,7 @@ public class WhenGetExpenses
         
         var mockRepository = new Mock<IExpensesRepository>();
         mockRepository.Setup(repo =>
-                repo.GetExpensesAsync(tommy.Id, It.IsAny<DateTime>(), It.IsAny<DateTime>()))
+                repo.GetExpensesAsync(tommy.Id, It.IsAny<DateTime>(), It.IsAny<DateTime>(), CancellationToken.None))
             .ReturnsAsync(emptyExpenses);
         var expensesService = new ExpensesService(mockRepository.Object, _mapper);
         
@@ -75,7 +76,7 @@ public class WhenGetExpenses
         var fromDate = new DateTime(2024, 01, 01);
         var toDate = fromDate.AddDays(-1);
         var result = await expensesService.GetExpensesAsync(tommy.Id,
-            fromDate, toDate);
+            fromDate, toDate, CancellationToken.None);
         
         // Assert
         Assert.That(result, Is.EqualTo(emptyExpenses));
@@ -106,13 +107,13 @@ public class WhenGetExpenses
         };
 
         mockRepository.Setup(repo =>
-                repo.GetExpensesUpToDateAsync(tommy.Id, It.IsAny<DateTime>()))
+                repo.GetExpensesUpToDateAsync(tommy.Id, It.IsAny<DateTime>(), CancellationToken.None))
             .ReturnsAsync(allExpenses.Where(e => e.ExpenseTime.Year <= 2010).ToList());
         var expensesService = new ExpensesService(mockRepository.Object, _mapper);
         
         // Act
         var result = await expensesService.GetExpensesUpToDateAsync(tommy.Id,
-            new DateTime(2010, 01, 01));
+            new DateTime(2010, 01, 01), CancellationToken.None);
 
         // Assert
         Assert.That(result, Is.EqualTo(expensesUpTo2010));

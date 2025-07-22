@@ -45,14 +45,15 @@ public class WhenGetBalance
         };
 
         mockRepository.Setup(repo =>
-                repo.GetExpensesUpToDateAsync(tommy.Id, It.IsAny<DateTime>()))
+                repo.GetExpensesUpToDateAsync(tommy.Id, It.IsAny<DateTime>(), CancellationToken.None))
             .ReturnsAsync(allExpenses);
         var expensesService = new ExpensesService(mockRepository.Object, _mapper);
         var balanceService = new BalanceService(expensesService);
         
         // Act
         var result = await balanceService.GetBalanceAsync(tommy.Id,
-            new DateTime(2010, 01, 01));
+            new DateTime(2010, 01, 01),
+            CancellationToken.None);
 
         // Assert
         Assert.That(result, Is.EqualTo(-(10+100+1000)));
@@ -67,14 +68,15 @@ public class WhenGetBalance
         var allExpenses = new List<Expense> {};
 
         mockRepository.Setup(repo =>
-                repo.GetExpensesUpToDateAsync(tommy.Id, It.IsAny<DateTime>()))
+                repo.GetExpensesUpToDateAsync(tommy.Id, It.IsAny<DateTime>(), CancellationToken.None))
             .ReturnsAsync(allExpenses);
         var expensesService = new ExpensesService(mockRepository.Object, _mapper);
         var balanceService = new BalanceService(expensesService);
         
         // Act
         var result = await balanceService.GetBalanceAsync(tommy.Id,
-            new DateTime(2010, 01, 01));
+            new DateTime(2010, 01, 01),
+            CancellationToken.None);
 
         // Assert
         Assert.That(result, Is.EqualTo(0));

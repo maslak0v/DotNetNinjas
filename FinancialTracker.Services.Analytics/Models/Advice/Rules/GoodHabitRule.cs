@@ -2,7 +2,7 @@ namespace FinancialTracker.Services.Analytics.Models.Advice.Rules;
 
 public class GoodHabitRule : IAdviceRule
 {
-    public Task<AdviceResult> EvaluateAsync(List<Expense> expenses)
+    public Task<AdviceResult> EvaluateAsync(List<Expense> expenses, CancellationToken cancellationToken)
     {
         var result = expenses.Count != 0
             ? new AdviceResult
