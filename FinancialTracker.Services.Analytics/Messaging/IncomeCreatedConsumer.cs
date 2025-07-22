@@ -7,7 +7,7 @@ using MessageBus.Shared.Contracts.Interfaces;
 namespace FinancialTracker.Services.Analytics.Messaging;
 
 public class IncomeCreatedConsumer(
-    ILogger<ExpenseCreatedConsumer> logger,
+    ILogger<IncomeCreatedConsumer> logger,
     IIncomesService incomesService,
     IMapper mapper) 
     : IConsumer<IIncomeCreatedMessage>
