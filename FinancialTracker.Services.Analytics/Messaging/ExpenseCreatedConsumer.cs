@@ -23,6 +23,6 @@ public class ExpenseCreatedConsumer(
                               );
 
         var expense = mapper.Map<ExpenseDto>(message);
-        await expensesService.AddAsync(expense, CancellationToken.None);
+        await expensesService.AddAsync(expense, context.CancellationToken);
     }
 }
