@@ -31,6 +31,6 @@ public class UserCreatedWalletConsumer : IConsumer<IUserCreated>
             Currency = Currency.RUB
         };
         
-        await _accountRepository.AddAsync(wallet, CancellationToken.None);
+        await _accountRepository.AddAsync(wallet, context.CancellationToken);
     }
 }

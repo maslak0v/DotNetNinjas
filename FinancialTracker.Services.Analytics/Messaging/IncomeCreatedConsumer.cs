@@ -22,6 +22,6 @@ public class IncomeCreatedConsumer(
         );
 
         var income = mapper.Map<IncomeDto>(message);
-        await incomesService.AddAsync(income);
+        await incomesService.AddAsync(income, context.CancellationToken);
     }
 }

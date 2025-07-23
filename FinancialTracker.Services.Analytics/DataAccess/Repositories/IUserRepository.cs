@@ -4,6 +4,6 @@ namespace FinancialTracker.Services.Analytics.DataAccess.Repositories
 {
     public interface IUserRepository
     {
-        Task AddAsync(User user);
+        Task AddAsync(User user, CancellationToken cancellationToken);
     }
 }

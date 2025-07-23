@@ -10,6 +10,7 @@ public interface IAdviceService
     /// <param name="userId"> Guid пользователя </param>
     /// <param name="startDate"> Дата начала периода </param>
     /// <param name="endDate">Дата окончания периода </param>
+    /// <param name="cancellationToken">Токен отмены</param>
     /// <returns></returns>
-    Task<List<AdviceResult>> GetAdviceAsync(Guid userId, DateTime startDate, DateTime endDate);
+    Task<List<AdviceResult>> GetAdviceAsync(Guid userId, DateTime startDate, DateTime endDate, CancellationToken cancellationToken);
 }

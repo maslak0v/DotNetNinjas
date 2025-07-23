@@ -11,28 +11,32 @@ public interface IExpensesService
     /// <param name="userId"> Guid пользователя </param>
     /// <param name="startDate"> Дата начала периода </param>
     /// <param name="endDate">Дата окончания периода </param>
+    /// <param name="cancellationToken">Токен отмены</param>
     /// <returns></returns>
-    Task<List<Expense>> GetExpensesAsync(Guid userId, DateTime startDate, DateTime endDate);
+    Task<List<Expense>> GetExpensesAsync(Guid userId, DateTime startDate, DateTime endDate, CancellationToken cancellationToken);
 
     /// <summary>
     /// Получить список расходов до указанной даты (включительно) для пользователя
     /// </summary>
     /// <param name="userId"> Guid пользователя </param>
     /// <param name="upToDate"> Дата, до которой получаем расходы (включительно)</param>
+    /// <param name="cancellationToken">Токен отмены</param>
     /// <returns> Список расходов </returns>
-    Task<List<Expense>> GetExpensesUpToDateAsync(Guid userId, DateTime upToDate);
+    Task<List<Expense>> GetExpensesUpToDateAsync(Guid userId, DateTime upToDate, CancellationToken cancellationToken);
 
     /// <summary>
     /// Получить список расходов за период для пользователя с учетом счета и валюты
     /// </summary>
     /// <param name="request">Параметры запроса</param>
+    /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>Список расходов</returns>
-    Task<List<Expense>> GetExpensesByAccountAsync(ExpensesRequestDto request);
+    Task<List<Expense>> GetExpensesByAccountAsync(ExpensesRequestDto request, CancellationToken cancellationToken);
 
     /// <summary>
     /// Добавить новый расход
     /// </summary>
     /// <param name="expense">Расход</param>
+    /// <param name="cancellationToken">Токен отмены</param>
     /// <returns></returns>
-    Task AddAsync(ExpenseDto expense);
+    Task AddAsync(ExpenseDto expense, CancellationToken cancellationToken);
 }

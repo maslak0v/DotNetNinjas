@@ -4,10 +4,10 @@ namespace FinancialTracker.Services.Analytics.DataAccess.Repositories
 {
     public class UserRepository(AppDbContext dbContext) : IUserRepository
     {
-        public async Task AddAsync(User user)
+        public async Task AddAsync(User user, CancellationToken cancellationToken)
         {
             dbContext.Users.Add(user);
-            await dbContext.SaveChangesAsync();
+            await dbContext.SaveChangesAsync(cancellationToken);
         }
     }
 }

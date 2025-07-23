@@ -7,24 +7,24 @@ namespace FinancialTracker.Services.Analytics.Services.Implementation;
 
 public class ExpensesService (IExpensesRepository expensesRepository, IMapper mapper): IExpensesService
 {
-    public async Task<List<Expense>> GetExpensesAsync(Guid userId, DateTime startDate, DateTime endDate)
+    public async Task<List<Expense>> GetExpensesAsync(Guid userId, DateTime startDate, DateTime endDate, CancellationToken cancellationToken)
     {
-        return await expensesRepository.GetExpensesAsync(userId, startDate, endDate);
+        return await expensesRepository.GetExpensesAsync(userId, startDate, endDate, cancellationToken);
     }
     
-    public async Task<List<Expense>> GetExpensesUpToDateAsync(Guid userId, DateTime upToDate)
+    public async Task<List<Expense>> GetExpensesUpToDateAsync(Guid userId, DateTime upToDate, CancellationToken cancellationToken)
     {
-        return await expensesRepository.GetExpensesUpToDateAsync(userId, upToDate);
+        return await expensesRepository.GetExpensesUpToDateAsync(userId, upToDate, cancellationToken);
     }
 
-    public async Task<List<Expense>> GetExpensesByAccountAsync(ExpensesRequestDto request)
+    public async Task<List<Expense>> GetExpensesByAccountAsync(ExpensesRequestDto request, CancellationToken cancellationToken)
     {
-        return await expensesRepository.GetExpensesByAccountAsync(request);
+        return await expensesRepository.GetExpensesByAccountAsync(request, cancellationToken);
     }
 
-    public async Task AddAsync(ExpenseDto expenseDto)
+    public async Task AddAsync(ExpenseDto expenseDto, CancellationToken cancellationToken)
     {
         var expense = mapper.Map<Expense>(expenseDto);
-        await expensesRepository.AddAsync(expense);
+        await expensesRepository.AddAsync(expense, cancellationToken);
     }
 }
