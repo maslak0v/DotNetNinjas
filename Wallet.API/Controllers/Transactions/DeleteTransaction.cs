@@ -3,19 +3,18 @@ using MessageBus.Shared.Contracts.Implementations;
 using MessageBus.Shared.Contracts.Interfaces;
 using MessageBus.Shared.Publishers.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Wallet.API.Helpers;
 using Wallet.Application.Interfaces.Services;
 
 namespace Wallet.API.Controllers.Transactions;
 
-public class DeleteTransaction : TransactionBase
+public class DeleteTransaction : TransactionBase<DeleteTransaction>
 {
     private readonly IMessagePublisher  _messagePublisher;
     
     public DeleteTransaction(
         ITransactionService transactionService,
         IMapper mapper,
-        ILogger<TransactionBase> logger, IMessagePublisher messagePublisher)
+        ILogger<DeleteTransaction> logger, IMessagePublisher messagePublisher)
         : base(transactionService, mapper, logger)
     {
         _messagePublisher = messagePublisher;
@@ -30,12 +29,8 @@ public class DeleteTransaction : TransactionBase
 
         if (resultOperation.IsSuccess)
         {
-            var transactionDeletedMessage = new TransactionEvents.TransactionDeletedMessage(
-                MessageId: Guid.NewGuid(),
-                Timestamp: DateTime.UtcNow,
-                TransactionId: id
-            );
-        
+            var transactionDeletedMessage = _mapper.Map<TransactionEvents.TransactionDeletedMessage>(resultOperation.Result);
+            
             _logger.LogInformation(
                 $"Publishing event [{nameof(IDeleteTransactionMessage)}]: " +
                 $"transaction [{id}] deleted");
@@ -43,6 +38,7 @@ public class DeleteTransaction : TransactionBase
             await _messagePublisher.PublishAsync(transactionDeletedMessage);
         }    
     
-        return ResponseCreator.Create(resultOperation);
+        _logger.LogInformation($"Транзакция {id} удалена");
+        return Ok();
     }
 }

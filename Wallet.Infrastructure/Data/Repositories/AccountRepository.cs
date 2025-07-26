@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Wallet.Application.Interfaces.Repositories;
 using Wallet.Domain.Entities;
+using Wallet.Infrastructure.Extensions;
 
 namespace Wallet.Infrastructure.Data.Repositories;
 
@@ -14,18 +15,11 @@ public class AccountRepository : IAccountRepository
     }
 
 
-    public async Task<Account?> GetByIdAsync(
-        Guid id, 
-        CancellationToken cancellationToken, 
-        bool noTracking = true)
+    public async Task<Account?> GetByIdAsync(Guid id, CancellationToken cancellationToken, bool noTracking = true)
     {
         var query = _context.Account
+            .ApplyNoTracking(noTracking)
             .Where(a => a.AccountId == id);
-
-        if (noTracking)
-        {
-            query = query.AsNoTracking();
-        }
 
         return await query.FirstOrDefaultAsync(cancellationToken);
     }

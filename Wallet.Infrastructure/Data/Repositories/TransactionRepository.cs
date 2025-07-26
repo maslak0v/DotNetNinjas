@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Wallet.Application.Interfaces.Repositories;
 using Wallet.Domain.Entities;
+using Wallet.Infrastructure.Extensions;
 
 namespace Wallet.Infrastructure.Data.Repositories;
 
@@ -12,8 +13,7 @@ public class TransactionRepository : ITransactionRepository
     {
         _context = context;
     }
-
-
+    
     public async Task<Transaction?> GetByIdAsync(
         Guid id, 
         CancellationToken cancellationToken, 
@@ -28,14 +28,10 @@ public class TransactionRepository : ITransactionRepository
             query = query
                 .Include(t => t.Account)
                 .Include(t => t.Category)
-                .Include(t => t.TransactionTags)
-                .ThenInclude(tt => tt.Tag); 
+                .Include(t => t.Tag);
         }
-
-        if (noTracking)
-        {
-            query = query.AsNoTracking();
-        }
+        
+        query = query.ApplyNoTracking(noTracking);
 
         return await query.FirstOrDefaultAsync(cancellationToken);
     }
@@ -50,35 +46,9 @@ public class TransactionRepository : ITransactionRepository
 
     public async Task AddAsync(Transaction transaction, CancellationToken cancellationToken)
     {
-        if (transaction == null) throw new ArgumentNullException(nameof(transaction));
-
         await _context.Transactions.AddAsync(transaction, cancellationToken);
     }
-
-    public async Task UpdateAsync(Transaction transaction, CancellationToken cancellationToken)
-    {
-        if (transaction == null) throw new ArgumentNullException(nameof(transaction));
-
-        _context.Transactions.Update(transaction);
-        await _context.SaveChangesAsync(cancellationToken); 
-    }
-
-    public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
-    {
-        var transaction = await _context.Transactions
-            .FirstOrDefaultAsync(t => t.TransactionId == id && !t.IsDeleted, cancellationToken);
-        
-        transaction!.IsDeleted = true;
-        _context.Transactions.Update(transaction);
-        await _context.SaveChangesAsync(cancellationToken);
-    }
     
-    public async Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken)
-    {
-        return await _context.Transactions
-            .AnyAsync(t => t.TransactionId == id && !t.IsDeleted, cancellationToken);
-    }
-
     public async Task<IEnumerable<Transaction>> GetByDateRangeAsync(Guid accountId, DateTime startDate, DateTime endDate, int limit, CancellationToken cancellationToken)
     {
         return await _context.Transactions

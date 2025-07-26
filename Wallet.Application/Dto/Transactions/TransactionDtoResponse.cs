@@ -12,5 +12,6 @@ public class TransactionDtoResponse
     public decimal Amount { get; set; }
     public string? Comment { get; set; }
     public string? Image { get; set; }
-    public string? Tag { get; set; }
+    public string? TagName { get; set; }
+    public Guid? TagId { get; set; }
 }

@@ -7,7 +7,8 @@ public class TransactionEvents
     public record TransactionDeletedMessage(
         Guid MessageId,
         DateTime Timestamp,
-        Guid TransactionId
+        Guid TransactionId,
+        String TransactionType
     ) : IDeleteTransactionMessage;
     
     public record IncomeCreatedMessage(

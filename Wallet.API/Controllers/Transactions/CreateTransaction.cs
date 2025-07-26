@@ -10,14 +10,14 @@ using Wallet.Domain.Enums;
 
 namespace Wallet.API.Controllers.Transactions;
 
-public class CreateTransaction: TransactionBase
+public class CreateTransaction: TransactionBase<CreateTransaction>
 {
     private readonly IMessagePublisher  _messagePublisher;
     
     public CreateTransaction(
         ITransactionService transactionService, 
         IMapper mapper, 
-        ILogger<TransactionBase> logger, IMessagePublisher messagePublisher) 
+        ILogger<CreateTransaction> logger, IMessagePublisher messagePublisher) 
         : base(transactionService, mapper, logger)
     {
         _messagePublisher = messagePublisher;
@@ -39,40 +39,24 @@ public class CreateTransaction: TransactionBase
         
         if (transactionRequest.OperationType == OperationType.Expense)
         {
-            var expenseMessage = new TransactionEvents.ExpenseCreatedMessage(
-                MessageId: Guid.NewGuid(),
-                Timestamp: DateTime.UtcNow,
-                ExpenseId: createResult.Result.TransactionId,
-                UserId: createResult.Result.UserId,
-                AccountId: createResult.Result.AccountId,
-                CategoryName: createResult.Result.CategoryName,
-                ExpenseTime: createResult.Result.TransactionDate,
-                Amount: createResult.Result.Amount
-            );
+            var expenseMessage = _mapper.Map<TransactionEvents.ExpenseCreatedMessage>(createResult.Result);
             
             _logger.LogInformation(
-                $"Publishing event [Create expense]: created Id: {createResult.Result}");
-
+                $"Publishing event [Create expense]: created Id: {createResult.Result!.TransactionId}");
+            
             await _messagePublisher.PublishAsync(expenseMessage);
         }
         else
         {
-            var incomeMessage = new TransactionEvents.IncomeCreatedMessage(
-                MessageId: Guid.NewGuid(),
-                Timestamp: DateTime.UtcNow,
-                IncomeId: createResult.Result.TransactionId,
-                UserId: createResult.Result.UserId,
-                AccountId: createResult.Result.AccountId,
-                CategoryName: createResult.Result.CategoryName,
-                IncomeTime: createResult.Result.TransactionDate,
-                Amount: createResult.Result.Amount
-            );
+            var incomeMessage = _mapper.Map<TransactionEvents.IncomeCreatedMessage>(createResult.Result);
+            
             _logger.LogInformation(
-                $"Publishing event [Create income]: created Id: {createResult.Result}");
+                $"Publishing event [Create income]: created Id: {createResult.Result!.TransactionId}");
 
             await _messagePublisher.PublishAsync(incomeMessage);
         }
-
+        
+        _logger.LogInformation($"Создана транзакция {createResult.Result!.TransactionId}");
         return Ok();
     }
 }

@@ -3,5 +3,6 @@
     public interface IDeleteTransactionMessage : IMessage
     {
         Guid TransactionId { get; }
+        String TransactionType { get; }
     }
 }

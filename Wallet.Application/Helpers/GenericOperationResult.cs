@@ -6,7 +6,7 @@ public class OperationResult<T> : OperationResult
 {
     public T? Result { get; init; }
 
-    private OperationResult(bool isSuccess, Enum_StatusCode statusCode, string? message, T? result)
+    public OperationResult(bool isSuccess, Enum_StatusCode statusCode, string? message, T? result)
         : base(isSuccess, statusCode, message)
     {
         Result = result;

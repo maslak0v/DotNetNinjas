@@ -1,16 +1,11 @@
-using Microsoft.EntityFrameworkCore.Storage;
-
 namespace Wallet.Application.Interfaces.Repositories;
 
-public interface IUnitOfWork : IDisposable
+public interface IUnitOfWork
 {
-    // Основные репозитории
     IAccountRepository AccountRepository { get; }
     ITagRepository TagRepository { get; }
-    ITransactionTagRepository TransactionTagRepository { get; }
     ITransactionRepository TransactionRepository { get; }
-
-    // Сохранение изменений
+    ICategoryRepository CategoryRepository { get; }
+    
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
-    Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default);
 }

@@ -11,52 +11,61 @@ namespace Wallet.Infrastructure.Services;
 public class TransactionService : ITransactionService
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly ITransactionRepository _transactionRepository;
     private readonly IMapper _mapper;
-
-    public TransactionService(IUnitOfWork unitOfWork, ITransactionRepository transactionRepository, IMapper mapper)
+    public TransactionService(IUnitOfWork unitOfWork, IMapper mapper, ITagService tagService)
     {
         _unitOfWork = unitOfWork;
-        _transactionRepository = transactionRepository;
         _mapper = mapper;
     }
 
-    public async Task<TransactionDtoResponse> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<OperationResult<TransactionDtoResponse>> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
-        //Докинуть тег 
-        var transaction = await _transactionRepository.GetByIdAsync(id, cancellationToken, true, true );
-        
-        if (transaction == null)
-        {
-            throw new ArgumentException("Не найдено транзакций");
-        }
-        
-        var transactionDto = _mapper.Map<TransactionDtoResponse>(transaction);
-
-        return transactionDto;    
-    }
-    
-
-    public async Task<IEnumerable<TransactionDtoResponse>> GetByAccountIdAsync(Guid accountId, CancellationToken cancellationToken)
-    {
-        var transactions = await _transactionRepository.GetByAccountIdAsync(accountId, cancellationToken);
-        
-        if (!transactions.Any())
-        {
-            return Enumerable.Empty<TransactionDtoResponse>();
-        }
-        
-        return _mapper.Map<IEnumerable<TransactionDtoResponse>>(transactions);
-    }
-
-
-    public async Task<OperationResult<TransactionDtoResponse>> CreateAsync(TransactionDto transactionDto, CancellationToken cancellationToken)
-    {
-        await using var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
-        
         try
         {
-            // Получаем аккаунт с отслеживанием изменений
+            var transaction = await _unitOfWork.TransactionRepository.GetByIdAsync(id, cancellationToken, true, true);
+
+            if (transaction == null)
+                return OperationResult<TransactionDtoResponse>.Failure(
+                    Enum_StatusCode.NotFound,
+                    $"Транзакция не найдена: {id}");
+
+            var transactionDto = _mapper.Map<TransactionDtoResponse>(transaction);
+
+            return OperationResult<TransactionDtoResponse>.Success(
+                result: transactionDto,
+                message:"Ok"
+            );
+        }
+        catch (Exception ex)
+        {
+            return OperationResult<TransactionDtoResponse>.FromException(ex);
+        }
+    }
+    
+    public async Task<OperationResult<IEnumerable<TransactionDtoResponse>>> GetByAccountIdAsync(Guid accountId, CancellationToken cancellationToken)
+    {
+        var transactions = await _unitOfWork.TransactionRepository.GetByAccountIdAsync(accountId, cancellationToken);
+
+        if (!transactions.Any())
+        {
+            return OperationResult<IEnumerable<TransactionDtoResponse>>.Success(
+                result: Enumerable.Empty<TransactionDtoResponse>(),
+                message: "Транзакции не найдены"
+            );
+        }
+
+        var transactionsDto = _mapper.Map<IEnumerable<TransactionDtoResponse>>(transactions);
+
+        return OperationResult<IEnumerable<TransactionDtoResponse>>.Success(
+            result: transactionsDto,
+            message:"Ok"
+        );
+    }
+    
+    public async Task<OperationResult<TransactionDtoResponse>> CreateAsync(TransactionDto transactionDto, CancellationToken cancellationToken)
+    {
+        try
+        {
             var account = await _unitOfWork.AccountRepository.GetByIdAsync(
                 transactionDto.AccountId, 
                 cancellationToken, 
@@ -67,18 +76,23 @@ public class TransactionService : ITransactionService
                     Enum_StatusCode.NotFound, 
                     $"Аккаунт не найден: {transactionDto.AccountId}");
             
-            // Валидация типа операции
             if (!Enum.IsDefined(typeof(OperationType), transactionDto.OperationType))
                 return OperationResult<TransactionDtoResponse>.Failure(
                     Enum_StatusCode.BadRequest, 
                     $"Недопустимый тип операции: {transactionDto.OperationType}");
             
-            // Обновляем баланс
-            account.CurrentBalance = transactionDto.OperationType == OperationType.Income
-                ? account.CurrentBalance + transactionDto.Amount
-                : account.CurrentBalance - transactionDto.Amount;
+            var category = await _unitOfWork.CategoryRepository.GetByIdAsync(transactionDto.CategoryId, cancellationToken);
+            if (category == null)
+                return OperationResult<TransactionDtoResponse>.Failure(
+                    Enum_StatusCode.BadRequest, 
+                    $"Категория не найдена: {transactionDto.CategoryId}");
             
-            account.UpdatedAt = DateTime.UtcNow;
+            // Обновляем баланс
+            account.CurrentBalance = CalculateUpdatedBalance(
+                account.CurrentBalance,
+                transactionDto.Amount,
+                transactionDto.OperationType,
+                isAdding: true);
 
             // Работа с тегом
             var tag = await _unitOfWork.TagRepository.GetUserTagByNameAsync(
@@ -90,28 +104,20 @@ public class TransactionService : ITransactionService
             {
                 tag = new Tag { Name = transactionDto.Tag, UserId = account.UserId };
                 await _unitOfWork.TagRepository.CreateAsync(tag, cancellationToken);
-                await _unitOfWork.SaveChangesAsync(cancellationToken); // Сохраняем, чтобы получить ID
             }
 
             // Создаем и заполняем транзакцию
             var newTransaction = _mapper.Map<Transaction>(transactionDto);
-            newTransaction.TransactionDate = DateTime.UtcNow;
+            //newTransaction.TransactionDate = DateTime.UtcNow;
+            newTransaction.TagId = tag.TagId;
             
             await _unitOfWork.TransactionRepository.AddAsync(newTransaction, cancellationToken);
-            
-            // Создаем связь с тегом
-            await _unitOfWork.TransactionTagRepository.AddAsync(new TransactionTag
-            {
-                TransactionId = newTransaction.TransactionId,
-                TagId = tag.TagId
-            }, cancellationToken);
-
-            // Сохраняем все изменения
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-            await transaction.CommitAsync(cancellationToken);
-
-            // Маппим к DTO и возвращаем
+            
             var responseDto = _mapper.Map<TransactionDtoResponse>(newTransaction);
+            responseDto.CategoryName = category.Name;
+            responseDto.UserId = account.UserId;
+            responseDto.TagName = tag.Name;
             return OperationResult<TransactionDtoResponse>.Success(
                 result: responseDto,
                 message: "Транзакция успешно создана"
@@ -119,18 +125,15 @@ public class TransactionService : ITransactionService
         }
         catch (Exception ex)
         {
-            await transaction.RollbackAsync(cancellationToken);
             return OperationResult<TransactionDtoResponse>.FromException(ex);
         }
     }
 
-   public async Task<OperationResult<TransactionDtoResponse>> UpdateAsync(
-    Guid id,
-    TransactionDto transactionDto,
-    CancellationToken cancellationToken)
+    public async Task<OperationResult<TransactionDtoResponse>> UpdateAsync(
+        Guid id,
+        TransactionDto transactionDto,
+        CancellationToken cancellationToken)
     {
-        await using var dbTransaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
-
         try
         {
             var existingTransaction = await _unitOfWork.TransactionRepository.GetByIdAsync(
@@ -141,126 +144,113 @@ public class TransactionService : ITransactionService
 
             if (existingTransaction == null)
                 return OperationResult<TransactionDtoResponse>.Failure(
-                    Enum_StatusCode.NotFound, $"Транзакция не найдена: {id}");
-
-            if (existingTransaction.Account == null)
+                    Enum_StatusCode.NotFound, 
+                    $"Транзакция не найдена: {id}");
+            
+            if (!Enum.IsDefined(typeof(OperationType), transactionDto.OperationType))
                 return OperationResult<TransactionDtoResponse>.Failure(
-                    Enum_StatusCode.NotFound, "Связанный аккаунт не найден");
+                    Enum_StatusCode.BadRequest, 
+                    $"Недопустимый тип операции: {transactionDto.OperationType}");
 
-            // баланс
+            var category = await _unitOfWork.CategoryRepository.GetByIdAsync(
+                transactionDto.CategoryId, 
+                cancellationToken);
+
+            if (category == null)
+                return OperationResult<TransactionDtoResponse>.Failure(
+                    Enum_StatusCode.BadRequest, 
+                    $"Категория не найдена: {transactionDto.CategoryId}");
+            
             var account = existingTransaction.Account;
-            account.CurrentBalance = existingTransaction.OperationType == OperationType.Income
-                ? account.CurrentBalance - existingTransaction.Amount
-                : account.CurrentBalance + existingTransaction.Amount;
-            account.UpdatedAt = DateTime.UtcNow;
             
-            existingTransaction.Amount = transactionDto.Amount;
-            existingTransaction.CategoryId = transactionDto.CategoryId;
-            existingTransaction.Comment = transactionDto.Comment;
-            existingTransaction.OperationType = transactionDto.OperationType;
-
-            // Новый баланс
-            account.CurrentBalance = transactionDto.OperationType == OperationType.Income
-                ? account.CurrentBalance + transactionDto.Amount
-                : account.CurrentBalance - transactionDto.Amount;
-            existingTransaction.UpdatedAt = DateTime.UtcNow;
+            account.CurrentBalance = CalculateUpdatedBalance(
+                account.CurrentBalance,
+                existingTransaction.Amount,
+                existingTransaction.OperationType,
+                isAdding: false);
             
-            var newTagName = transactionDto.Tag?.Trim();
-            var transactionTag = existingTransaction.TransactionTags.FirstOrDefault();
-
-            if (!string.IsNullOrWhiteSpace(newTagName))
+            account.CurrentBalance = CalculateUpdatedBalance(
+                account.CurrentBalance,
+                transactionDto.Amount,
+                transactionDto.OperationType,
+                isAdding: true);
+            
+            Tag? tag = null;
+            if (!string.IsNullOrEmpty(transactionDto.Tag))
             {
-                var tag = await _unitOfWork.TagRepository.GetUserTagByNameAsync(
-                    newTagName, account.UserId, cancellationToken);
+                tag = await _unitOfWork.TagRepository.GetUserTagByNameAsync(
+                    transactionDto.Tag, 
+                    account.UserId, 
+                    cancellationToken);
 
                 if (tag == null)
                 {
-                    tag = new Tag { Name = newTagName, UserId = account.UserId };
+                    tag = new Tag { Name = transactionDto.Tag, UserId = account.UserId };
                     await _unitOfWork.TagRepository.CreateAsync(tag, cancellationToken);
-                    await _unitOfWork.SaveChangesAsync(cancellationToken); 
-                }
-
-                if (transactionTag != null)
-                {
-                    if (transactionTag.TagId != tag.TagId)
-                    {
-                        transactionTag.TagId = tag.TagId;
-                    }
-                }
-                else
-                {
-                    await _unitOfWork.TransactionTagRepository.AddAsync(
-                        new TransactionTag
-                        {
-                            TransactionId = existingTransaction.TransactionId,
-                            TagId = tag.TagId
-                        }, cancellationToken);
                 }
             }
-            else
-            {
-                if (transactionTag != null)
-                {
-                    _unitOfWork.TransactionTagRepository.DeleteAsync(transactionTag.TransactionId, cancellationToken);
-                }
-            }
-
+            
+            existingTransaction.TagId = tag?.TagId;
+            existingTransaction.CategoryId = category.CategoryId;
+            existingTransaction.Amount = transactionDto.Amount;
+            existingTransaction.OperationType = transactionDto.OperationType;
+            existingTransaction.UpdatedAt = DateTime.UtcNow;
+            
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-            await dbTransaction.CommitAsync(cancellationToken);
+            
+            var responseDto = _mapper.Map<TransactionDtoResponse>(existingTransaction);
+            responseDto.CategoryName = category.Name;
 
-            // Получаем обновлённую сущность для ответа
-            var updatedTransaction = await _unitOfWork.TransactionRepository.GetByIdAsync(
-                id, cancellationToken, includeRelated: true, noTracking: true);
-
-            var responseDto = _mapper.Map<TransactionDtoResponse>(updatedTransaction);
             return OperationResult<TransactionDtoResponse>.Success(
                 result: responseDto,
-                message: "Транзакция успешно создана"
+                message: "Транзакция успешно обновлена"
             );
         }
         catch (Exception ex)
         {
-            await dbTransaction.RollbackAsync(cancellationToken);
             return OperationResult<TransactionDtoResponse>.FromException(ex);
         }
     }
-    public async Task<OperationResult> DeleteAsync(Guid id, CancellationToken cancellationToken)
+
+    public async Task<OperationResult<DeleteTransactionDto>> DeleteAsync(Guid id, CancellationToken cancellationToken)
     {
         try
         {
-            // Получаем транзакцию с отслеживанием и включенными зависимостями
-            var transaction = await _transactionRepository.GetByIdAsync(
+            var transaction = await _unitOfWork.TransactionRepository.GetByIdAsync(
                 id, 
                 cancellationToken,
                 includeRelated: true,
                 noTracking: false);
 
             if (transaction == null)
-                return OperationResult.Failure(Enum_StatusCode.NotFound, $"Транзакция не найдена id: {id}");
+                return OperationResult<DeleteTransactionDto>.Failure(
+                    Enum_StatusCode.NotFound, $"Транзакция не найдена: {id}");
             
             var account = transaction.Account;
             
-            if (transaction.OperationType == OperationType.Income)
-                account.CurrentBalance -= transaction.Amount;
-            else if (transaction.OperationType == OperationType.Expense)
-                account.CurrentBalance += transaction.Amount;
-            
-            var now = DateTime.UtcNow;
-            account.UpdatedAt = now;
+            account.CurrentBalance = CalculateUpdatedBalance(account.CurrentBalance, transaction.Amount, transaction.OperationType, false);
             transaction.IsDeleted = true;
+            transaction.UpdatedAt = DateTime.UtcNow;
             
-            var changes = await _unitOfWork.SaveChangesAsync(cancellationToken);
-        
-            return changes > 0
-                ? OperationResult.Success(Enum_StatusCode.OK, "Транзакция успешно удалена")
-                : OperationResult.Failure(Enum_StatusCode.ServerError, "Изменения не сохранены");
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            
+            var responseDto = _mapper.Map<DeleteTransactionDto>(transaction);
+            return OperationResult<DeleteTransactionDto>.Success(
+                result: responseDto,
+                message: "Транзакция успешно удалена"
+            );
         }
         catch (Exception ex)
         {
-            return OperationResult.FromException(ex);
+            return OperationResult<DeleteTransactionDto>.FromException(ex);
         }
     }
-
-    public Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken) 
-        => _transactionRepository.ExistsAsync(id, cancellationToken);
+    
+    private decimal CalculateUpdatedBalance(decimal currentBalance, decimal amount, OperationType operationType, bool isAdding)
+    {
+        if (operationType == OperationType.Income)
+            return isAdding ? currentBalance + amount : currentBalance - amount;
+        else
+            return isAdding ? currentBalance - amount : currentBalance + amount;
+    }
 }
