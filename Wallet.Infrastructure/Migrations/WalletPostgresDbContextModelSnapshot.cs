@@ -11,7 +11,7 @@ using Wallet.Infrastructure.Data;
 namespace Wallet.Infrastructure.Migrations
 {
     [DbContext(typeof(WalletPostgresDbContext))]
-    partial class WalletDbContextModelSnapshot : ModelSnapshot
+    partial class WalletPostgresDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -30,7 +30,8 @@ namespace Wallet.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("NOW()");
 
                     b.Property<string>("Currency")
                         .IsRequired()
@@ -44,8 +45,7 @@ namespace Wallet.Infrastructure.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -70,19 +70,20 @@ namespace Wallet.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("NOW()");
 
                     b.Property<string>("Icon")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
                         .HasDefaultValue("default");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -103,8 +104,8 @@ namespace Wallet.Infrastructure.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
@@ -112,6 +113,9 @@ namespace Wallet.Infrastructure.Migrations
                     b.HasKey("TagId");
 
                     b.HasIndex("UserId");
+
+                    b.HasIndex("Name", "UserId")
+                        .IsUnique();
 
                     b.ToTable("Tags");
                 });
@@ -132,13 +136,12 @@ namespace Wallet.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("Comment")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
 
                     b.Property<string>("Image")
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
@@ -147,11 +150,16 @@ namespace Wallet.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<Guid?>("TagId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTime>("TransactionDate")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("NOW()");
 
                     b.Property<DateTime?>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("TransactionId");
@@ -160,29 +168,9 @@ namespace Wallet.Infrastructure.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Transactions");
-                });
-
-            modelBuilder.Entity("Wallet.Domain.Entities.TransactionTag", b =>
-                {
-                    b.Property<Guid>("TransactionTagId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("TagId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("TransactionId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("TransactionTagId");
-
                     b.HasIndex("TagId");
 
-                    b.HasIndex("TransactionId", "TagId")
-                        .IsUnique();
-
-                    b.ToTable("TransactionTags");
+                    b.ToTable("Transactions");
                 });
 
             modelBuilder.Entity("Wallet.Domain.Entities.Transaction", b =>
@@ -199,28 +187,16 @@ namespace Wallet.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("Wallet.Domain.Entities.Tag", "Tag")
+                        .WithMany("Transactions")
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.Navigation("Account");
 
                     b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("Wallet.Domain.Entities.TransactionTag", b =>
-                {
-                    b.HasOne("Wallet.Domain.Entities.Tag", "Tag")
-                        .WithMany("TransactionTags")
-                        .HasForeignKey("TagId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Wallet.Domain.Entities.Transaction", "Transaction")
-                        .WithMany("TransactionTags")
-                        .HasForeignKey("TransactionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
 
                     b.Navigation("Tag");
-
-                    b.Navigation("Transaction");
                 });
 
             modelBuilder.Entity("Wallet.Domain.Entities.Account", b =>
@@ -235,12 +211,7 @@ namespace Wallet.Infrastructure.Migrations
 
             modelBuilder.Entity("Wallet.Domain.Entities.Tag", b =>
                 {
-                    b.Navigation("TransactionTags");
-                });
-
-            modelBuilder.Entity("Wallet.Domain.Entities.Transaction", b =>
-                {
-                    b.Navigation("TransactionTags");
+                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }

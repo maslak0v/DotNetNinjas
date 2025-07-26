@@ -8,7 +8,7 @@ namespace Wallet.Application.Helpers
         public string? Message { get; init; }
         public Enum_StatusCode StatusCode { get;init; }
 
-        private OperationResult(bool isSuccess, Enum_StatusCode statusCode, string? message)
+        protected OperationResult(bool isSuccess, Enum_StatusCode statusCode, string? message)
         {
             IsSuccess = isSuccess;
             Message = message;

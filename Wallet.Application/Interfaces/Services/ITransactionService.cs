@@ -1,13 +1,13 @@
 using Wallet.Application.Dto.Transactions;
+using Wallet.Application.Helpers;
 
 namespace Wallet.Application.Interfaces.Services;
 
 public interface ITransactionService
 {
-    Task<TransactionDtoResponse> GetByIdAsync(Guid id, CancellationToken cancellationToken);
-    Task<IEnumerable<TransactionDtoResponse>> GetByAccountIdAsync(Guid accountId, CancellationToken cancellationToken);
-    Task<Guid> CreateAsync(TransactionDto createTransactionDto, CancellationToken cancellationToken);
-    Task UpdateAsync(Guid id, TransactionDto transactionDto, CancellationToken cancellationToken);
-    Task DeleteAsync(Guid id, CancellationToken cancellationToken);
-    Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken);
+    Task<OperationResult<TransactionDtoResponse>> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<OperationResult<IEnumerable<TransactionDtoResponse>>> GetByAccountIdAsync(Guid accountId, CancellationToken cancellationToken);
+    Task<OperationResult<TransactionDtoResponse>> CreateAsync(TransactionDto createTransactionDto, CancellationToken cancellationToken);
+    Task<OperationResult<TransactionDtoResponse>> UpdateAsync(Guid id, TransactionDto transactionDto, CancellationToken cancellationToken);
+    Task<OperationResult<DeleteTransactionDto>> DeleteAsync(Guid id, CancellationToken cancellationToken);
 }

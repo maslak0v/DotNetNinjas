@@ -4,7 +4,8 @@ public interface IUnitOfWork
 {
     IAccountRepository AccountRepository { get; }
     ITagRepository TagRepository { get; }
-    ITransactionTagRepository TransactionTagRepository { get; }
     ITransactionRepository TransactionRepository { get; }
-    Task SaveChangesAsync(CancellationToken cancellationToken);
+    ICategoryRepository CategoryRepository { get; }
+    
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

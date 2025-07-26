@@ -47,10 +47,6 @@ public class AccountService : IAccountService
         await _accountRepository.SoftDelete(deletedAccount, cancellationToken);
         return OperationResult.Success(Enum_StatusCode.NoContent);
     }
-
-    public async Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken)
-        => await _accountRepository.ExistsAsync(id, cancellationToken);
-
     public async Task<AccountDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         var account = await _accountRepository.GetByIdAsync(id, cancellationToken);

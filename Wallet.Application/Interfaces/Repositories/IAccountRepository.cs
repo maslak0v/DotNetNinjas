@@ -4,7 +4,10 @@ namespace Wallet.Application.Interfaces.Repositories;
 
 public interface IAccountRepository 
 {
-    Task<Account?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<Account?> GetByIdAsync(
+        Guid id, 
+        CancellationToken cancellationToken,
+        bool noTracking = true);
     Task<IEnumerable<Account>> GetAllByUserIdAsync(Guid id, CancellationToken cancellationToken);
     Task AddAsync(Account account, CancellationToken cancellationToken);
     Task UpdateAsync(Account account, CancellationToken cancellationToken);

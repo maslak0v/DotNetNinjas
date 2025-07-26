@@ -1,4 +1,3 @@
-
 using MessageBus.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -34,7 +33,6 @@ public class Startup
         services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<IAccountRepository, AccountRepository>();
         services.AddScoped<ITagRepository, TagRepository>();
-        services.AddScoped<ITransactionTagRepository, TransactionTagRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<ITransactionRepository , TransactionRepository>();
         
@@ -45,6 +43,7 @@ public class Startup
         services.AddScoped<ITransactionService, TransactionService>();
 
         services.AddBusMessage_WithConsumersFromType(typeof(UserCreatedWalletConsumer));
+        services.AddDefaultPublisher();
         
         services.AddControllers(); 
         services.AddEndpointsApiExplorer();
