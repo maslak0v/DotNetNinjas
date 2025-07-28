@@ -21,6 +21,7 @@ public class TransactionRepository : ITransactionRepository
         bool noTracking = true)
     {
         var query = _context.Transactions
+            .ApplyNoTracking(noTracking)
             .Where(t => t.TransactionId == id && !t.IsDeleted);
 
         if (includeRelated)
@@ -31,8 +32,6 @@ public class TransactionRepository : ITransactionRepository
                 .Include(t => t.Tag);
         }
         
-        query = query.ApplyNoTracking(noTracking);
-
         return await query.FirstOrDefaultAsync(cancellationToken);
     }
 
