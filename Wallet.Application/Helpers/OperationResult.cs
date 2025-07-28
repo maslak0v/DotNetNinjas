@@ -20,7 +20,7 @@ namespace Wallet.Application.Helpers
 
         public static OperationResult Failure(Enum_StatusCode statusCode, string message)
             => new OperationResult(false, statusCode, message);
-        private static OperationResult FromException(Exception ex)
+        public static OperationResult FromException(Exception ex)
         {
             StringBuilder sb = new StringBuilder();
             for (var current = ex; current is not null; current = current.InnerException)
