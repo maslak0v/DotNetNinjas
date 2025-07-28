@@ -41,7 +41,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Presentation.Controllers
             _logger.LogInformation(
                $"Publish event [{userCreatedMessage.GetType()}]: user[{user.Id}] created");
             
-            await messagePublisher.PublishAsync(userCreatedMessage);
+            await messagePublisher.PublishAsync(userCreatedMessage, cancellationToken);
 
             return Created();
         }

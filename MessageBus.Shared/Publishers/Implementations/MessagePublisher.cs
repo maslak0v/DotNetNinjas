@@ -8,7 +8,7 @@ namespace MessageBus.Shared.Publishers.Imlementations
         IPublishEndpoint publishEndpoint)
         : IMessagePublisher
     {
-        public async Task PublishAsync<TMessage>(TMessage userEvent) 
-            where TMessage : IMessage => await publishEndpoint.Publish(userEvent);
+        public async Task PublishAsync<TMessage>(TMessage userEvent, CancellationToken cancellationToken) 
+            where TMessage : class, IMessage => await publishEndpoint.Publish(userEvent, cancellationToken);
     }
 }

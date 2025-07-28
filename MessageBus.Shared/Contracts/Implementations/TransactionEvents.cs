@@ -1,16 +1,19 @@
+using MassTransit;
 using MessageBus.Shared.Contracts.Interfaces;
 
 namespace MessageBus.Shared.Contracts.Implementations;
 
 public class TransactionEvents
 {
+    [ExcludeFromTopology]
     public record TransactionDeletedMessage(
         Guid MessageId,
         DateTime Timestamp,
         Guid TransactionId,
         String TransactionType
     ) : IDeleteTransactionMessage;
-    
+
+    [ExcludeFromTopology]
     public record IncomeCreatedMessage(
         Guid MessageId,
         DateTime Timestamp,
@@ -21,7 +24,7 @@ public class TransactionEvents
         DateTime IncomeTime,
         decimal Amount) : IIncomeCreatedMessage;
 
-
+    [ExcludeFromTopology]
     public record ExpenseCreatedMessage(
         Guid MessageId,
         DateTime Timestamp,
