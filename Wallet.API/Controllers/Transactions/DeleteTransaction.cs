@@ -35,7 +35,7 @@ public class DeleteTransaction : TransactionBase<DeleteTransaction>
                 $"Publishing event [{nameof(IDeleteTransactionMessage)}]: " +
                 $"transaction [{id}] deleted");
             
-            await _messagePublisher.PublishAsync(transactionDeletedMessage);
+            await _messagePublisher.PublishAsync(transactionDeletedMessage, cancellationToken);
         }    
     
         _logger.LogInformation($"Транзакция {id} удалена");

@@ -1,7 +1,9 @@
 using AutoMapper;
 using MessageBus.Shared.Contracts.Implementations;
+using MessageBus.Shared.Contracts.Interfaces;
 using MessageBus.Shared.Publishers.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Wallet.API.Helpers;
 using Wallet.API.Models.Transactions;
 using Wallet.Application.Dto.Transactions;
@@ -39,21 +41,19 @@ public class CreateTransaction: TransactionBase<CreateTransaction>
         
         if (transactionRequest.OperationType == OperationType.Expense)
         {
-            var expenseMessage = _mapper.Map<TransactionEvents.ExpenseCreatedMessage>(createResult.Result);
+            IExpenseCreatedMessage expenseMessage = _mapper.Map<TransactionEvents.ExpenseCreatedMessage>(createResult.Result);
             
             _logger.LogInformation(
                 $"Publishing event [Create expense]: created Id: {createResult.Result!.TransactionId}");
-            
-            await _messagePublisher.PublishAsync(expenseMessage);
+            await _messagePublisher.PublishAsync(expenseMessage, cancellationToken);
         }
         else
         {
-            var incomeMessage = _mapper.Map<TransactionEvents.IncomeCreatedMessage>(createResult.Result);
+            IIncomeCreatedMessage incomeMessage = _mapper.Map<TransactionEvents.IncomeCreatedMessage>(createResult.Result);
             
             _logger.LogInformation(
                 $"Publishing event [Create income]: created Id: {createResult.Result!.TransactionId}");
-
-            await _messagePublisher.PublishAsync(incomeMessage);
+            await _messagePublisher.PublishAsync(incomeMessage, cancellationToken);
         }
         
         _logger.LogInformation($"Создана транзакция {createResult.Result!.TransactionId}");
