@@ -9,7 +9,6 @@
         <DockerComposeProjectPath>../docker-compose.dcproj</DockerComposeProjectPath>
         <UserSecretsId>09b17bc5-9515-4cd9-b4fe-8580d12d259b</UserSecretsId>
         <LangVersion>12</LangVersion>
-		<SaveAsUtf8>true</SaveAsUtf8>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(RunConfiguration)' == 'https' " />
@@ -27,9 +26,6 @@
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\MessageBus.Shared\MessageBus.Shared.csproj" />
-    </ItemGroup>
-    <ItemGroup>
-      <Folder Include="DataAccess\Migrations\" />
     </ItemGroup>
 
 </Project>

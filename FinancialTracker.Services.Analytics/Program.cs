@@ -1,4 +1,4 @@
-using FinancialTracker.Services.Analytics;
+ï»¿using FinancialTracker.Services.Analytics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.OpenApi.Models;
@@ -19,9 +19,9 @@ builder.Services.AddSwaggerGen( options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "Äîêóìåíòàöèÿ Analytics API",
+        Title = "Ğ”Ğ¾ĞºÑƒĞ¼ĞµĞ½Ñ‚Ğ°Ñ†Ğ¸Ñ Analytics API",
         Version = "v1",
-        Description = "Îïèñàíèå API ñåğâèñà àíàëèòèêè."
+        Description = "ĞĞ¿Ğ¸ÑĞ°Ğ½Ğ¸Ğµ API ÑĞµÑ€Ğ²Ğ¸ÑĞ° Ğ°Ğ½Ğ°Ğ»Ğ¸Ñ‚Ğ¸ĞºĞ¸."
     });
     options.TagActionsBy(api => new[] { api.GroupName });
     options.DocInclusionPredicate((version, desc) => true);

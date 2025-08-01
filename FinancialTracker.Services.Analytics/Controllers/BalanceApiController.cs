@@ -1,4 +1,4 @@
-using AutoMapper;
+Ôªøusing AutoMapper;
 using FinancialTracker.Services.Analytics.Models.Dto;
 using FinancialTracker.Services.Analytics.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +7,7 @@ namespace FinancialTracker.Services.Analytics.Controllers;
 
 [ApiController]
 [Route("api/balance")]
-[ApiExplorerSettings(GroupName = "¡‡Î‡ÌÒ")]
+[ApiExplorerSettings(GroupName = "–ë–∞–ª–∞–Ω—Å")]
 public class BalanceApiController(IBalanceService service,
     IMapper mapper) : ControllerBase
 {
