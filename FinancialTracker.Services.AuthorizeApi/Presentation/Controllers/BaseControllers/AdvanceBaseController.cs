@@ -14,6 +14,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Presentation.Controllers.BaseCo
             {
                 Enum_StatusCode.BAD_REQUEST => BadRequest(message),
                 Enum_StatusCode.NOT_FOUND => NotFound(),
+                Enum_StatusCode.NO_CONTENT => NoContent(),
                 _ => Problem(
                     statusCode: (int)statusCode,
                     detail: message)

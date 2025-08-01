@@ -20,7 +20,7 @@ public class WhenEvaluateGoodHabitRule
         var rule = new GoodHabitRule();
 
         // Act
-        var result = await rule.EvaluateAsync(allExpenses);
+        var result = await rule.EvaluateAsync(allExpenses, CancellationToken.None);
 
         // Assert
         Assert.That(result.Title, Is.EqualTo("Учёт трат"));
@@ -38,7 +38,7 @@ public class WhenEvaluateGoodHabitRule
         var rule = new GoodHabitRule();
 
         // Act
-        var result = await rule.EvaluateAsync(noExpenses);
+        var result = await rule.EvaluateAsync(noExpenses, CancellationToken.None);
 
         // Assert
         Assert.That(result.IsEmpty());

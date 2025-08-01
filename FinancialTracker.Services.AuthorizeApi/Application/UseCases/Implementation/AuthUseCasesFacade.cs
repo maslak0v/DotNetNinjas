@@ -16,45 +16,47 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<OperationResult<User>> UserRegisterAsync(IUserRegisterRequest request)
+        public async Task<OperationResult<User>> UserRegisterAsync(IUserRegisterRequest request, CancellationToken cancellationToken)
             => await ExecuteUseCaseAsync<IUserRegisterUseCase, OperationResult<User>>(
-                () => useCaseFabric.CreateUserRegister(request));
+                () => useCaseFabric.CreateUserRegister(request), cancellationToken);
 
-        public async Task<OperationResult<ITokenResponse>> UserLoginAsync(IAuthTokenService service, IUserLoginRequest request)
+        public async Task<OperationResult<ITokenResponse>> UserLoginAsync(
+            IAuthTokenService service, IUserLoginRequest request, CancellationToken cancellationToken)
             => await ExecuteUseCaseAsync<ILoginUseCase, OperationResult<ITokenResponse>>(
-                () => useCaseFabric.CreateLogin(service, request));
+                () => useCaseFabric.CreateLogin(service, request), cancellationToken);
 
-        public Task<OperationResult> DeleteAsync(Guid id)
+        public Task<OperationResult> DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public Task<OperationResult<ICurrentUserLoginResponse>> GetCurrentUserAsync()
+        public Task<OperationResult<ICurrentUserLoginResponse>> GetCurrentUserAsync(CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public Task<OperationResult> UserLogoutAsync(IUserLogoutRequest request)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<OperationResult> UserLogoutAsync(string userId, IAuthTokenService service, CancellationToken cancellationToken)
+            => await ExecuteUseCaseAsync<ILogoutUseCase, OperationResult>(
+                () => useCaseFabric.CreateLogout(userId, service), cancellationToken);
 
 
-        public async Task<OperationResult<List<IUserResponseInfo>>> GetAllUsersAsync() 
+        public async Task<OperationResult<List<IUserResponseInfo>>> GetAllUsersAsync(CancellationToken cancellationToken) 
             => await ExecuteUseCaseAsync<IGetAllUsersUseCase,
-                OperationResult<List<IUserResponseInfo>>> (useCaseFabric.CreateGetAllUsers);
+                OperationResult<List<IUserResponseInfo>>> (useCaseFabric.CreateGetAllUsers, cancellationToken);
 
 
-        public async Task<OperationResult<ITokenResponse>> RefreshAsync(IAuthTokenService service, IRefreshRequest request)
+        public async Task<OperationResult<ITokenResponse>> RefreshAsync(
+            IAuthTokenService service, IRefreshRequest request, CancellationToken cancellationToken)
             => await ExecuteUseCaseAsync<IRefreshUseCase, OperationResult<ITokenResponse>>(
-            () => useCaseFabric.CreateRefresh(service, request));
+            () => useCaseFabric.CreateRefresh(service, request), cancellationToken);
 
 
         private async Task<TResult> ExecuteUseCaseAsync<TUsecase, TResult>(
-            Func<TUsecase> createUsecase) where TUsecase : ICommandAsync<TResult>
+            Func<TUsecase> createUsecase,
+            CancellationToken cancellationToken) where TUsecase : ICommandAsync<TResult>
         {
             var usecase = createUsecase();
-            await usecase.ExecuteAsync();
+            await usecase.ExecuteAsync(cancellationToken);
             return usecase.Result;
         }
     }

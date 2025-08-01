@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using Wallet.Application.Interfaces.Repositories;
 using Wallet.Domain.Entities;
-using Wallet.Infrastructure.Data.Interfaces;
 
 namespace Wallet.Infrastructure.Data.Repositories;
 
@@ -18,28 +18,26 @@ public class TagRepository : ITagRepository
         await _context.Tags.AddAsync(tag, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
     }
+    public async Task<Tag?> GetUserTagByNameAsync(string name, Guid userId, CancellationToken cancellationToken) 
+        => await _context.Tags
+            .AsNoTracking()
+            .FirstOrDefaultAsync(t => t.Name == name && t.UserId == userId, cancellationToken);
 
-    public async Task<Tag?> GetByIdAsync(Guid tagId, CancellationToken cancellationToken)
-        => await _context.Tags
-            .AsNoTracking()
-            .FirstOrDefaultAsync(t => t.TagId == tagId, cancellationToken);
-    public async Task<Tag?> GetTagIdByNameAsync(string title, Guid userId, CancellationToken cancellationToken) 
-        => await _context.Tags
-            .AsNoTracking()
-            .FirstOrDefaultAsync(t => t.Name == title && t.UserId == userId, cancellationToken);
-    
-    public async Task<IEnumerable<Tag>> GetAllUserTagsAsync(Guid userId, CancellationToken cancellationToken)
-        => await _context.Tags
-            .AsNoTracking()
-            .Where(t => t.UserId == userId).ToListAsync(cancellationToken);
-    
-    public async Task<IEnumerable<Tag>> SearchTagsByPrefixAsync(Guid userId,
-        string prefix, int limit, CancellationToken cancellationToken)
+    public async Task<IEnumerable<Tag>> SearchUserTagsByPrefixAsync(Guid userId, string prefix, int limit, int page, CancellationToken cancellationToken)
     {
-        return await _context.Tags
-            .AsNoTracking()   
-            .Where(t => t.UserId == userId && t.Name.StartsWith(prefix))
+        int skip = (page - 1) * limit;
+
+        var query = _context.Tags
+            .Where(t => t.UserId == userId);
+
+        if (!string.IsNullOrEmpty(prefix))
+        {
+            query = query.Where(t => t.Name.StartsWith(prefix));
+        }
+        
+        return await query
             .OrderBy(t => t.Name)
+            .Skip(skip)
             .Take(limit)
             .ToListAsync(cancellationToken);
     }

@@ -26,6 +26,7 @@
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\MessageBus.Shared\MessageBus.Shared.csproj" />
+      <ProjectReference Include="..\WebInfrastructure.Shared\WebInfrastructure.Shared.csproj" />
     </ItemGroup>
 
 </Project>

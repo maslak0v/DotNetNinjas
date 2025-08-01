@@ -1,34 +1,33 @@
-using Wallet.Infrastructure.Data.Interfaces;
+using Microsoft.EntityFrameworkCore.Storage;
+using Wallet.Application.Interfaces.Repositories;
 
 namespace Wallet.Infrastructure.Data.Repositories;
-
 public class UnitOfWork : IUnitOfWork
 {
-    private WalletPostgresDbContext _context;
+    private readonly WalletPostgresDbContext _context;
     
-    private IAccountRepository _accountRepository;
-    private ITagRepository _tagRepository;
-    private ITransactionTagRepository _transactionTagRepository;
-    private ITransactionRepository _transactionRepository;
-
-    public IAccountRepository AccountRepository => _accountRepository;
-    public ITagRepository TagRepository => _tagRepository;
-    public ITransactionRepository TransactionRepository => _transactionRepository;
-    public ITransactionTagRepository TransactionTagRepository => _transactionTagRepository;
-    
-    
-    public UnitOfWork(WalletPostgresDbContext context)
+    public UnitOfWork(
+        WalletPostgresDbContext context,
+        IAccountRepository accountRepository,
+        ITagRepository tagRepository,
+        ITransactionRepository transactionRepository,
+        ICategoryRepository categoryRepository)
     {
         _context = context;
-        _accountRepository = new AccountRepository(context);
-        _tagRepository = new TagRepository(context);
-        _transactionTagRepository = new TransactionTagRepository(context);
-        _transactionRepository = new TransactionRepository(context);
+        AccountRepository = accountRepository;
+        TagRepository = tagRepository;
+        TransactionRepository = transactionRepository;
+        CategoryRepository = categoryRepository;
     }
+
+    public IAccountRepository AccountRepository { get; }
+    public ITagRepository TagRepository { get; }
+    public ITransactionRepository TransactionRepository { get; }
+    public ICategoryRepository CategoryRepository { get; }
+
+    public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default) 
+        => _context.SaveChangesAsync(cancellationToken);
     
-    public async Task SaveChangesAsync(CancellationToken cancellationToken)
-    {
-        await _context.SaveChangesAsync(cancellationToken);
-    }
-    
+    public Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
+        => _context.Database.BeginTransactionAsync(cancellationToken);
 }

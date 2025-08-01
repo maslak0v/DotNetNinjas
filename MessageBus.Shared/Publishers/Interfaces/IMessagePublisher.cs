@@ -4,6 +4,7 @@ namespace MessageBus.Shared.Publishers.Interfaces
 {
     public interface IMessagePublisher 
     {
-        Task PublishAsync<TMessage>(TMessage message) where TMessage : IMessage;
+        Task PublishAsync<TMessage>(TMessage message, CancellationToken cancellationToken)
+            where TMessage : class, IMessage;
     }
 }

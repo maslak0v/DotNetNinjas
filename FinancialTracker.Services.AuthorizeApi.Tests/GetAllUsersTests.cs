@@ -18,17 +18,17 @@ namespace FinancialTracker.Services.AuthorizeApi.Tests
             List<IUserResponseInfo> users = [];
             var mockResult = OperationResultCreator.Success(users, Domain.ValueObjects.Enum_StatusCode.OK);
             var mockRepository = new Mock<IUserRepository>();
-            mockRepository.Setup(repo => repo.GetAllUsersQueryAsync())
+            mockRepository.Setup(repo => repo.GetAllUsersQueryAsync(CancellationToken.None))
                 .ReturnsAsync(mockResult);
 
             IAuthUseCaseFabric fabric = AuthUseCaseFabricCreator.Create(mockRepository.Object);
             IAuthUseCasesFacade facade = AuthUseCaseFacadeCreator.Create(fabric);
 
             //Act
-            var result = await facade.GetAllUsersAsync();
+            var result = await facade.GetAllUsersAsync(CancellationToken.None);
 
             //Assert
-            mockRepository.Verify(repo => repo.GetAllUsersQueryAsync(), Times.Once);
+            mockRepository.Verify(repo => repo.GetAllUsersQueryAsync(CancellationToken.None), Times.Once);
             Assert.True(result.IsSuccess);
             Assert.NotNull(result.Result);
         }
@@ -42,17 +42,17 @@ namespace FinancialTracker.Services.AuthorizeApi.Tests
                 //Arrange
                 var mockResult = OperationResultCreator.FromException<List<IUserResponseInfo>>(ex);
                 var mockRepository = new Mock<IUserRepository>();
-                mockRepository.Setup(repo => repo.GetAllUsersQueryAsync())
+                mockRepository.Setup(repo => repo.GetAllUsersQueryAsync(CancellationToken.None))
                     .ReturnsAsync(mockResult);
 
                 IAuthUseCaseFabric fabric = AuthUseCaseFabricCreator.Create(mockRepository.Object);
                 IAuthUseCasesFacade facade = AuthUseCaseFacadeCreator.Create(fabric);
 
                 //Act
-                var result = await facade.GetAllUsersAsync();
+                var result = await facade.GetAllUsersAsync(CancellationToken.None);
 
                 //Assert
-                mockRepository.Verify(repo => repo.GetAllUsersQueryAsync(), Times.Once);
+                mockRepository.Verify(repo => repo.GetAllUsersQueryAsync(CancellationToken.None), Times.Once);
                 Assert.False(result.IsSuccess);
                 Assert.Equal(result.StatusCode, mockResult.StatusCode);
             }

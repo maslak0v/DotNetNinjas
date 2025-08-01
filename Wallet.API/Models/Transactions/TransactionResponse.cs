@@ -10,6 +10,6 @@ public class TransactionResponse
     public decimal Amount { get; set; }
     public string? Comment { get; set; }
     public string? Image { get; set; }
-    public string? Tag { get; set; }
+    public Guid? TagId { get; set; }
     public DateTime TransactionDate { get; set; }
 }

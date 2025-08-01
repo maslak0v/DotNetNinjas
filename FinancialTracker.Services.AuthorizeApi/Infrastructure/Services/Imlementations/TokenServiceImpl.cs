@@ -15,7 +15,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Imlemen
         IOptions<JwtSettings> jwtOptions,
         ITokenRepository tokenRepository) : IAuthTokenService
     {
-        public async Task<RefreshToken> GenerateRefreshTokenAsync(string userId)
+        public async Task<RefreshToken> GenerateRefreshTokenAsync(string userId, CancellationToken cancellationToken)
         {
             string refreshtokenStr = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
             var expiresDays = jwtOptions.Value.RefreshExpires;
@@ -24,7 +24,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Imlemen
                 userId,
                 DateTime.UtcNow.AddDays(expiresDays));
             tokenRepository.Add(token);
-            await tokenRepository.SaveAsync();
+            await tokenRepository.SaveAsync(cancellationToken);
             return token;
         }
 
@@ -36,19 +36,28 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Imlemen
             return token;
         }
 
-        public async Task<RefreshToken?>FindRefreshTokenByJtiAsync(Guid jti) 
-            => await tokenRepository.FindByJtiAsync(jti);
+        public async Task<RefreshToken?> FindRefreshTokenByJtiAsync(Guid jti, CancellationToken cancellationToken)
+            => await tokenRepository.FindByJtiAsync(jti, cancellationToken);
 
-        public async Task Revoke(RefreshToken refreshToken)
+        public async Task Revoke(RefreshToken refreshToken, CancellationToken cancellationToken)
         {
             if (refreshToken.IsRevoked)
                 return;
-            await tokenRepository.RevokeAsync(refreshToken);
+            await tokenRepository.RevokeAsync(refreshToken, cancellationToken);
             return;
         }
-        public async Task RevokeAllForUserAsync(string userId)  =>
-            await tokenRepository.RevokeAllForUserAsync(userId);
-        
+        public async Task RevokeAllForUserAsync(string userId, CancellationToken cancellationToken) =>
+            await tokenRepository.RevokeAllForUserAsync(userId, cancellationToken);
+
+        public async Task<bool> IsRevokedRefreshTokenAsync(string jti, CancellationToken cancellationToken)
+        {
+            bool result = Guid.TryParse(jti, out Guid jtiGuid);
+            if (!result)
+                return true; // like token revoked
+            var token = await tokenRepository.FindByJtiAsync(jtiGuid, cancellationToken);
+            return !token?.IsValid() ?? true;
+        }
+
         #region private 
 
 
@@ -82,7 +91,6 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Imlemen
         private List<Claim> GetClaims(User user, string jti)
         {
             List<Claim> claims = [
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id),
                 new Claim(JwtRegisteredClaimNames.Jti, jti),
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim(ClaimTypes.Name, user.UserName!)
@@ -92,10 +100,6 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Imlemen
             return claims;
         }
 
-        private bool CheckEqualsRefreshtoken(string token, RefreshToken tokenModel)
-        {
-            return string.Equals(token, tokenModel.Token);
-        }
         #endregion
     }
 }

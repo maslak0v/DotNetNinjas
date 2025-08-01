@@ -34,26 +34,26 @@ namespace FinancialTracker.Services.AuthorizeApi.Tests
                 //user repository
             var mockUserRepository = new Mock<IUserRepository>();
             mockUserRepository.Setup(repo => repo
-                .TryGetCurrentLoginUserAsync(request.Object.Email, request.Object.Password))
+                .TryGetCurrentLoginUserAsync(request.Object.Email, request.Object.Password, CancellationToken.None))
                 .ReturnsAsync(user);
-            mockUserRepository.Setup(repo => repo.GetRolesForUserAsync(user))
+            mockUserRepository.Setup(repo => repo.GetRolesForUserAsync(user, CancellationToken.None))
                 .ReturnsAsync(roles);
 
                 //token repository
             var mockTokenRepository = new Mock<ITokenRepository>();
-            mockTokenRepository.Setup(repo => repo.SaveAsync()).Returns(Task.CompletedTask);
-            mockTokenRepository.Setup(repo => repo.RevokeAllForUserAsync(user.Id)).Returns(Task.CompletedTask);
+            mockTokenRepository.Setup(repo => repo.SaveAsync(CancellationToken.None)).Returns(Task.CompletedTask);
+            mockTokenRepository.Setup(repo => repo.RevokeAllForUserAsync(user.Id, CancellationToken.None)).Returns(Task.CompletedTask);
 
             IAuthUseCaseFabric fabric = AuthUseCaseFabricCreator.Create(mockUserRepository.Object);
             IAuthUseCasesFacade facade = AuthUseCaseFacadeCreator.Create(fabric);
             IAuthTokenService tokenService = AuthTokenServiceCreator.Create(options.Object, mockTokenRepository.Object);
 
             //Act
-            var result = await facade.UserLoginAsync(tokenService, request.Object);
+            var result = await facade.UserLoginAsync(tokenService, request.Object, CancellationToken.None);
 
             //Assert
-            mockTokenRepository.Verify(repo => repo.SaveAsync(), Times.Once);
-            mockTokenRepository.Verify(repo => repo.RevokeAllForUserAsync(user.Id), Times.Once);
+            mockTokenRepository.Verify(repo => repo.SaveAsync(CancellationToken.None), Times.Once);
+            mockTokenRepository.Verify(repo => repo.RevokeAllForUserAsync(user.Id, CancellationToken.None), Times.Once);
             Assert.False(string.IsNullOrEmpty(result.Result!.AccessToken), "Access token should not be null or empty");
             Assert.False(string.IsNullOrEmpty(result.Result.RefreshToken), "Refresh token should not be null or empty");
         }
@@ -78,20 +78,21 @@ namespace FinancialTracker.Services.AuthorizeApi.Tests
                 //user repository
             var mockUserRepository = new Mock<IUserRepository>();
             mockUserRepository.Setup(repo => repo
-                .TryGetCurrentLoginUserAsync(It.IsAny<string>(), It.IsAny<string>()))
+                .TryGetCurrentLoginUserAsync(It.IsAny<string>(), It.IsAny<string>(), CancellationToken.None))
                 .ReturnsAsync((User?)null);
 
                 //token repository
             var mockTokenRepository = new Mock<ITokenRepository>();
-            mockTokenRepository.Setup(repo => repo.SaveAsync()).Returns(Task.CompletedTask);
-            mockTokenRepository.Setup(repo => repo.RevokeAllForUserAsync(user.Id)).Returns(Task.CompletedTask);
+            mockTokenRepository.Setup(repo => repo.SaveAsync(CancellationToken.None)).Returns(Task.CompletedTask);
+            mockTokenRepository.Setup(repo => repo.RevokeAllForUserAsync(user.Id, CancellationToken.None))
+                .Returns(Task.CompletedTask);
 
             IAuthUseCaseFabric fabric = AuthUseCaseFabricCreator.Create(mockUserRepository.Object);
             IAuthUseCasesFacade facade = AuthUseCaseFacadeCreator.Create(fabric);
             IAuthTokenService tokenService = AuthTokenServiceCreator.Create(options.Object, mockTokenRepository.Object);
 
             //Act
-            var result = await facade.UserLoginAsync(tokenService, request.Object);
+            var result = await facade.UserLoginAsync(tokenService, request.Object, CancellationToken.None);
 
             //Assert
             Assert.Equal(Enum_StatusCode.UNAUTHORIZED, result.StatusCode);

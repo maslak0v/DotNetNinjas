@@ -23,7 +23,7 @@ namespace MessageBus.Shared
             {
                 configure?.Invoke(cfg);
 
-                cfg.SetKebabCaseEndpointNameFormatter();
+                
                 cfg.UsingRabbitMq((context, busConfigurator) =>
                 {
                     busConfigurator.Host(credentialData.host, "/", config =>

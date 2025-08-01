@@ -10,6 +10,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.Fabrics
         IGetAllUsersUseCase CreateGetAllUsers();
         ILoginUseCase CreateLogin(IAuthTokenService tokenService, IUserLoginRequest request);
         IRefreshUseCase CreateRefresh(IAuthTokenService service, IRefreshRequest request);
+        ILogoutUseCase CreateLogout(string userId, IAuthTokenService service);
         //other usecases..
     }
 }

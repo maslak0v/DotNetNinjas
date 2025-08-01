@@ -6,26 +6,26 @@ namespace FinancialTracker.Services.Analytics.DataAccess.Repositories;
 
 public class IncomesRepository(AppDbContext db) : IIncomesRepository
 {
-    public async Task<List<Income>> GetIncomesAsync(Guid userId, DateTime startDate, DateTime endDate)
+    public async Task<List<Income>> GetIncomesAsync(Guid userId, DateTime startDate, DateTime endDate, CancellationToken cancellationToken)
     {
         var query = db.Set<Income>().AsNoTracking();
         return await query
             .Where(x => x.UserId == userId &&
                         x.IncomeTime >= startDate.ToUniversalTime() &&
                         x.IncomeTime <= endDate.ToUniversalTime())
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
-    public async Task<List<Income>> GetIncomesUpToDateAsync(Guid userId, DateTime upToDate)
+    public async Task<List<Income>> GetIncomesUpToDateAsync(Guid userId, DateTime upToDate, CancellationToken cancellationToken)
     {
         var query = db.Set<Income>().AsNoTracking();
         return await query
             .Where(x => x.UserId == userId &&
                         x.IncomeTime <= upToDate.ToUniversalTime())
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
-    public async Task<List<Income>> GetIncomesByAccountAsync(IncomesRequestDTO request)
+    public async Task<List<Income>> GetIncomesByAccountAsync(IncomesRequestDTO request, CancellationToken cancellationToken)
     {
         var query = db.Set<Income>().AsNoTracking();
         return await query
@@ -33,6 +33,12 @@ public class IncomesRepository(AppDbContext db) : IIncomesRepository
                         x.AccountId == request.AccountId &&
                         x.IncomeTime >= request.StartDate.ToUniversalTime() &&
                         x.IncomeTime <= request.EndDate.ToUniversalTime())
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
+    }
+    
+    public async Task AddAsync(Income income, CancellationToken cancellationToken)
+    {
+        db.Incomes.Add(income);
+        await db.SaveChangesAsync(cancellationToken);
     }
 }

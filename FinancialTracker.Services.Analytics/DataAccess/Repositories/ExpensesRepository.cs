@@ -6,26 +6,26 @@ namespace FinancialTracker.Services.Analytics.DataAccess.Repositories;
 
 public class ExpensesRepository(AppDbContext db) : IExpensesRepository
 {
-    public async Task<List<Expense>> GetExpensesAsync(Guid userId, DateTime startDate, DateTime endDate)
+    public async Task<List<Expense>> GetExpensesAsync(Guid userId, DateTime startDate, DateTime endDate, CancellationToken cancellationToken)
     {
         var query = db.Set<Expense>().AsNoTracking();
         return await query
             .Where(x => x.UserId == userId &&
                        x.ExpenseTime >= startDate.ToUniversalTime()
                         && x.ExpenseTime <= endDate.ToUniversalTime())
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
     
-    public async Task<List<Expense>> GetExpensesUpToDateAsync(Guid userId, DateTime upToDate)
+    public async Task<List<Expense>> GetExpensesUpToDateAsync(Guid userId, DateTime upToDate, CancellationToken cancellationToken)
     {
         var query = db.Set<Expense>().AsNoTracking();
         return await query
             .Where(x => x.UserId == userId &&
                         x.ExpenseTime <= upToDate.ToUniversalTime())
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
-    public async Task<List<Expense>> GetExpensesByAccountAsync(ExpensesRequestDto request)
+    public async Task<List<Expense>> GetExpensesByAccountAsync(ExpensesRequestDto request, CancellationToken cancellationToken)
     {
         var query = db.Set<Expense>().AsNoTracking();
         return await query
@@ -33,6 +33,12 @@ public class ExpensesRepository(AppDbContext db) : IExpensesRepository
                        x.AccountId == request.AccountId &&
                        x.ExpenseTime >= request.StartDate.ToUniversalTime() &&
                        x.ExpenseTime <= request.EndDate.ToUniversalTime())
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
+    }
+    
+    public async Task AddAsync(Expense expense, CancellationToken cancellationToken)
+    {
+        db.Expenses.Add(expense);
+        await db.SaveChangesAsync(cancellationToken);
     }
 }

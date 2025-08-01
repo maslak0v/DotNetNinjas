@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Wallet.Application.Interfaces;
+using Wallet.Application.Interfaces.Services;
 using Wallet.Infrastructure.Data;
 
 namespace Wallet.API

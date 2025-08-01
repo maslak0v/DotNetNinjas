@@ -8,12 +8,12 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Interfaces
 {
     public interface IAuthUseCasesFacade
     {
-        Task<OperationResult<User>> UserRegisterAsync(IUserRegisterRequest request);
-        Task<OperationResult<ITokenResponse>> UserLoginAsync(IAuthTokenService tokenService, IUserLoginRequest request);
-        Task<OperationResult> UserLogoutAsync(IUserLogoutRequest request);
-        Task<OperationResult<List<IUserResponseInfo>>> GetAllUsersAsync();
-        Task<OperationResult<ITokenResponse>> RefreshAsync(IAuthTokenService tokenService, IRefreshRequest request);
-        Task<OperationResult<ICurrentUserLoginResponse>> GetCurrentUserAsync();
-        Task<OperationResult> DeleteAsync(Guid id);
+        Task<OperationResult<User>> UserRegisterAsync(IUserRegisterRequest request, CancellationToken cancellationToken);
+        Task<OperationResult<ITokenResponse>> UserLoginAsync(IAuthTokenService tokenService, IUserLoginRequest request, CancellationToken cancellationToken);
+        Task<OperationResult> UserLogoutAsync(string userid, IAuthTokenService tokenService, CancellationToken cancellationToken);
+        Task<OperationResult<List<IUserResponseInfo>>> GetAllUsersAsync(CancellationToken cancellationToken);
+        Task<OperationResult<ITokenResponse>> RefreshAsync(IAuthTokenService tokenService, IRefreshRequest request, CancellationToken cancellationToken);
+        Task<OperationResult<ICurrentUserLoginResponse>> GetCurrentUserAsync(CancellationToken cancellationToken);
+        Task<OperationResult> DeleteAsync(Guid id, CancellationToken cancellationToken);
     }
 }

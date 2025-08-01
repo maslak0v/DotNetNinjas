@@ -15,11 +15,11 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
     {
         public OperationResult<ITokenResponse> Result { get; private set; } = null!;
 
-        public async Task ExecuteAsync()
+        public async Task ExecuteAsync(CancellationToken cancellationToken)
         {
             try
             {
-                User? user = await repository.TryGetCurrentLoginUserAsync(request.Email, request.Password);
+                User? user = await repository.TryGetCurrentLoginUserAsync(request.Email, request.Password, cancellationToken);
                 if (user is null)
                 {
                     Result = OperationResultCreator.Failure<ITokenResponse>(
@@ -27,10 +27,10 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
                     return;
                 }
                 //отзыв существующих токенов при каждом входе токены отзываются
-                await tokenService.RevokeAllForUserAsync(user.Id);
+                await tokenService.RevokeAllForUserAsync(user.Id, cancellationToken);
 
                 //генерация новых токенов
-                var refreshToken = await tokenService.GenerateRefreshTokenAsync(user.Id);
+                var refreshToken = await tokenService.GenerateRefreshTokenAsync(user.Id, cancellationToken);
                 var accessToken = tokenService.GenerateAccessToken(user, refreshToken.Jti.ToString());
                 ITokenResponse response = new TokenResponse(accessToken, refreshToken.Token);
                 Result = OperationResultCreator.Success(response, Enum_StatusCode.OK);

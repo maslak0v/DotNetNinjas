@@ -26,6 +26,8 @@ public class Transaction
     /// </summary>
     public Guid AccountId { get; set; }
 
+    public Guid? TagId { get; set; }
+    
     /// <summary>
     /// Сумма транзакции.
     /// </summary>
@@ -34,12 +36,12 @@ public class Transaction
     /// <summary>
     /// Дата совершения транзакции.
     /// </summary>
-    public DateTime TransactionDate { get; set; } = DateTime.UtcNow;
+    public DateTime TransactionDate { get; set; }
 
     /// <summary>
     /// Комментарий к транзакции.
     /// </summary>
-    public string Comment { get; set; } = string.Empty;
+    public string? Comment { get; set; }
 
     /// <summary>
     /// Путь к изображению, связанному с транзакцией.
@@ -65,9 +67,6 @@ public class Transaction
     /// Категория транзакции.
     /// </summary>
     public Category Category { get; set; }
-
-    /// <summary>
-    /// Связанные теги транзакции.
-    /// </summary>
-    public ICollection<TransactionTag> TransactionTags { get; set; } = new List<TransactionTag>();
+    
+    public Tag? Tag { get; set; }  
 }

@@ -12,7 +12,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
         IUserRegisterRequest request) : IUserRegisterUseCase
     {
         public OperationResult<User> Result { get; private set; } = null!;
-        public async Task ExecuteAsync()
+        public async Task ExecuteAsync(CancellationToken cancellationToken)
         {
             try
             {
@@ -25,7 +25,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
 
                 //register
                 List<string> roles = [nameof(Enum_BaseRoles.USER)];
-                var result = await repository.RegisterUserAsync(request, roles);
+                var result = await repository.RegisterUserAsync(request, roles, cancellationToken);
                 Result = result;
             }
             catch (Exception ex)
