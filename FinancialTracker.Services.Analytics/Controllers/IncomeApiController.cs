@@ -9,7 +9,8 @@ namespace FinancialTracker.Services.Analytics.Controllers;
 
 [ApiController]
 [Route("api/incomes")]
-public class IncomeApiController(IIncomesService service,
+[ApiExplorerSettings(GroupName = "Доходы")]
+public class IncomeApiController (IIncomesService service,
     IMapper mapper) : ControllerBase
 {
     [HttpGet]

@@ -31,24 +31,27 @@ public class WhenGetBalance
     public async Task ForAccountWithAnyExpenses_ResultShouldBeEqualToSumOfExpensesWithAMinusSign()
     {
         // Arrange
-        var mockRepository = new Mock<IExpensesRepository>();
+        var mockExpenses = new Mock<IExpensesRepository>();
+        var mockIncomes = new Mock<IIncomesRepository>();
         var tommy = CreateUser("Tommy");
-        var tommyExpenses10 = Create.Expense()
-            .Amount(10).For(tommy).Please();
-        var tommyExpenses100 = Create.Expense()
-            .Amount(100).For(tommy).Please();
-        var tommyExpenses1000 = Create.Expense()
-            .Amount(1000).For(tommy).Please();
+        var tommyExpenses10 = Create.Expense().Amount(10).For(tommy).Please();
+        var tommyExpenses100 = Create.Expense().Amount(100).For(tommy).Please();
+        var tommyExpenses1000 = Create.Expense().Amount(1000).For(tommy).Please();
         var allExpenses = new List<Expense>
         {
             tommyExpenses10, tommyExpenses100, tommyExpenses1000
         };
+        var allIncomes = new List<Income>();
 
-        mockRepository.Setup(repo =>
+        mockExpenses.Setup(repo =>
                 repo.GetExpensesUpToDateAsync(tommy.Id, It.IsAny<DateTime>(), CancellationToken.None))
             .ReturnsAsync(allExpenses);
-        var expensesService = new ExpensesService(mockRepository.Object, _mapper);
-        var balanceService = new BalanceService(expensesService);
+        mockIncomes.Setup(repo =>
+               repo.GetIncomesUpToDateAsync(tommy.Id, It.IsAny<DateTime>(), CancellationToken.None))
+           .ReturnsAsync(allIncomes);
+        var expensesService = new ExpensesService(mockExpenses.Object, _mapper);
+        var incomesService = new IncomesService(mockIncomes.Object, _mapper);
+        var balanceService = new BalanceService(expensesService, incomesService);
         
         // Act
         var result = await balanceService.GetBalanceAsync(tommy.Id,
@@ -60,18 +63,92 @@ public class WhenGetBalance
     }
 
     [Test]
+    public async Task ForAccountWithAnyIncome_ResultShouldBeEqualToSumOfIncome()
+    {
+        //  Arrange
+        var mockExpenses = new Mock<IExpensesRepository>();
+        var mockIncomes = new Mock<IIncomesRepository>();
+        var tommy = CreateUser("Tommy");
+        var tommyIncome10 = Create.Income().Amount(10).For(tommy).Please();
+        var tommyIncome100 = Create.Income().Amount(100).For(tommy).Please();
+        var tommyIncome1000 = Create.Income().Amount(1000).For(tommy).Please();
+        var allIncomes = new List<Income>
+        {
+            tommyIncome10, tommyIncome100, tommyIncome1000
+        };
+        mockExpenses.Setup(repo =>
+                repo.GetExpensesUpToDateAsync(tommy.Id, It.IsAny<DateTime>(), CancellationToken.None))
+            .ReturnsAsync(new List<Expense>());
+        mockIncomes.Setup(repo =>
+               repo.GetIncomesUpToDateAsync(tommy.Id, It.IsAny<DateTime>(), CancellationToken.None))
+           .ReturnsAsync(allIncomes);
+        var expensesService = new ExpensesService(mockExpenses.Object, _mapper);
+        var incomesService = new IncomesService(mockIncomes.Object, _mapper);
+        var balanceService = new BalanceService(expensesService, incomesService);
+        // Act
+        var result = await balanceService.GetBalanceAsync(tommy.Id,
+            new DateTime(2010, 01, 01), CancellationToken.None);
+
+        // Assert
+        Assert.That(result, Is.EqualTo(10 + 100 + 1000));
+    }
+
+    [Test]
+    public async Task ForAccountWithBothExpensesAndIncomes_ResultShouldBeDifferenceBetweenIncomesAndExpenses()
+    {
+        // Arrange
+        var mockExpenses = new Mock<IExpensesRepository>();
+        var mockIncomes = new Mock<IIncomesRepository>();
+        var tommy = CreateUser("Tommy");
+        
+        var tommyExpenses10 = Create.Expense().Amount(10).For(tommy).Please();
+        var tommyExpenses100 = Create.Expense().Amount(100).For(tommy).Please();
+        var tommyExpenses1000 = Create.Expense().Amount(1000).For(tommy).Please();
+        var allExpenses = new List<Expense>
+        {
+            tommyExpenses10, tommyExpenses100, tommyExpenses1000
+        };
+
+        var tomyIncome5000 = Create.Income().Amount(5000).For(tommy).Please();
+        var allIncomes = new List<Income> { tomyIncome5000 };
+
+        mockExpenses.Setup(repo =>
+                repo.GetExpensesUpToDateAsync(tommy.Id, It.IsAny<DateTime>(), CancellationToken.None))
+            .ReturnsAsync(allExpenses);
+        mockIncomes.Setup(repo =>
+               repo.GetIncomesUpToDateAsync(tommy.Id, It.IsAny<DateTime>(), CancellationToken.None))
+           .ReturnsAsync(allIncomes);
+        var expensesService = new ExpensesService(mockExpenses.Object, _mapper);
+        var incomesService = new IncomesService(mockIncomes.Object, _mapper);
+        var balanceService = new BalanceService(expensesService, incomesService);
+
+        // act
+        var result = await balanceService.GetBalanceAsync(tommy.Id,
+            new DateTime(2010, 01, 01), CancellationToken.None);
+
+        // Assert
+        Assert.That(result, Is.EqualTo(5000 - (10 + 100 + 1000)));
+    }
+
+    [Test]
     public async Task ForAccountWithoutExpenses_ResultShouldBeZero()
     {
         // Arrange
-        var mockRepository = new Mock<IExpensesRepository>();
+        var mockExpenses = new Mock<IExpensesRepository>();
+        var mockIncomes = new Mock<IIncomesRepository>();
         var tommy = CreateUser("Tommy");
-        var allExpenses = new List<Expense> {};
+        var allExpenses = new List<Expense> { };
+        var allIncomes = new List<Income> { };
 
-        mockRepository.Setup(repo =>
+        mockExpenses.Setup(repo =>
                 repo.GetExpensesUpToDateAsync(tommy.Id, It.IsAny<DateTime>(), CancellationToken.None))
             .ReturnsAsync(allExpenses);
-        var expensesService = new ExpensesService(mockRepository.Object, _mapper);
-        var balanceService = new BalanceService(expensesService);
+        mockIncomes.Setup(repo =>
+               repo.GetIncomesUpToDateAsync(tommy.Id, It.IsAny<DateTime>(), CancellationToken.None))
+           .ReturnsAsync(allIncomes);
+        var expensesService = new ExpensesService(mockExpenses.Object, _mapper);
+        var incomesService = new IncomesService(mockIncomes.Object, _mapper);
+        var balanceService = new BalanceService(expensesService, incomesService);
         
         // Act
         var result = await balanceService.GetBalanceAsync(tommy.Id,
