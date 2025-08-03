@@ -64,6 +64,7 @@ public class TransactionService : ITransactionService
     
     public async Task<OperationResult<TransactionDtoResponse>> CreateAsync(TransactionDto transactionDto, CancellationToken cancellationToken)
     {
+        await _unitOfWork.BeginTransactionAsync(cancellationToken);
         try
         {
             var account = await _unitOfWork.AccountRepository.GetByIdAsync(
@@ -113,6 +114,7 @@ public class TransactionService : ITransactionService
             
             await _unitOfWork.TransactionRepository.AddAsync(newTransaction, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+            await _unitOfWork.CommitTransactionAsync(cancellationToken);
             
             var responseDto = _mapper.Map<TransactionDtoResponse>(newTransaction);
             responseDto.CategoryName = category.Name;
@@ -125,6 +127,7 @@ public class TransactionService : ITransactionService
         }
         catch (Exception ex)
         {
+            await _unitOfWork.RollbackTransactionAsync(cancellationToken);
             return OperationResult<TransactionDtoResponse>.FromException(ex);
         }
     }
@@ -134,6 +137,7 @@ public class TransactionService : ITransactionService
         TransactionDto transactionDto,
         CancellationToken cancellationToken)
     {
+        await _unitOfWork.BeginTransactionAsync(cancellationToken);
         try
         {
             var existingTransaction = await _unitOfWork.TransactionRepository.GetByIdAsync(
@@ -197,6 +201,7 @@ public class TransactionService : ITransactionService
             existingTransaction.UpdatedAt = DateTime.UtcNow;
             
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+            await _unitOfWork.CommitTransactionAsync(cancellationToken);
             
             var responseDto = _mapper.Map<TransactionDtoResponse>(existingTransaction);
             responseDto.CategoryName = category.Name;
@@ -208,12 +213,14 @@ public class TransactionService : ITransactionService
         }
         catch (Exception ex)
         {
+            await _unitOfWork.RollbackTransactionAsync(cancellationToken);
             return OperationResult<TransactionDtoResponse>.FromException(ex);
         }
     }
 
     public async Task<OperationResult<DeleteTransactionDto>> DeleteAsync(Guid id, CancellationToken cancellationToken)
     {
+        await _unitOfWork.BeginTransactionAsync(cancellationToken);
         try
         {
             var transaction = await _unitOfWork.TransactionRepository.GetByIdAsync(
@@ -233,6 +240,7 @@ public class TransactionService : ITransactionService
             transaction.UpdatedAt = DateTime.UtcNow;
             
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+            await _unitOfWork.CommitTransactionAsync(cancellationToken);
             
             var responseDto = _mapper.Map<DeleteTransactionDto>(transaction);
             return OperationResult<DeleteTransactionDto>.Success(
@@ -242,6 +250,7 @@ public class TransactionService : ITransactionService
         }
         catch (Exception ex)
         {
+            await _unitOfWork.RollbackTransactionAsync(cancellationToken);
             return OperationResult<DeleteTransactionDto>.FromException(ex);
         }
     }
