@@ -52,11 +52,11 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
 
         public async Task<OperationResult<ITokenResponse>> RefreshAsync(
             IUserRepository userRepository,
-            IAuthTokenService service,
+            IAuthTokenService tokenService,
             IRefreshRequest request,
             CancellationToken cancellationToken)
             => await ExecuteUseCaseAsync<IRefreshUseCase, OperationResult<ITokenResponse>>(
-            () => useCaseFabric.CreateRefresh(userRepository, service, request), cancellationToken);
+            () => useCaseFabric.CreateRefresh(userRepository, tokenService, request), cancellationToken);
 
         public async Task<OperationResult> RevokeAllRefreshTokensAsync(
             IAuthTokenService tokenService,
