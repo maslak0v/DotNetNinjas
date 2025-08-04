@@ -65,12 +65,12 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
                 () => useCaseFabric.CreateRevokeAll(tokenService), cancellationToken);
 
         private async Task<TResult> ExecuteUseCaseAsync<TUseCase, TResult>(
-            Func<TUseCase> createUsecase,
+            Func<TUseCase> createUseCase,
             CancellationToken cancellationToken) where TUseCase : ICommandAsync<TResult>
         {
-            var usecase = createUsecase();
-            await usecase.ExecuteAsync(cancellationToken);
-            return usecase.Result;
+            var useCase = createUseCase();
+            await useCase.ExecuteAsync(cancellationToken);
+            return useCase.Result;
         }
     }
 }
