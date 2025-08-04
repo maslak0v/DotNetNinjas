@@ -62,7 +62,7 @@ public class TransactionServiceCreateTests
 
         // Act
         await _transactionService.CreateAsync(transactionDto, CancellationToken.None);
-        
+        //Assert
         Assert.Equal(initialBalance - expenseAmount, account.CurrentBalance); // 2000 - 500 = 1500
     }
 

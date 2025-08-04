@@ -16,6 +16,7 @@ public class TransactionServiceDeleteTests
     private readonly Mock<IMapper> _mapperMock;
     private readonly TransactionService _transactionService;
     private readonly AccountBuilder _accountBuilder;
+    private readonly TransactionBuilder _transactionBuilder;
 
     public TransactionServiceDeleteTests()
     {
@@ -23,6 +24,7 @@ public class TransactionServiceDeleteTests
         _mapperMock = new Mock<IMapper>();
         _transactionService = new TransactionService(_unitOfWorkMock.Object, _mapperMock.Object);
         _accountBuilder = new AccountBuilder();
+        _transactionBuilder = new TransactionBuilder();
     }
     
     [Fact]
@@ -41,15 +43,13 @@ public class TransactionServiceDeleteTests
             .WithBalance(initialBalance)
             .Build();
 
-        var transaction = new Transaction
-        {
-            TransactionId = transactionId,
-            Amount = transactionAmount,
-            OperationType = operationType,
-            Account = account,
-            AccountId = accountId,
-            IsDeleted = false
-        };
+        var transaction = _transactionBuilder
+            .WithId(transactionId)
+            .WithAmount(transactionAmount)
+            .WithOperationType(operationType)
+            .WithAccount(account)
+            .WithAccountId(accountId)
+            .Build();
 
         _unitOfWorkMock.Setup(x => x.TransactionRepository.GetByIdAsync(
                 transactionId, It.IsAny<CancellationToken>(), true, false))
@@ -84,15 +84,13 @@ public class TransactionServiceDeleteTests
             .WithBalance(initialBalance)
             .Build();
 
-        var transaction = new Transaction
-        {
-            TransactionId = transactionId,
-            Amount = transactionAmount,
-            OperationType = operationType,
-            Account = account,
-            AccountId = accountId,
-            IsDeleted = false
-        };
+        var transaction = _transactionBuilder
+            .WithId(transactionId)
+            .WithAmount(transactionAmount)
+            .WithOperationType(operationType)
+            .WithAccount(account)
+            .WithAccountId(accountId)
+            .Build();
 
         _unitOfWorkMock.Setup(x => x.TransactionRepository.GetByIdAsync(
                 transactionId, It.IsAny<CancellationToken>(), true, false))
@@ -140,15 +138,13 @@ public class TransactionServiceDeleteTests
             .WithBalance(initialBalance)
             .Build();
 
-        var transaction = new Transaction
-        {
-            TransactionId = transactionId,
-            Amount = transactionAmount,
-            OperationType = operationType,
-            Account = account,
-            AccountId = accountId,
-            IsDeleted = false
-        };
+        var transaction = _transactionBuilder
+            .WithId(transactionId)
+            .WithAmount(transactionAmount)
+            .WithOperationType(operationType)
+            .WithAccount(account)
+            .WithAccountId(accountId)
+            .Build();
 
         _unitOfWorkMock.Setup(x => x.TransactionRepository.GetByIdAsync(
                 transactionId, It.IsAny<CancellationToken>(), true, false))
