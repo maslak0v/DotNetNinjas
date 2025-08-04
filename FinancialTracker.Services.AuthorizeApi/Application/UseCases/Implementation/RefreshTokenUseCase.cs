@@ -10,7 +10,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
 {
     public class RefreshTokenUseCase(
         IUserRepository userRepository,
-        IAuthTokenService service,
+        IAuthTokenService tokenService,
         IRefreshRequest request) : IRefreshUseCase
     {
         public OperationResult<ITokenResponse> Result { get; private set; } = null!;
@@ -20,7 +20,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
             try
             {
                 
-                RefreshToken? refreshToken = await service.FindRefreshTokenByJtiAsync(request.Jti, cancellationToken);
+                RefreshToken? refreshToken = await tokenService.FindRefreshTokenByJtiAsync(request.Jti, cancellationToken);
                 
                 //если токен уже истек,
                 //то требуется пройти процедуру авторизации по новой,
@@ -34,7 +34,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
                 }
 
                 //отзываем токены(пока поддержка только одного устройства)
-                await service.RevokeAllForUserAsync(refreshToken!.UserId, cancellationToken);
+                await tokenService.RevokeAllForUserAsync(refreshToken!.UserId, cancellationToken);
 
                 //ищем пользователя, т.к. для генерации новых токенов нужны его данные
                 User? user = await userRepository.FindByIdAsync(refreshToken.UserId, cancellationToken);
@@ -45,8 +45,8 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
                 }
 
                 //все ок, создаем новые токены
-                var refreshTokenNew = await service.GenerateRefreshTokenAsync(user.Id, cancellationToken);
-                var accesToken = service.GenerateAccessToken(user, refreshTokenNew.Jti.ToString());
+                var refreshTokenNew = await tokenService.GenerateRefreshTokenAsync(user.Id, cancellationToken);
+                var accesToken = tokenService.GenerateAccessToken(user, refreshTokenNew.Jti.ToString());
                 ITokenResponse response = new TokenResponse(accesToken, refreshTokenNew.Token);
                 Result = OperationResultCreator.Success(response, Enum_StatusCode.OK);
             }
@@ -69,7 +69,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
             else if (!refreshToken.IsValid())
             {
                 //истек - сразу отзываем
-                await service.RevokeAsync(refreshToken, cancellationToken);
+                await tokenService.RevokeAsync(refreshToken, cancellationToken);
                 error = "Token is not valid";
             }
             return string.IsNullOrEmpty(error)

@@ -22,11 +22,11 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
 
         public async Task<OperationResult<ITokenResponse>> UserLoginAsync(
             IUserRepository userRepository,
-            IAuthTokenService service,
+            IAuthTokenService tokenService,
             IUserLoginRequest request,
             CancellationToken cancellationToken)
             => await ExecuteUseCaseAsync<ILoginUseCase, OperationResult<ITokenResponse>>(
-                () => useCaseFabric.CreateLogin(userRepository, service, request), cancellationToken);
+                () => useCaseFabric.CreateLogin(userRepository, tokenService, request), cancellationToken);
 
         public Task<OperationResult> DeleteAsync(IUserRepository userRepository, Guid id, CancellationToken cancellationToken)
         {
@@ -38,9 +38,9 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
             throw new NotImplementedException();
         }
 
-        public async Task<OperationResult> UserLogoutAsync(string userId, IAuthTokenService service, CancellationToken cancellationToken)
+        public async Task<OperationResult> UserLogoutAsync(string userId, IAuthTokenService tokenService, CancellationToken cancellationToken)
             => await ExecuteUseCaseAsync<ILogoutUseCase, OperationResult>(
-                () => useCaseFabric.CreateLogout(userId, service), cancellationToken);
+                () => useCaseFabric.CreateLogout(userId, tokenService), cancellationToken);
 
 
         public async Task<OperationResult<List<IUserResponseInfo>>> GetAllUsersAsync(
@@ -59,14 +59,14 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
             () => useCaseFabric.CreateRefresh(userRepository, service, request), cancellationToken);
 
         public async Task<OperationResult> RevokeAllRefreshTokensAsync(
-            IAuthTokenService service,
+            IAuthTokenService tokenService,
             CancellationToken cancellationToken)
             => await ExecuteUseCaseAsync<IRevokeAllUseCase, OperationResult>(
-                () => useCaseFabric.CreateRevokeAll(service), cancellationToken);
+                () => useCaseFabric.CreateRevokeAll(tokenService), cancellationToken);
 
-        private async Task<TResult> ExecuteUseCaseAsync<TUsecase, TResult>(
-            Func<TUsecase> createUsecase,
-            CancellationToken cancellationToken) where TUsecase : ICommandAsync<TResult>
+        private async Task<TResult> ExecuteUseCaseAsync<TUseCase, TResult>(
+            Func<TUseCase> createUsecase,
+            CancellationToken cancellationToken) where TUseCase : ICommandAsync<TResult>
         {
             var usecase = createUsecase();
             await usecase.ExecuteAsync(cancellationToken);

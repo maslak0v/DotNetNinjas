@@ -23,15 +23,15 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.Fabrics
 
         public IRefreshUseCase CreateRefresh(
             IUserRepository repository,
-            IAuthTokenService service,
+            IAuthTokenService tokenService,
             IRefreshRequest request)
-            => new RefreshTokenUseCase(repository, service, request);
+            => new RefreshTokenUseCase(repository, tokenService, request);
 
-        public ILogoutUseCase CreateLogout(string userId, IAuthTokenService service)
-         => new LogoutUseCase(userId, service);
+        public ILogoutUseCase CreateLogout(string userId, IAuthTokenService tokenService)
+         => new LogoutUseCase(userId, tokenService);
 
-        public IRevokeAllUseCase CreateRevokeAll(IAuthTokenService service)
-         => new RevokeAllUseCase(service);
+        public IRevokeAllUseCase CreateRevokeAll(IAuthTokenService tokenService)
+         => new RevokeAllUseCase(tokenService);
 
 
         //other use-cases ..

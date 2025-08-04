@@ -13,7 +13,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Presentation.Controllers
         ILogger<TokenController> logger,
         IUserRepository userRepository,
         IAuthTokenService tokenService,
-        IAuthUseCasesFacade useCasefacade)
+        IAuthUseCasesFacade useCaseFacade)
         : TokenBaseController<TokenController>(logger)
     {
         [HttpPost("refresh")]
@@ -25,7 +25,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Presentation.Controllers
             if (request == null || request.Jti == Guid.Empty)
                 return BadRequest("Refresh token and JTI cannot are empty");
 
-            var result = await useCasefacade.RefreshAsync(
+            var result = await useCaseFacade.RefreshAsync(
                 userRepository, tokenService, request, cancellationToken);
             if (!result.IsSuccess)
                 return UseCaseBadResultHandle(result.StatusCode, result.Message!);
@@ -38,7 +38,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Presentation.Controllers
         public async Task<ActionResult> RevokeAllRefreshTokens(CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Revoke all refresh tokens");
-            var result = await useCasefacade.RevokeAllRefreshTokensAsync(tokenService, cancellationToken);
+            var result = await useCaseFacade.RevokeAllRefreshTokensAsync(tokenService, cancellationToken);
             if (!result.IsSuccess)
                 return UseCaseBadResultHandle(result.StatusCode, result.Message!);
             _logger.LogInformation("Revoked successfully");
