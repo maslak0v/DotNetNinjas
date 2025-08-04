@@ -24,11 +24,11 @@ namespace FinancialTracker.Services.AuthorizeApi.Tests
             mockRepository.Setup(repo => repo.RegisterUserAsync(request, roles, CancellationToken.None))
                 .ReturnsAsync(mockResultRegister);
 
-            IAuthUseCaseFabric fabric = AuthUseCaseFabricCreator.Create(mockRepository.Object);
+            IAuthUseCaseFabric fabric = AuthUseCaseFabricCreator.Create();
             IAuthUseCasesFacade useCasesFacade = AuthUseCaseFacadeCreator.Create(fabric);
 
             //Act
-            var result = await useCasesFacade.UserRegisterAsync(request, CancellationToken.None);
+            var result = await useCasesFacade.UserRegisterAsync(mockRepository.Object, request, CancellationToken.None);
 
             //Assert
             Assert.True(result.IsSuccess);
@@ -38,7 +38,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Tests
         [Fact]
         public async Task RegisterUserBadResultTest()
         {
-            //Arrenge
+            //Arrange
             List<string> roles = [Enum_BaseRoles.USER.ToString()];
             var mockResult = OperationResultCreator.Failure<User>
                 (Enum_StatusCode.BAD_REQUEST, "error message");
@@ -47,11 +47,11 @@ namespace FinancialTracker.Services.AuthorizeApi.Tests
             mockRepository.Setup(repo => repo.RegisterUserAsync(request, roles, CancellationToken.None))
                 .ReturnsAsync(mockResult);
 
-            IAuthUseCaseFabric fabric = AuthUseCaseFabricCreator.Create(mockRepository.Object);
+            IAuthUseCaseFabric fabric = AuthUseCaseFabricCreator.Create();
             IAuthUseCasesFacade useCasesFacade = AuthUseCaseFacadeCreator.Create(fabric);
 
             //Act
-            var result = await useCasesFacade.UserRegisterAsync(request, CancellationToken.None);
+            var result = await useCasesFacade.UserRegisterAsync(mockRepository.Object, request, CancellationToken.None);
 
             //Assert
             Assert.False(result.IsSuccess);

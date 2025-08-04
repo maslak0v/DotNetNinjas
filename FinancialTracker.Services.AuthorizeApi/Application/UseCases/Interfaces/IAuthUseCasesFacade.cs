@@ -8,12 +8,30 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Interfaces
 {
     public interface IAuthUseCasesFacade
     {
-        Task<OperationResult<User>> UserRegisterAsync(IUserRegisterRequest request, CancellationToken cancellationToken);
-        Task<OperationResult<ITokenResponse>> UserLoginAsync(IAuthTokenService tokenService, IUserLoginRequest request, CancellationToken cancellationToken);
-        Task<OperationResult> UserLogoutAsync(string userid, IAuthTokenService tokenService, CancellationToken cancellationToken);
-        Task<OperationResult<List<IUserResponseInfo>>> GetAllUsersAsync(CancellationToken cancellationToken);
-        Task<OperationResult<ITokenResponse>> RefreshAsync(IAuthTokenService tokenService, IRefreshRequest request, CancellationToken cancellationToken);
+        Task<OperationResult<User>> UserRegisterAsync(
+            IUserRepository userRepository,
+            IUserRegisterRequest request,
+            CancellationToken cancellationToken);
+        Task<OperationResult<ITokenResponse>> UserLoginAsync(
+            IUserRepository userRepository,
+            IAuthTokenService tokenService,
+            IUserLoginRequest request,
+            CancellationToken cancellationToken);
+        Task<OperationResult> UserLogoutAsync(
+            string userid,
+            IAuthTokenService tokenService,
+            CancellationToken cancellationToken);
+        Task<OperationResult<List<IUserResponseInfo>>> GetAllUsersAsync(
+            IUserRepository userRepository,
+            CancellationToken cancellationToken);
+        Task<OperationResult<ITokenResponse>> RefreshAsync(
+            IUserRepository userRepository,
+            IAuthTokenService tokenService, IRefreshRequest request, CancellationToken cancellationToken);
         Task<OperationResult<ICurrentUserLoginResponse>> GetCurrentUserAsync(CancellationToken cancellationToken);
-        Task<OperationResult> DeleteAsync(Guid id, CancellationToken cancellationToken);
+        Task<OperationResult> DeleteAsync(
+            IUserRepository userRepository,
+            Guid id,
+            CancellationToken cancellationToken);
+        Task<OperationResult> RevokeAllRefreshTokensAsync(IAuthTokenService tokenService, CancellationToken cancellationToken);
     }
 }

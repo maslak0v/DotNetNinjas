@@ -69,7 +69,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
             else if (!refreshToken.IsValid())
             {
                 //истек - сразу отзываем
-                await service.Revoke(refreshToken, cancellationToken);
+                await service.RevokeAsync(refreshToken, cancellationToken);
                 error = "Token is not valid";
             }
             return string.IsNullOrEmpty(error)

@@ -15,6 +15,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Presentation.Controllers
 {
     public class AuthController(
         IAuthUseCasesFacade useCasesFacade,
+        IUserRepository userRepository,
         IAuthTokenService tokenService,
         IMessagePublisher messagePublisher,
         ILogger<AuthController> logger) : AuthorizeBaseController<AuthController>(logger)
@@ -31,7 +32,8 @@ namespace FinancialTracker.Services.AuthorizeApi.Presentation.Controllers
             CancellationToken cancellationToken)
         {
             _logger.LogInformation("Registration of a new user...");
-            var resultOperation = await useCasesFacade.UserRegisterAsync(registerRequest, cancellationToken); 
+            var resultOperation = await useCasesFacade.UserRegisterAsync(
+                userRepository, registerRequest, cancellationToken); 
             if (!resultOperation.IsSuccess)
                 return UseCaseBadResultHandle(resultOperation.StatusCode, resultOperation.Message ?? string.Empty);
             
@@ -53,7 +55,8 @@ namespace FinancialTracker.Services.AuthorizeApi.Presentation.Controllers
             [FromBody] UserLoginRequest request, CancellationToken cancellationToken)
         {
             _logger.LogInformation("try login ..");
-            var result = await useCasesFacade.UserLoginAsync(tokenService, request, cancellationToken);
+            var result = await useCasesFacade.UserLoginAsync(
+                userRepository, tokenService, request, cancellationToken);
             if (!result.IsSuccess)
             {
                 _logger.LogWarning(result.Message);

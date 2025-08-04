@@ -38,5 +38,8 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Repositories
                 .Where(t => !t.IsRevoked && userId == t.UserId)
                 .ExecuteUpdateAsync(t => t.SetProperty(p => p.IsRevoked, true), cancellationToken);
         }
+
+        public async Task RevokeAllAsync(CancellationToken cancellationToken) => await dbcontext.RefreshTokens
+            .ExecuteUpdateAsync(t => t.SetProperty(x => x.IsRevoked, true), cancellationToken);
     }
 }
