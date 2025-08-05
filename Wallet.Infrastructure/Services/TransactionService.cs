@@ -12,7 +12,7 @@ public class TransactionService : ITransactionService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
-    public TransactionService(IUnitOfWork unitOfWork, IMapper mapper, ITagService tagService)
+    public TransactionService(IUnitOfWork unitOfWork, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
@@ -255,7 +255,7 @@ public class TransactionService : ITransactionService
         }
     }
     
-    private decimal CalculateUpdatedBalance(decimal currentBalance, decimal amount, OperationType operationType, bool isAdding)
+    public decimal CalculateUpdatedBalance(decimal currentBalance, decimal amount, OperationType operationType, bool isAdding)
     {
         if (operationType == OperationType.Income)
             return isAdding ? currentBalance + amount : currentBalance - amount;

@@ -1,10 +1,12 @@
+using Wallet.Domain.Enums;
+
 namespace Wallet.Application.Dto.Transactions;
 
 public class TransactionDtoResponse
 {
     public Guid TransactionId { get; set; }
     public DateTime TransactionDate { get; set; }
-    public byte OperationType { get; set; }
+    public OperationType OperationType { get; set; }
     public int CategoryId { get; set; }
     public string CategoryName { get; set; }
     public Guid AccountId { get; set; }
