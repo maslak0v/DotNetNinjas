@@ -5,23 +5,33 @@ using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Requests;
 
 namespace FinancialTracker.Services.AuthorizeApi.Application.Fabrics
 {
-    public class AuthUseCaseFabric(
-        IUserRepository repository) : IAuthUseCaseFabric
+    public class AuthUseCaseFabric : IAuthUseCaseFabric
     {
-        public IGetAllUsersUseCase CreateGetAllUsers()
+        public IGetAllUsersUseCase CreateGetAllUsers(IUserRepository repository)
             => new GetAllUsersUseCase(repository);
 
-        public IUserRegisterUseCase CreateUserRegister(IUserRegisterRequest request)
+        public IUserRegisterUseCase CreateUserRegister(
+            IUserRepository repository,
+            IUserRegisterRequest request)
             => new UserRegisterUseCase(repository, request);
 
-        public ILoginUseCase CreateLogin(IAuthTokenService tokenService, IUserLoginRequest request)
+        public ILoginUseCase CreateLogin(
+            IUserRepository repository,
+            IAuthTokenService tokenService,
+            IUserLoginRequest request)
             => new LoginUseCase(repository, tokenService, request);
 
-        public IRefreshUseCase CreateRefresh(IAuthTokenService service, IRefreshRequest request)
-            => new RefreshTokenUseCase(repository, service, request);
+        public IRefreshUseCase CreateRefresh(
+            IUserRepository repository,
+            IAuthTokenService tokenService,
+            IRefreshRequest request)
+            => new RefreshTokenUseCase(repository, tokenService, request);
 
-        public ILogoutUseCase CreateLogout(string userId, IAuthTokenService service)
-         => new LogoutUseCase(userId, service);
+        public ILogoutUseCase CreateLogout(string userId, IAuthTokenService tokenService)
+         => new LogoutUseCase(userId, tokenService);
+
+        public IRevokeAllUseCase CreateRevokeAll(IAuthTokenService tokenService)
+         => new RevokeAllUseCase(tokenService);
 
 
         //other use-cases ..

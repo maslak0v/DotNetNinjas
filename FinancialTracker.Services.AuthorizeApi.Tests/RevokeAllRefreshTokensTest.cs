@@ -5,31 +5,28 @@ using Moq;
 
 namespace FinancialTracker.Services.AuthorizeApi.Tests
 {
-    public class UserLogoutTest
+    public class RevokeAllRefreshTokensTest
     {
         [Fact]
-        public async Task UserLogout()
+        public async Task RevokeAll()
         {
             //Arrange
-            var user = UserCreator.CreateWithUserRole();
-
             var mockTokenRepository = new Mock<ITokenRepository>();
             mockTokenRepository
-                .Setup(repo => repo.RevokeAllForUserAsync(user.Id, CancellationToken.None))
+                .Setup(repo => repo.RevokeAllAsync(CancellationToken.None))
                 .Returns(Task.CompletedTask);
 
+            var tokenService = AuthTokenServiceCreator.Create(JwtOptionsMocker.GetMock(), mockTokenRepository.Object);
             var fabric = AuthUseCaseFabricCreator.Create();
             var facade = AuthUseCaseFacadeCreator.Create(fabric);
-            var tokenService = AuthTokenServiceCreator.Create(
-                JwtOptionsMocker.GetMock(),
-                mockTokenRepository.Object);
 
             //Act
-            await facade.UserLogoutAsync(user.Id, tokenService, CancellationToken.None);
+            var result = await facade.RevokeAllRefreshTokensAsync(tokenService, CancellationToken.None);
 
             //Assert
-            mockTokenRepository.Verify(repo => repo.RevokeAllForUserAsync(user.Id, CancellationToken.None), Times.Once);
+            mockTokenRepository.Verify(repo => repo.RevokeAllAsync(CancellationToken.None), Times.Once);
             mockTokenRepository.VerifyNoOtherCalls();
+            Assert.True(result.IsSuccess);
         }
     }
 }

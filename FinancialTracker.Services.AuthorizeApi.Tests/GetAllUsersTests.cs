@@ -21,11 +21,11 @@ namespace FinancialTracker.Services.AuthorizeApi.Tests
             mockRepository.Setup(repo => repo.GetAllUsersQueryAsync(CancellationToken.None))
                 .ReturnsAsync(mockResult);
 
-            IAuthUseCaseFabric fabric = AuthUseCaseFabricCreator.Create(mockRepository.Object);
+            IAuthUseCaseFabric fabric = AuthUseCaseFabricCreator.Create();
             IAuthUseCasesFacade facade = AuthUseCaseFacadeCreator.Create(fabric);
 
             //Act
-            var result = await facade.GetAllUsersAsync(CancellationToken.None);
+            var result = await facade.GetAllUsersAsync(mockRepository.Object, CancellationToken.None);
 
             //Assert
             mockRepository.Verify(repo => repo.GetAllUsersQueryAsync(CancellationToken.None), Times.Once);
@@ -45,11 +45,11 @@ namespace FinancialTracker.Services.AuthorizeApi.Tests
                 mockRepository.Setup(repo => repo.GetAllUsersQueryAsync(CancellationToken.None))
                     .ReturnsAsync(mockResult);
 
-                IAuthUseCaseFabric fabric = AuthUseCaseFabricCreator.Create(mockRepository.Object);
+                IAuthUseCaseFabric fabric = AuthUseCaseFabricCreator.Create();
                 IAuthUseCasesFacade facade = AuthUseCaseFacadeCreator.Create(fabric);
 
                 //Act
-                var result = await facade.GetAllUsersAsync(CancellationToken.None);
+                var result = await facade.GetAllUsersAsync(mockRepository.Object, CancellationToken.None);
 
                 //Assert
                 mockRepository.Verify(repo => repo.GetAllUsersQueryAsync(CancellationToken.None), Times.Once);

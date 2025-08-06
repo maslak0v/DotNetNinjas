@@ -39,7 +39,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Imlemen
         public async Task<RefreshToken?> FindRefreshTokenByJtiAsync(Guid jti, CancellationToken cancellationToken)
             => await tokenRepository.FindByJtiAsync(jti, cancellationToken);
 
-        public async Task Revoke(RefreshToken refreshToken, CancellationToken cancellationToken)
+        public async Task RevokeAsync(RefreshToken refreshToken, CancellationToken cancellationToken)
         {
             if (refreshToken.IsRevoked)
                 return;
@@ -48,6 +48,9 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Imlemen
         }
         public async Task RevokeAllForUserAsync(string userId, CancellationToken cancellationToken) =>
             await tokenRepository.RevokeAllForUserAsync(userId, cancellationToken);
+
+        public async Task RevokeAllAsync(CancellationToken cancellationToken)
+            => await tokenRepository.RevokeAllAsync(cancellationToken);
 
         public async Task<bool> IsRevokedRefreshTokenAsync(string jti, CancellationToken cancellationToken)
         {

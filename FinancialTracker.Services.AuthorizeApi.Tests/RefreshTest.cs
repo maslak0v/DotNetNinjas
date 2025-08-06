@@ -38,12 +38,16 @@ namespace FinancialTracker.Services.AuthorizeApi.Tests
             request.Setup(r => r.Jti).Returns(refreshToken.Jti);
             request.Setup(r => r.RefreshToken).Returns(refreshToken.Token);
 
-            var usecaseFabric = AuthUseCaseFabricCreator.Create(mockUserRepo.Object);
+            var usecaseFabric = AuthUseCaseFabricCreator.Create();
             var facade = AuthUseCaseFacadeCreator.Create(usecaseFabric);
             var tokenService = AuthTokenServiceCreator.Create(options.Object, mockTokenRepo.Object);
 
             //Act
-            var response = await facade.RefreshAsync(tokenService, request.Object, CancellationToken.None);
+            var response = await facade.RefreshAsync(
+                mockUserRepo.Object,
+                tokenService,
+                request.Object,
+                CancellationToken.None);
 
             //Assert
             Assert.True(response.IsSuccess);
@@ -78,12 +82,12 @@ namespace FinancialTracker.Services.AuthorizeApi.Tests
             request.Setup(r => r.Jti).Returns(refreshToken.Jti);
             request.Setup(r => r.RefreshToken).Returns("token2");
 
-            var usecaseFabric = AuthUseCaseFabricCreator.Create(mockUserRepo.Object);
+            var usecaseFabric = AuthUseCaseFabricCreator.Create();
             var facade = AuthUseCaseFacadeCreator.Create(usecaseFabric);
             var tokenService = AuthTokenServiceCreator.Create(options.Object, mockTokenRepo.Object);
 
             //Act
-            var response = await facade.RefreshAsync(tokenService, request.Object, CancellationToken.None);
+            var response = await facade.RefreshAsync(mockUserRepo.Object, tokenService, request.Object, CancellationToken.None);
 
             //Assert
             Assert.NotNull(response);

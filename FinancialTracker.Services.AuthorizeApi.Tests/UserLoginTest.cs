@@ -44,12 +44,15 @@ namespace FinancialTracker.Services.AuthorizeApi.Tests
             mockTokenRepository.Setup(repo => repo.SaveAsync(CancellationToken.None)).Returns(Task.CompletedTask);
             mockTokenRepository.Setup(repo => repo.RevokeAllForUserAsync(user.Id, CancellationToken.None)).Returns(Task.CompletedTask);
 
-            IAuthUseCaseFabric fabric = AuthUseCaseFabricCreator.Create(mockUserRepository.Object);
+            IAuthUseCaseFabric fabric = AuthUseCaseFabricCreator.Create();
             IAuthUseCasesFacade facade = AuthUseCaseFacadeCreator.Create(fabric);
             IAuthTokenService tokenService = AuthTokenServiceCreator.Create(options.Object, mockTokenRepository.Object);
 
             //Act
-            var result = await facade.UserLoginAsync(tokenService, request.Object, CancellationToken.None);
+            var result = await facade.UserLoginAsync(
+                mockUserRepository.Object,
+                tokenService, request.Object,
+                CancellationToken.None);
 
             //Assert
             mockTokenRepository.Verify(repo => repo.SaveAsync(CancellationToken.None), Times.Once);
@@ -87,12 +90,16 @@ namespace FinancialTracker.Services.AuthorizeApi.Tests
             mockTokenRepository.Setup(repo => repo.RevokeAllForUserAsync(user.Id, CancellationToken.None))
                 .Returns(Task.CompletedTask);
 
-            IAuthUseCaseFabric fabric = AuthUseCaseFabricCreator.Create(mockUserRepository.Object);
+            IAuthUseCaseFabric fabric = AuthUseCaseFabricCreator.Create();
             IAuthUseCasesFacade facade = AuthUseCaseFacadeCreator.Create(fabric);
             IAuthTokenService tokenService = AuthTokenServiceCreator.Create(options.Object, mockTokenRepository.Object);
 
             //Act
-            var result = await facade.UserLoginAsync(tokenService, request.Object, CancellationToken.None);
+            var result = await facade.UserLoginAsync(
+                mockUserRepository.Object,
+                tokenService,
+                request.Object,
+                CancellationToken.None);
 
             //Assert
             Assert.Equal(Enum_StatusCode.UNAUTHORIZED, result.StatusCode);
