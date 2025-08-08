@@ -3,6 +3,7 @@ using FinancialTracker.Services.AuthorizeApi.Application.UseCases.Interfaces;
 using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Responses;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Contracts.Implementations;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Mapping;
+using FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Captcha;
 using FinancialTracker.Services.AuthorizeApi.Presentation.Controllers.BaseControllers;
 using FinancialTracker.Services.AuthorizeApi.Presentation.Helpers;
 using MessageBus.Shared.Contracts.Interfaces;
@@ -18,6 +19,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Presentation.Controllers
         IUserRepository userRepository,
         IAuthTokenService tokenService,
         IMessagePublisher messagePublisher,
+        ICaptchaService captchaService,
         ILogger<AuthController> logger) : AuthorizeBaseController<AuthController>(logger)
     {
         /// <summary>
@@ -31,6 +33,14 @@ namespace FinancialTracker.Services.AuthorizeApi.Presentation.Controllers
             [FromBody] UserRegisterRequest registerRequest,
             CancellationToken cancellationToken)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            _logger.LogInformation("Check captcha..");
+            var isHumanResult = await captchaService.VerifyAsync(registerRequest.CaptchaToken);
+            if (!isHumanResult.IsSuccess)
+                return UseCaseBadResultHandle(isHumanResult.StatusCode, isHumanResult.Message);
+
             _logger.LogInformation("Registration of a new user...");
             var resultOperation = await useCasesFacade.UserRegisterAsync(
                 userRepository, registerRequest, cancellationToken); 
@@ -54,6 +64,9 @@ namespace FinancialTracker.Services.AuthorizeApi.Presentation.Controllers
         public async Task<ActionResult<ITokenResponse>> Login(
             [FromBody] UserLoginRequest request, CancellationToken cancellationToken)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             _logger.LogInformation("try login ..");
             var result = await useCasesFacade.UserLoginAsync(
                 userRepository, tokenService, request, cancellationToken);

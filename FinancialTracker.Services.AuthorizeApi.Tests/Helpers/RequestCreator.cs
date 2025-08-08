@@ -11,10 +11,12 @@ namespace FinancialTracker.Services.AuthorizeApi.Tests.Helpers
               "mail@mail.ru",
               "derParol1$",
               "derParol1$",
-              "uniqueName");
+              "uniqueName",
+              "captchaToken");
 
         public static IUserRegisterRequest CreateUserRegisterBadRequest()
             => new UserRegisterRequest(
+                string.Empty,
                 string.Empty,
                 string.Empty,
                 string.Empty,

@@ -3,6 +3,7 @@ using FinancialTracker.Services.AuthorizeApi.Domain.ValueObjects;
 using FinancialTracker.Services.AuthorizeApi.Presentation.Helpers;
 using FinancialTracker.Services.AuthorizeApi.Presentation.Middlewares;
 using Microsoft.OpenApi.Models;
+using System.Text.Json;
 
 namespace FinancialTracker.Services.AuthorizeApi.Presentation
 {
@@ -26,7 +27,13 @@ namespace FinancialTracker.Services.AuthorizeApi.Presentation
             //    options.HttpsPort = 443;
             //});
             services.AddHttpContextAccessor();
-            services.AddControllers();
+            services.AddControllers()
+                .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+                options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase; // для ключей словарей
+                options.JsonSerializerOptions.PropertyNameCaseInsensitive = true; // разрешить любой регистр при десериализации
+            });
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(options =>
             {
