@@ -8,11 +8,8 @@ public class BalanceService(
     {
         var startBalance = 0;
         
-        var expenses = await expensesService.GetExpensesUpToDateAsync(userId, forDate, cancellationToken);
-        var incomes = await incomesService.GetIncomesUpToDateAsync(userId, forDate, cancellationToken);
-
-        var sumOfExpenses = expenses.Sum(e => e.Amount);
-        var sumOfIncomes = incomes.Sum(i => i.Amount);
+        var sumOfExpenses = await expensesService.GetSumOfExpensesUpToDateAsync(userId, forDate, cancellationToken);
+        var sumOfIncomes = await incomesService.GetSumOfIncomesUpToDateAsync(userId, forDate, cancellationToken);
 
         return (startBalance + sumOfIncomes - sumOfExpenses);
     }

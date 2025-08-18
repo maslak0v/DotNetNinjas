@@ -16,13 +16,13 @@ public class IncomesRepository(AppDbContext db) : IIncomesRepository
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<List<Income>> GetIncomesUpToDateAsync(Guid userId, DateTime upToDate, CancellationToken cancellationToken)
+    public async Task<decimal> GetSumOfIncomesUpToDateAsync(Guid userId, DateTime upToDate, CancellationToken cancellationToken)
     {
         var query = db.Set<Income>().AsNoTracking();
         return await query
             .Where(x => x.UserId == userId &&
                         x.IncomeTime <= upToDate.ToUniversalTime())
-            .ToListAsync(cancellationToken);
+            .SumAsync(i => i.Amount, cancellationToken);
     }
 
     public async Task<List<Income>> GetIncomesByAccountAsync(IncomesRequestDTO request, CancellationToken cancellationToken)

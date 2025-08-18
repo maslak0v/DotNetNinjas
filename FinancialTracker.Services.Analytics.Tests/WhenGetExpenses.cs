@@ -81,43 +81,6 @@ public class WhenGetExpenses
         // Assert
         Assert.That(result, Is.EqualTo(emptyExpenses));
     }
-
-    [Test]
-    public async Task UpToDate_ReturnsExpensesOnlyBeforeDateAndOnDate()
-    {
-        // Arrange
-        var mockRepository = new Mock<IExpensesRepository>();
-        var tommy = CreateUser("Tommy");
-        var tommyExpenses2009 = Create.Expense()
-            .At(01, 01, 2009)
-            .For(tommy).Please();
-        var tommyExpenses2010 = Create.Expense()
-            .At(01, 01, 2010)
-            .For(tommy).Please();
-        var tommyExpenses2011 = Create.Expense()
-            .At(01, 01, 2011)
-            .For(tommy).Please();
-        var allExpenses = new List<Expense>
-        {
-            tommyExpenses2009, tommyExpenses2010, tommyExpenses2011
-        };
-        var expensesUpTo2010 = new List<Expense>
-        {
-            tommyExpenses2009, tommyExpenses2010
-        };
-
-        mockRepository.Setup(repo =>
-                repo.GetExpensesUpToDateAsync(tommy.Id, It.IsAny<DateTime>(), CancellationToken.None))
-            .ReturnsAsync(allExpenses.Where(e => e.ExpenseTime.Year <= 2010).ToList());
-        var expensesService = new ExpensesService(mockRepository.Object, _mapper);
-        
-        // Act
-        var result = await expensesService.GetExpensesUpToDateAsync(tommy.Id,
-            new DateTime(2010, 01, 01), CancellationToken.None);
-
-        // Assert
-        Assert.That(result, Is.EqualTo(expensesUpTo2010));
-    }
     
     private User CreateUser(string name)
     {

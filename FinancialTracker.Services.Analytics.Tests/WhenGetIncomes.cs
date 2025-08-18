@@ -81,43 +81,6 @@ public class WhenGetIncomes
         // Assert
         Assert.That(result, Is.EqualTo(emptyIncomes));
     }
-
-    [Test]
-    public async Task UpToDate_ReturnsIncomesBeforeDateAndOnDate()
-    {
-        // Arrange
-        var mockRepository = new Mock<IIncomesRepository>();
-        var tommy = CreateUser("Tommy");
-        var tommyIncomes2009 = Create.Income()
-            .At(01, 01, 2009)
-            .For(tommy).Please();
-        var tommyIncomes2010 = Create.Income()
-            .At(01, 01, 2010)
-            .For(tommy).Please();
-        var tommyIncomes2011 = Create.Income()
-            .At(01, 01, 2011)
-            .For(tommy).Please();
-        var allIncomes = new List<Income>
-        {
-            tommyIncomes2009, tommyIncomes2010, tommyIncomes2011
-        };
-        var incomesUpTo2010 = new List<Income>
-        {
-            tommyIncomes2009, tommyIncomes2010
-        };
-
-        mockRepository.Setup(repo =>
-                repo.GetIncomesUpToDateAsync(tommy.Id, It.IsAny<DateTime>(), CancellationToken.None))
-            .ReturnsAsync(allIncomes.Where(e => e.IncomeTime.Year <= 2010).ToList());
-        var incomeService = new IncomesService(mockRepository.Object, _mapper);
-        
-        // Act
-        var result = await incomeService.GetIncomesUpToDateAsync(tommy.Id,
-            new DateTime(2010, 01, 01), CancellationToken.None);
-
-        // Assert
-        Assert.That(result, Is.EqualTo(incomesUpTo2010));
-    }
     
     private User CreateUser(string name)
     {

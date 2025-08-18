@@ -24,13 +24,13 @@ public interface IExpensesRepository
     Task<List<Expense>> GetExpensesByAccountAsync(ExpensesRequestDto request, CancellationToken cancellationToken);
 
     /// <summary>
-    /// Получить список расходов до указанной даты включительно
+    /// Получить сумму расходов до указанной даты включительно
     /// </summary>
     /// <param name="userId"> Guid пользователя </param>
     /// <param name="upToDate"> Дата, до которой получаем расходы (включительно)</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns> Список расходов </returns>
-    Task<List<Expense>> GetExpensesUpToDateAsync(Guid userId, DateTime upToDate, CancellationToken cancellationToken);
+    Task<decimal> GetSumOfExpensesUpToDateAsync(Guid userId, DateTime upToDate, CancellationToken cancellationToken);
 
     /// <summary>
     /// Добавить новый расход
