@@ -24,13 +24,13 @@ namespace FinancialTracker.Services.Analytics.Services
         Task<List<Income>> GetIncomesByAccountAsync(IncomesRequestDTO request, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Получить список доходов до указанной даты включительно
+        /// Получить сумму доходов до указанной даты включительно
         /// </summary>
         /// <param name="userId">Guid пользователя</param>
         /// <param name="upToDate">Дата, до которой получаем доходы (включительно)</param>
         /// <param name="cancellationToken">Токен отмены</param>
         /// <returns>Список доходов</returns>
-        Task<List<Income>> GetIncomesUpToDateAsync(Guid userId, DateTime upToDate, CancellationToken cancellationToken);
+        Task<decimal> GetSumOfIncomesUpToDateAsync(Guid userId, DateTime upToDate, CancellationToken cancellationToken);
 
         /// <summary>
         /// Добавить новый доход

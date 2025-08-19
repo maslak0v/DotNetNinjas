@@ -16,13 +16,13 @@ public class ExpensesRepository(AppDbContext db) : IExpensesRepository
             .ToListAsync(cancellationToken);
     }
     
-    public async Task<List<Expense>> GetExpensesUpToDateAsync(Guid userId, DateTime upToDate, CancellationToken cancellationToken)
+    public async Task<decimal> GetSumOfExpensesUpToDateAsync(Guid userId, DateTime upToDate, CancellationToken cancellationToken)
     {
-        var query = db.Set<Expense>().AsNoTracking();
+        var query = db.Expenses;
         return await query
             .Where(x => x.UserId == userId &&
                         x.ExpenseTime <= upToDate.ToUniversalTime())
-            .ToListAsync(cancellationToken);
+            .SumAsync(e => e.Amount, cancellationToken);
     }
 
     public async Task<List<Expense>> GetExpensesByAccountAsync(ExpensesRequestDto request, CancellationToken cancellationToken)

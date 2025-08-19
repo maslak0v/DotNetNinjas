@@ -12,9 +12,9 @@ public class ExpensesService (IExpensesRepository expensesRepository, IMapper ma
         return await expensesRepository.GetExpensesAsync(userId, startDate, endDate, cancellationToken);
     }
     
-    public async Task<List<Expense>> GetExpensesUpToDateAsync(Guid userId, DateTime upToDate, CancellationToken cancellationToken)
+    public async Task<decimal> GetSumOfExpensesUpToDateAsync(Guid userId, DateTime upToDate, CancellationToken cancellationToken)
     {
-        return await expensesRepository.GetExpensesUpToDateAsync(userId, upToDate, cancellationToken);
+        return await expensesRepository.GetSumOfExpensesUpToDateAsync(userId, upToDate, cancellationToken);
     }
 
     public async Task<List<Expense>> GetExpensesByAccountAsync(ExpensesRequestDto request, CancellationToken cancellationToken)

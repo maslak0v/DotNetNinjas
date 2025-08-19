@@ -12,9 +12,9 @@ public class IncomesService(IIncomesRepository incomesRepository, IMapper mapper
         return await incomesRepository.GetIncomesAsync(userId, startDate, endDate, cancellationToken);
     }
 
-    public async Task<List<Income>> GetIncomesUpToDateAsync(Guid userId, DateTime upToDate, CancellationToken cancellationToken)
+    public async Task<decimal> GetSumOfIncomesUpToDateAsync(Guid userId, DateTime upToDate, CancellationToken cancellationToken)
     {
-        return await incomesRepository.GetIncomesUpToDateAsync(userId, upToDate, cancellationToken);
+        return await incomesRepository.GetSumOfIncomesUpToDateAsync(userId, upToDate, cancellationToken);
     }
 
     public async Task<List<Income>> GetIncomesByAccountAsync(IncomesRequestDTO request, CancellationToken cancellationToken)
