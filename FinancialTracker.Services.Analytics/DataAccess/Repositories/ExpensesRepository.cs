@@ -18,7 +18,7 @@ public class ExpensesRepository(AppDbContext db) : IExpensesRepository
     
     public async Task<decimal> GetSumOfExpensesUpToDateAsync(Guid userId, DateTime upToDate, CancellationToken cancellationToken)
     {
-        var query = db.Set<Expense>().AsNoTracking();
+        var query = db.Expenses;
         return await query
             .Where(x => x.UserId == userId &&
                         x.ExpenseTime <= upToDate.ToUniversalTime())

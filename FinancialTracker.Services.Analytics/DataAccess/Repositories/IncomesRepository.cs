@@ -18,7 +18,7 @@ public class IncomesRepository(AppDbContext db) : IIncomesRepository
 
     public async Task<decimal> GetSumOfIncomesUpToDateAsync(Guid userId, DateTime upToDate, CancellationToken cancellationToken)
     {
-        var query = db.Set<Income>().AsNoTracking();
+        var query = db.Incomes;
         return await query
             .Where(x => x.UserId == userId &&
                         x.IncomeTime <= upToDate.ToUniversalTime())
