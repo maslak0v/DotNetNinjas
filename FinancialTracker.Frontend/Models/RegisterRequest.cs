@@ -20,4 +20,7 @@ public class RegisterRequest
     [Required(ErrorMessage = "Обязательное поле")]
     [Compare(nameof(Password), ErrorMessage = "Пароли не совпадают")]
     public string ConfirmedPassword { get; set; }
+    
+    [Required(ErrorMessage = "Пожалуйста, подтвердите что вы не робот")]
+    public string CaptchaToken { get; set; }
 }
