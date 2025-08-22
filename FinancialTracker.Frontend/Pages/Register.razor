@@ -3,13 +3,13 @@
 @using FinancialTracker.Frontend.Services
 @inject AuthService AuthService
 @inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
 
 <div class="m-auto w-25">
     <h3>Регистрация</h3>
     
     <EditForm class="d-flex flex-column gap-1" Model="@RegisterRequest" OnValidSubmit="HandleRegister">
         <DataAnnotationsValidator />
-
 
         <div class="form-group">
             <label for="fullname">Имя</label>
@@ -35,6 +35,11 @@
             <ValidationMessage For="@(() => RegisterRequest.ConfirmedPassword)" />
         </div>
 
+        <div class="form-group">
+            <div id="recaptcha"></div>
+            <ValidationMessage For="@(() => RegisterRequest.CaptchaToken)" />
+        </div>
+        
         <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
 
         @if (_errorMessage != null)
@@ -49,6 +54,21 @@
 @code {
     private RegisterRequest RegisterRequest { get; } = new();
     private string? _errorMessage = string.Empty;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        { 
+            await JSRuntime.InvokeVoidAsync("initializeRecaptcha", DotNetObjectReference.Create(this));
+        }
+    }
+
+    [JSInvokable]
+    public void SetRecaptchaResponse(string response)
+    {
+        RegisterRequest.CaptchaToken = response;
+        StateHasChanged();
+    }
     
     private async Task HandleRegister()
     {
@@ -61,6 +81,8 @@
         catch (Exception ex)
         {
             _errorMessage = ex.Message;
+            RegisterRequest.CaptchaToken = string.Empty;
+            await JSRuntime.InvokeVoidAsync("grecaptcha.reset");
             StateHasChanged();
         }
     }
