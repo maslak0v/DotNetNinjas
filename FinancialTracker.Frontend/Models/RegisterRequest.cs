@@ -5,7 +5,7 @@ namespace FinancialTracker.Frontend.Models;
 public class RegisterRequest
 {
     [Required(ErrorMessage = "Обязательное поле")]
-    [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Имя должно содержать только символы латинского алфавита")]
+    [RegularExpression(@"^[a-zA-Z0-9]+$", ErrorMessage = "Имя может содержать только символы латинского алфавита и цифры")]
     [MaxLength(50, ErrorMessage = "Не более 50 символов")]
     public string FullName { get; set; }
 
