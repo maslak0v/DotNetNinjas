@@ -3,6 +3,7 @@ using FinancialTracker.Services.AuthorizeApi.Infrastructure.DataAccess;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Helpers;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Models;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Repositories;
+using FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Captcha;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Imlementation;
 using MessageBus.Shared;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -23,6 +24,8 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.DIInfrastructure
         {
             string? jwtkey = GetSecretKey();
             JwtSettings? jwtSettings = JwtSettingsRegistration(services, configuration);
+
+            services.AddHttpClient<ICaptchaService, ReCaptchaService>();
 
             DbContextRegistration(services);
             SetDbContextToIdentity(services);

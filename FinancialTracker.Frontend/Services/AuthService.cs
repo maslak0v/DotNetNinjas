@@ -41,6 +41,11 @@ public class AuthService
 
     public async Task<HttpResponseMessage> Register(RegisterRequest request)
     {
+        if (string.IsNullOrEmpty(request.CaptchaToken))
+        {
+            throw new ApplicationException("Пожалуйста, подтвердите что вы не робот");
+        }
+        
         var response = await _httpClient.PostAsJsonAsync("api/authorize/register", request);
         
         if (!response.IsSuccessStatusCode)
