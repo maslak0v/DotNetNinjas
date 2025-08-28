@@ -33,6 +33,8 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.Fabrics
         public IRevokeAllUseCase CreateRevokeAll(IAuthTokenService tokenService)
          => new RevokeAllUseCase(tokenService);
 
+        public IDeleteUseCase CreateDeleteUseCase(string userId, IUserRepository repository)
+            => new DeleteUseCase(userId, repository);
 
         //other use-cases ..
     }

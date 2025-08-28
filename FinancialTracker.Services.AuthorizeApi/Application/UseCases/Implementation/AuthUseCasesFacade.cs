@@ -28,10 +28,12 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Implementa
             => await ExecuteUseCaseAsync<ILoginUseCase, OperationResult<ITokenResponse>>(
                 () => useCaseFabric.CreateLogin(userRepository, tokenService, request), cancellationToken);
 
-        public Task<OperationResult> DeleteAsync(IUserRepository userRepository, Guid id, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<OperationResult> DeleteAsync(
+            string userId,
+            IUserRepository userRepository,
+            CancellationToken cancellationToken)
+            => await ExecuteUseCaseAsync<IDeleteUseCase, OperationResult>(
+                () => useCaseFabric.CreateDeleteUseCase(userId, userRepository), cancellationToken);
 
         public Task<OperationResult<ICurrentUserLoginResponse>> GetCurrentUserAsync(CancellationToken cancellationToken)
         {

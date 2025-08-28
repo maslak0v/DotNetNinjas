@@ -53,7 +53,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Repositories
         {
             await using var transaction = await authDb.Database.BeginTransactionAsync();
             var result = await CreateUserAsync(request, cancellationToken);
-            if(!result.IsSuccess)
+            if (!result.IsSuccess)
             {
                 await transaction.RollbackAsync(cancellationToken);
                 return OperationResultCreator.Failure<User>(result.StatusCode, result.Message!);
@@ -76,7 +76,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Repositories
             var model = await authDb.Users.AsNoTrackingWithIdentityResolution()
                  .Include(x => x.Roles)
                  .FirstOrDefaultAsync(x => x.Id == userId, cancellationToken);
-            if(model is null)
+            if (model is null)
                 return null;
             IList<string> roles = model.Roles.Select(x => x.Name!).ToList();
             return model?.ToDomainUser(roles);
@@ -106,6 +106,19 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Repositories
             return result.Succeeded
                 ? OperationResultCreator.Success(user, Enum_StatusCode.CREATED, "User created successfully")
                 : OperationResultCreator.Failure<AuthUser>(
+                    Enum_StatusCode.BAD_REQUEST,
+                    string.Join(", ", result.Errors.Select(e => e.Description)));
+        }
+
+        public async Task<OperationResult> DeleteAsync(string userId, CancellationToken cancellationToken)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+            if (user is null)
+                return OperationResultCreator.Failure(Enum_StatusCode.NOT_FOUND, $"User with {userId} not found");
+            var result = await userManager.DeleteAsync(user);
+            return result.Succeeded
+                ? OperationResultCreator.Success(Enum_StatusCode.NO_CONTENT)
+                : OperationResultCreator.Failure(
                     Enum_StatusCode.BAD_REQUEST,
                     string.Join(", ", result.Errors.Select(e => e.Description)));
         }
