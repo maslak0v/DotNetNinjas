@@ -5,10 +5,13 @@ using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Requests;
 using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Responses;
 using FinancialTracker.Services.AuthorizeApi.Domain.ValueObjects;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.DataAccess;
-using FinancialTracker.Services.AuthorizeApi.Infrastructure.Mapping;
+using FinancialTracker.Services.AuthorizeApi.Infrastructure.Extensions;
+using FinancialTracker.Services.AuthorizeApi.Infrastructure.Extensions.Mapping;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Collections;
+using static MassTransit.ValidationResultExtensions;
 
 namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Repositories
 {
@@ -73,14 +76,16 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Repositories
 
         public async Task<User?> FindByIdAsync(string userId, CancellationToken cancellationToken)
         {
-            var model = await authDb.Users.AsNoTrackingWithIdentityResolution()
-                 .Include(x => x.Roles)
-                 .FirstOrDefaultAsync(x => x.Id == userId, cancellationToken);
+            var model = await FindAuthUserById(userId, false, cancellationToken);
             if (model is null)
                 return null;
             IList<string> roles = model.Roles.Select(x => x.Name!).ToList();
             return model?.ToDomainUser(roles);
         }
+        private async Task<AuthUser?> FindAuthUserById(string userId, bool tracking, CancellationToken cancellationToken)
+            => await authDb.Users.Tracking(tracking)
+                 .Include(x => x.Roles)
+                 .FirstOrDefaultAsync(x => x.Id == userId, cancellationToken);
 
         public async Task<OperationResult> AddRolesToUserAsync(User userDomain, ICollection<string> roles, CancellationToken cancellationToken)
         {
@@ -112,9 +117,15 @@ namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Repositories
 
         public async Task<OperationResult> DeleteAsync(string userId, CancellationToken cancellationToken)
         {
-            var user = await userManager.FindByIdAsync(userId);
+            var user = await FindAuthUserById(userId, true, cancellationToken);
+
             if (user is null)
-                return OperationResultCreator.Failure(Enum_StatusCode.NOT_FOUND, $"User with {userId} not found");
+                return OperationResultCreator.Failure(Enum_StatusCode.NOT_FOUND, $"user [{userId}] not found");
+               
+            if (user.CheckRole(nameof(Enum_BaseRoles.SUPERUSER)))
+                return OperationResultCreator.Failure(Enum_StatusCode.BAD_REQUEST,
+                    "It is forbidden to delete a SuperUser ");
+
             var result = await userManager.DeleteAsync(user);
             return result.Succeeded
                 ? OperationResultCreator.Success(Enum_StatusCode.NO_CONTENT)

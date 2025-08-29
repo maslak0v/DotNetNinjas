@@ -1,7 +1,7 @@
 ﻿using FinancialTracker.Services.AuthorizeApi.Application.Interfaces;
 using FinancialTracker.Services.AuthorizeApi.Domain.Entities;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.DataAccess;
-using FinancialTracker.Services.AuthorizeApi.Infrastructure.Mapping;
+using FinancialTracker.Services.AuthorizeApi.Infrastructure.Extensions.Mapping;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
 

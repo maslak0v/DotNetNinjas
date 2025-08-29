@@ -2,7 +2,7 @@
 using FinancialTracker.Services.AuthorizeApi.Application.UseCases.Interfaces;
 using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Responses;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Contracts.Implementations;
-using FinancialTracker.Services.AuthorizeApi.Infrastructure.Mapping;
+using FinancialTracker.Services.AuthorizeApi.Infrastructure.Extensions.Mapping;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Captcha;
 using FinancialTracker.Services.AuthorizeApi.Presentation.Controllers.BaseControllers;
 using FinancialTracker.Services.AuthorizeApi.Presentation.Helpers;

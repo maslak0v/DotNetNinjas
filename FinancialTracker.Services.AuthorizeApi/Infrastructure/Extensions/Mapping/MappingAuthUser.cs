@@ -4,7 +4,7 @@ using FinancialTracker.Services.AuthorizeApi.Domain.Interfaces.Responses;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Contracts.Implementations;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Models;
 
-namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Mapping
+namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Extensions.Mapping
 {
     public static class MappingAuthUser
     {
