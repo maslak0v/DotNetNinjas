@@ -10,8 +10,6 @@ using FinancialTracker.Services.AuthorizeApi.Infrastructure.Extensions.Mapping;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Collections;
-using static MassTransit.ValidationResultExtensions;
 
 namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Repositories
 {
