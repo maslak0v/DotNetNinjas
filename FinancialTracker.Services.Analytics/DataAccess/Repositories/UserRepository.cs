@@ -9,5 +9,12 @@ namespace FinancialTracker.Services.Analytics.DataAccess.Repositories
             dbContext.Users.Add(user);
             await dbContext.SaveChangesAsync(cancellationToken);
         }
+
+        public async Task DeleteByIdAsync(Guid userId, CancellationToken cancellationToken)
+        {
+            var user = await dbContext.Users.FindAsync(userId, cancellationToken);
+            dbContext.Users.Remove(user!);
+            await dbContext.SaveChangesAsync(cancellationToken);
+        }
     }
 }

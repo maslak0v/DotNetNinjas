@@ -18,5 +18,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.Interfaces
         Task<IList<string>> GetRolesForUserAsync(User user, CancellationToken cancellationToken);
         Task<OperationResult<User>> RegisterUserAsync(
             IUserRegisterRequest request, ICollection<string> roles, CancellationToken cancellationToken);
+
+        Task<OperationResult> DeleteAsync(string userId, CancellationToken cancellationToken);     
     }
 }

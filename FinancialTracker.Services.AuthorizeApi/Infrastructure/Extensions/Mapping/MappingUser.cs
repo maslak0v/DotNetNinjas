@@ -1,7 +1,7 @@
 ﻿using FinancialTracker.Services.AuthorizeApi.Domain.Entities;
 using MessageBus.Shared.Contracts.Implementations;
 
-namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Mapping
+namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Extensions.Mapping
 {
     public static class MappingUser
     {

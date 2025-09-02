@@ -57,4 +57,13 @@ public class AccountRepository : IAccountRepository
     {
         throw new NotImplementedException();
     }
+
+    public async Task SoftDeleteRangeByUserIdAsync(Guid userId, DateTime timeStampUTC, CancellationToken cancellationToken)
+    {
+        await _context.Account
+            .Where(a => a.UserId == userId)
+            .ExecuteUpdateAsync(setters => setters
+                .SetProperty(a => a.IsDeleted, a => true)
+                .SetProperty(a => a.UpdatedAt, a => timeStampUTC));
+    }
 }

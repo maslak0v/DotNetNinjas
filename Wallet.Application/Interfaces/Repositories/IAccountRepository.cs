@@ -12,5 +12,6 @@ public interface IAccountRepository
     Task AddAsync(Account account, CancellationToken cancellationToken);
     Task UpdateAsync(Account account, CancellationToken cancellationToken);
     Task SoftDelete(Account account, CancellationToken cancellationToken);
+    Task SoftDeleteRangeByUserIdAsync(Guid userId, DateTime timeStampUTC, CancellationToken cancellationToken);
     Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken);
 }

@@ -29,8 +29,8 @@ namespace FinancialTracker.Services.AuthorizeApi.Application.UseCases.Interfaces
             IAuthTokenService tokenService, IRefreshRequest request, CancellationToken cancellationToken);
         Task<OperationResult<ICurrentUserLoginResponse>> GetCurrentUserAsync(CancellationToken cancellationToken);
         Task<OperationResult> DeleteAsync(
+            string id,
             IUserRepository userRepository,
-            Guid id,
             CancellationToken cancellationToken);
         Task<OperationResult> RevokeAllRefreshTokensAsync(IAuthTokenService tokenService, CancellationToken cancellationToken);
     }

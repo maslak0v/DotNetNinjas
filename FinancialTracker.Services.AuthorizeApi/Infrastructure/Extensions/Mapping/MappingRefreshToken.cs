@@ -1,7 +1,7 @@
 ﻿using FinancialTracker.Services.AuthorizeApi.Domain.Entities;
 using FinancialTracker.Services.AuthorizeApi.Infrastructure.Models;
 
-namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Mapping
+namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Extensions.Mapping
 {
     public static class MappingRefreshToken
     {
