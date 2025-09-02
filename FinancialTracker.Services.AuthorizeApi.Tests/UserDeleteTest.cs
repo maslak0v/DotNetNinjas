@@ -10,14 +10,13 @@ namespace FinancialTracker.Services.AuthorizeApi.Tests
     public class UserDeleteTest
     {
         [Theory]
-        [InlineData(0)]
-        [InlineData(1)]
-        public async Task UserDelete(int userId)
+        [InlineData(false)]//случай невалидного(отсутсвующего id)
+        [InlineData(true)] //хороший случай, userId существует
+        public async Task UserDelete(bool goodUserId)
         {
             //Arrange
 
-
-            var mockResultDeleting = userId == 1
+            var mockResultDeleting = goodUserId
                 ? OperationResultCreator.Success(Enum_StatusCode.NO_CONTENT, string.Empty)
                 : OperationResultCreator.Failure(Enum_StatusCode.NOT_FOUND, "NotFound");
                 
@@ -33,7 +32,7 @@ namespace FinancialTracker.Services.AuthorizeApi.Tests
             var result = await facade.DeleteAsync(Guid.CreateVersion7().ToString(), mockUserRepository.Object, CancellationToken.None);
 
             //Assert
-            if (userId == 1)
+            if (goodUserId)
                 Assert.Equal(Enum_StatusCode.NO_CONTENT, result.StatusCode);
             else
             {
