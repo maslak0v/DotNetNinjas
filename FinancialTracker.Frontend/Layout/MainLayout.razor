@@ -1,6 +1,7 @@
 ﻿@using FinancialTracker.Frontend.Services
 @inherits LayoutComponentBase
 @inject AuthService AuthService
+@implements IDisposable
 
 <div class="page">
     <main>
@@ -28,10 +29,22 @@
     protected override async Task OnInitializedAsync()
     {
         isAuthenticated = await AuthService.IsAuthenticated();
+        AuthService.AuthenticationStateChanged += OnAuthenticationStateChanged;
+    }
+
+    private async void OnAuthenticationStateChanged()
+    {
+        isAuthenticated = await AuthService.IsAuthenticated();
+        StateHasChanged();
     }
 
     private async Task Logout()
     {
         await AuthService.Logout();
+    }
+
+    public void Dispose()
+    {
+        AuthService.AuthenticationStateChanged -= OnAuthenticationStateChanged;
     }
 }

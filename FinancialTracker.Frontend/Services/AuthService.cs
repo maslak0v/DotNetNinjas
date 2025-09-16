@@ -26,9 +26,10 @@ public class AuthService
         {
             throw new Exception("Login failed");
         }
-        
-        var authResponse = await response.Content.ReadFromJsonAsync<AuthResponse>();
+
+		var authResponse = await response.Content.ReadFromJsonAsync<AuthResponse>();
         await StoreTokens(authResponse);
+		AuthenticationStateChanged?.Invoke();
         return authResponse;
     }
     
@@ -36,7 +37,8 @@ public class AuthService
     {
         await _browserStorage.RemoveAsync("accessToken");
         await _browserStorage.RemoveAsync("refreshToken");
-        _navigationManager.NavigateTo("/login");
+		AuthenticationStateChanged?.Invoke();
+		_navigationManager.NavigateTo("/login");
     }
 
     public async Task<HttpResponseMessage> Register(RegisterRequest request)
@@ -99,7 +101,8 @@ public class AuthService
         
         var authResponse = await response.Content.ReadFromJsonAsync<AuthResponse>();
         await StoreTokens(authResponse);
-    }
+		AuthenticationStateChanged?.Invoke();
+	}
     
     private async Task StoreTokens(AuthResponse authResponse)
     {
@@ -117,4 +120,8 @@ public class AuthService
         var token = await GetAccessToken();
         return !string.IsNullOrEmpty(token);
     }
+
+	public event Action AuthenticationStateChanged;
+
+
 }
