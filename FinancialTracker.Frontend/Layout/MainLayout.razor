@@ -16,6 +16,10 @@
 
         @if (isAuthenticated)
         {
+            <MudLink Href="/finances" Underline="Underline.None" Color="Color.Inherit" Class="mx-2">Финансы</MudLink>
+            <MudLink Href="/analytics" Underline="Underline.None" Color="Color.Inherit" Class="mx-2">Аналитика</MudLink>
+            <MudLink Href="/dashboard" Underline="Underline.None" Color="Color.Inherit" Class="mx-2">Dashboard</MudLink>
+            <MudSpacer />
             <MudButton Variant="Variant.Text" Color="Color.Inherit" OnClick="Logout">Выйти</MudButton>
         }
         else
