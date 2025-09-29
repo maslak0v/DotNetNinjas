@@ -5,13 +5,14 @@
 
 @if (isAuthenticated)
 {
-    <h3>Добро пожаловать!</h3>
-    <p>Вы успешно вошли.</p>
-    <button @onclick="Logout" class="btn btn-danger">Выйти</button>
+    <MudText Typo="Typo.h3">Добро пожаловать!</MudText>
+    <MudText Typo="Typo.body1">Вы успешно вошли.</MudText>
+    <MudButton OnClick="Logout"  Variant="Variant.Filled" Color="Color.Error">Выйти</MudButton>
+    <MudButton href="/dashboard" Variant="Variant.Filled" Color="Color.Success">На главную</MudButton>
 }
 else
 {
-    <p>Вы не авторизованы. <a href="/login">Войдите</a>.</p>
+    <MudText Typo="Typo.body1">Вы не авторизованы. <MudButton href="/login">Войдите</MudButton>.</MudText>
 }
 
 @code {

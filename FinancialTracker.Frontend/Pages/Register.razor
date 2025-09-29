@@ -1,55 +1,70 @@
 @page "/register"
 @using FinancialTracker.Frontend.Models
 @using FinancialTracker.Frontend.Services
+@using System.ComponentModel.DataAnnotations
 @inject AuthService AuthService
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
 
-<div class="m-auto w-25">
-    <h3>Регистрация</h3>
-    
-    <EditForm class="d-flex flex-column gap-1" Model="@RegisterRequest" OnValidSubmit="HandleRegister">
+<MudContainer Class="d-flex flex-column vh-100 justify-content-center align-items-center">
+
+    <MudText Typo="Typo.h4" Class="mb-2">Регистрация</MudText>
+
+    <EditForm Model="@RegisterRequest" OnValidSubmit="HandleRegister">
         <DataAnnotationsValidator />
 
-        <div class="form-group">
-            <label for="fullname">Имя</label>
-            <InputText id="fullname" @bind-Value="RegisterRequest.FullName" class="form-control" />
-            <ValidationMessage For="@(() => RegisterRequest.FullName)" />
-        </div>
-    
-        <div class="form-group">
-            <label for="email">Email</label>
-            <InputText id="email" @bind-Value="RegisterRequest.Email" class="form-control" />
-            <ValidationMessage For="@(() => RegisterRequest.Email)" />
-        </div>
-
-        <div class="form-group">
-            <label for="password">Пароль</label>
-            <InputText id="password" type="password" @bind-Value="RegisterRequest.Password" class="form-control" />
-            <ValidationMessage For="@(() => RegisterRequest.Password)" />
-        </div>
-
-        <div class="form-group">
-            <label for="confirmPassword">Подтвердите пароль</label>
-            <InputText id="confirmPassword" type="password" @bind-Value="RegisterRequest.ConfirmedPassword" class="form-control" />
-            <ValidationMessage For="@(() => RegisterRequest.ConfirmedPassword)" />
-        </div>
-
-        <div class="form-group">
-            <div id="recaptcha"></div>
-            <ValidationMessage For="@(() => RegisterRequest.CaptchaToken)" />
-        </div>
-        
-        <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
-
-        @if (_errorMessage != null)
-        {
-            <div class="text-danger">
-                @_errorMessage
-            </div>
-        }
+        <MudGrid>
+            <MudItem>
+                <MudCard>
+                    <MudCardContent>
+                        <MudTextField Label="Имя"
+                                      @bind-Value="RegisterRequest.FullName"
+                                      For="@(() => RegisterRequest.FullName)"
+                                      Variant="Variant.Outlined"
+                                      Margin="Margin.Dense"
+                                      FullWidth />
+                        <MudTextField Label="E-mail"
+                                      @bind-Value="RegisterRequest.Email"
+                                      For="@(() => RegisterRequest.Email)"
+                                      Variant="Variant.Outlined"
+                                      Margin="Margin.Dense"
+                                      FullWidth />
+                        <MudTextField Label="Пароль"
+                                      @bind-Value="RegisterRequest.Password"
+                                      For="@(() => RegisterRequest.Password)"
+                                      InputType="InputType.Password"
+                                      Variant="Variant.Outlined"
+                                      Margin="Margin.Dense"
+                                      FullWidth />
+                        <MudTextField Label="Подтвердите пароль"
+                                      @bind-Value="RegisterRequest.ConfirmedPassword"
+                                      For="@(() => RegisterRequest.ConfirmedPassword)"
+                                      InputType="InputType.Password"
+                                      Variant="Variant.Outlined"
+                                      Margin="Margin.Dense"
+                                      FullWidth />
+                    </MudCardContent>
+                    <MudCardContent>
+                        <div id="recaptcha"></div>
+                        <ValidationMessage For="@(() => RegisterRequest.CaptchaToken)" />                        
+                    </MudCardContent>
+                    <MudCardActions>
+                        <MudButton ButtonType="ButtonType.Submit"
+                                   Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   FullWidth>
+                            Зарегистрироваться
+                        </MudButton>
+                    </MudCardActions> 
+                </MudCard>
+            </MudItem>
+        </MudGrid>
     </EditForm>
-</div>
+    @if (_errorMessage != null)
+    {
+        <MudText Class="mt-5" Color="Color.Error">@_errorMessage</MudText>
+    }
+</MudContainer>
 
 @code {
     private RegisterRequest RegisterRequest { get; } = new();
@@ -70,7 +85,7 @@
         StateHasChanged();
     }
     
-    private async Task HandleRegister()
+    private async Task HandleRegister(EditContext context)
     {
         _errorMessage = null;
         try

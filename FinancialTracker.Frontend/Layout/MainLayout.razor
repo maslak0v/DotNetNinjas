@@ -3,25 +3,35 @@
 @inject AuthService AuthService
 @implements IDisposable
 
-<div class="page">
-    <main>
-        <div class="top-row px-4 justify-content-between">
-            <a class="navbar-brand m-0" href="">Трекер финансов</a>
-            @if (isAuthenticated)
-            {
-                <a href="#" @onclick="Logout">Выйти</a>
-            }
-            else
-            {
-                <a href="/login">Войти</a>
-            }
-        </div>
+<MudThemeProvider />
+<MudSnackbarProvider />
+<MudDialogProvider />
+<MudPopoverProvider />
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+<MudLayout>
+    <MudAppBar Color="Color.Primary" Elevation="1" Fixed="true" Contextual>
+        <MudText Typo="Typo.h6" Class="ml-2">Трекер финансов</MudText>
+
+        <MudSpacer />
+
+        @if (isAuthenticated)
+        {
+            <MudLink Href="/finances" Underline="Underline.None" Color="Color.Inherit" Class="mx-2">Финансы</MudLink>
+            <MudLink Href="/analytics" Underline="Underline.None" Color="Color.Inherit" Class="mx-2">Аналитика</MudLink>
+            <MudLink Href="/dashboard" Underline="Underline.None" Color="Color.Inherit" Class="mx-2">Dashboard</MudLink>
+            <MudSpacer />
+            <MudButton Variant="Variant.Text" Color="Color.Inherit" OnClick="Logout">Выйти</MudButton>
+        }
+        else
+        {
+            <MudButton Variant="Variant.Text" Color="Color.Inherit" Href="/login">Войти</MudButton>
+        }
+    </MudAppBar>
+
+    <MudMainContent>
+        @Body
+    </MudMainContent>
+</MudLayout>
 
 @code {
     private bool isAuthenticated;

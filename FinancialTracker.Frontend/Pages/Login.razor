@@ -1,52 +1,66 @@
 @page "/login"
 @using FinancialTracker.Frontend.Models
 @using FinancialTracker.Frontend.Services
+@using System.ComponentModel.DataAnnotations
 @inject AuthService AuthService
 @inject NavigationManager NavigationManager
 
-<div class="m-auto w-25">
-    <h3>Вход</h3>
-    
-    <EditForm class="d-flex flex-column gap-1" Model="@LoginRequest" OnValidSubmit="HandleLogin">
-        <DataAnnotationsValidator/>
-        <ValidationSummary/>
+<MudContainer Class="d-flex flex-column vh-100 justify-content-center align-items-center">
 
-        <div class="form-group">
-            <label for="email">Email</label>
-            <InputText id="email" @bind-Value="LoginRequest.Email" class="form-control"/>
-            <ValidationMessage For="@(() => LoginRequest.Email)"/>
-        </div>
+    <MudText Typo="Typo.h4" Class="mb-2">Вход</MudText>
 
-        <div class="form-group">
-            <label for="password">Пароль</label>
-            <InputText id="password" type="password" @bind-Value="LoginRequest.Password" class="form-control"/>
-            <ValidationMessage For="@(() => LoginRequest.Password)"/>
-        </div>
+    <EditForm Model="@LoginRequest" OnValidSubmit="HandleLogin">
+        <DataAnnotationsValidator />
 
-        <button type="submit" class="btn btn-primary mt-4 mb-2">Войти</button>
-
-        @if (_errorMessage != null)
-        {
-            <div class="text-danger">
-                @_errorMessage
-            </div>
-        }
+        <MudGrid>
+            <MudItem>
+                <MudCard>
+                    <MudCardContent>
+                        <MudTextField Label="E-mail"
+                                      @bind-Value="LoginRequest.Email"
+                                      For="@(() => LoginRequest.Email)"
+                                      Variant="Variant.Outlined"
+                                      Margin="Margin.Dense"
+                                      FullWidth />
+                        <MudTextField Label="Пароль"
+                                      @bind-Value="LoginRequest.Password"
+                                      For="@(() => LoginRequest.Password)"
+                                      InputType="InputType.Password"
+                                      Variant="Variant.Outlined"
+                                      Margin="Margin.Dense"
+                                      FullWidth />
+                    </MudCardContent>
+                    <MudCardActions>
+                        <MudButton ButtonType="ButtonType.Submit"
+                                   Variant="Variant.Filled"
+                                   Color="Color.Primary" 
+                                   FullWidth>Войти
+                        </MudButton>
+                    </MudCardActions>
+                    <MudCardContent>
+                        <MudText>Нет аккаунта? <MudLink Href="/register">Зарегистрироваться</MudLink></MudText>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+        </MudGrid>
     </EditForm>
-
-    <p>Нет аккаунта? <a href="/register">Зарегистрироваться</a></p>
-</div>
+    @if (_errorMessage != null)
+    {
+        <MudText Class="mt-5" Color="Color.Error">@_errorMessage</MudText>
+    }
+</MudContainer>
 
 @code {
-    private LoginRequest LoginRequest { get; } = new ();
+    private LoginRequest LoginRequest { get; } = new();
     private string _errorMessage = string.Empty;
-    
-    private async Task HandleLogin()
+
+    private async Task HandleLogin(EditContext context)
     {
         _errorMessage = string.Empty;
         try
         {
             await AuthService.Login(LoginRequest);
-            NavigationManager.NavigateTo("/");
+            NavigationManager.NavigateTo("/dashboard");
         }
         catch (Exception ex)
         {
