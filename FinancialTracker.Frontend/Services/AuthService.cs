@@ -52,36 +52,41 @@ public class AuthService
         
         if (!response.IsSuccessStatusCode)
         {
-            // Пытаемся прочитать ошибку в формате JSON
-            try
-            {
-                var errorResponse = await response.Content.ReadFromJsonAsync<ErrorResponse>();
-                if (errorResponse?.Errors != null)
-                {
-                    var allErrors = errorResponse.Errors
-                        .SelectMany(e => e.Value)
-                        .ToList();
-    
-                    if (allErrors.Any())
-                    {
-                        throw new ApplicationException(string.Join("\n", allErrors));
-                    }
-                }
-            }
-            catch (JsonException)
-            {
-                // Если не получилось распарсить JSON, читаем как plain text
-                var errorContent = await response.Content.ReadAsStringAsync();
-                throw new ApplicationException(string.IsNullOrWhiteSpace(errorContent) 
-                    ? "Registration failed" 
-                    : errorContent);
-            }
+            await HandleRegistrationError(response);
         }
 
         return response;
-    }
-    
-    public async Task RefreshToken()
+	}
+
+	private async Task HandleRegistrationError(HttpResponseMessage response)
+	{
+		// Пытаемся прочитать ошибку в формате JSON
+		try
+		{
+			var errorResponse = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+			if (errorResponse?.Errors != null)
+			{
+				var allErrors = errorResponse.Errors
+					.SelectMany(e => e.Value)
+					.ToList();
+
+				if (allErrors.Any())
+				{
+					throw new ApplicationException(string.Join("\n", allErrors));
+				}
+			}
+		}
+		catch (JsonException)
+		{
+			// Если не получилось распарсить JSON, читаем как plain text
+			var errorContent = await response.Content.ReadAsStringAsync();
+			throw new ApplicationException(string.IsNullOrWhiteSpace(errorContent)
+				? "Registration failed"
+				: errorContent);
+		}
+	}
+
+	public async Task RefreshToken()
     {
         var refreshToken = await _browserStorage.GetAsync("refreshToken");
         

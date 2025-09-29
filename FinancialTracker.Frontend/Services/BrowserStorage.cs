@@ -13,8 +13,9 @@ public class BrowserStorage
 
     public async Task SetAsync(string key, string value)
     {
-        await _jsRuntime.InvokeVoidAsync("localStorageWrapper.setItem", key, value);
-    }
+		var encodedValue = System.Web.HttpUtility.HtmlEncode(value);
+		await _jsRuntime.InvokeVoidAsync("localStorageWrapper.setItem", key, encodedValue);
+	}
 
     public async Task<string> GetAsync(string key)
     {
