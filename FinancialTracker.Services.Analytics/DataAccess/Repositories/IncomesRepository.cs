@@ -41,4 +41,23 @@ public class IncomesRepository(AppDbContext db) : IIncomesRepository
         db.Incomes.Add(income);
         await db.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task<List<CategoryAggregate>> GetIncomeTotalByCategoryAsync
+        (Guid userId,
+        DateTime startDate,
+        DateTime endDate,
+        CancellationToken cancellationToken)
+    {
+        return await db.Incomes
+            .AsNoTracking()
+            .Where(e => e.UserId == userId &&
+                    e.IncomeTime >= startDate &&
+                    e.IncomeTime <= endDate)
+        .GroupBy(e => e.Category)
+        .Select(g => new CategoryAggregate(
+            g.Key ?? "Без категории",
+            g.Sum(x => x.Amount),
+            g.Count()))
+        .ToListAsync(cancellationToken);
+    }
 }
