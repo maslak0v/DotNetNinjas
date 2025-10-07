@@ -48,11 +48,19 @@ public class IncomesRepository(AppDbContext db) : IIncomesRepository
         DateTime endDate,
         CancellationToken cancellationToken)
     {
+        var startUtc = startDate.Kind == DateTimeKind.Unspecified
+        ? DateTime.SpecifyKind(startDate, DateTimeKind.Utc)
+        : startDate.ToUniversalTime();
+
+        var endUtc = endDate.Kind == DateTimeKind.Unspecified
+        ? DateTime.SpecifyKind(endDate, DateTimeKind.Utc)
+        : endDate.ToUniversalTime();
+
         return await db.Incomes
             .AsNoTracking()
             .Where(e => e.UserId == userId &&
-                    e.IncomeTime >= startDate &&
-                    e.IncomeTime <= endDate)
+                    e.IncomeTime >= startUtc &&
+                    e.IncomeTime <= endUtc)
         .GroupBy(e => e.Category)
         .Select(g => new CategoryAggregate(
             g.Key ?? "Без категории",

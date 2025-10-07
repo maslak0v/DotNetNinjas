@@ -48,11 +48,19 @@ public class ExpensesRepository(AppDbContext db) : IExpensesRepository
         DateTime endDate,
         CancellationToken cancellationToken)
     {
+        var startUtc = startDate.Kind == DateTimeKind.Unspecified
+        ? DateTime.SpecifyKind(startDate, DateTimeKind.Utc)
+        : startDate.ToUniversalTime();
+
+        var endUtc = endDate.Kind == DateTimeKind.Unspecified
+        ? DateTime.SpecifyKind(endDate, DateTimeKind.Utc)
+        : endDate.ToUniversalTime();
+
         return await db.Expenses
         .AsNoTracking()
         .Where(e => e.UserId == userId &&
-                    e.ExpenseTime >= startDate &&
-                    e.ExpenseTime <= endDate)
+                    e.ExpenseTime >= startUtc &&
+                    e.ExpenseTime <= endUtc)
         .GroupBy(e => e.Category)
         .Select(g => new CategoryAggregate(
             g.Key ?? "Без категории",
