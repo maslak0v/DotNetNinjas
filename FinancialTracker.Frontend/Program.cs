@@ -13,6 +13,7 @@ builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<WalletService>();
 builder.Services.AddScoped<AnalyticsService>();
 builder.Services.AddScoped<BrowserStorage>();
+builder.Services.AddScoped<JwtService>();
 
 builder.Services.AddMudServices();
 

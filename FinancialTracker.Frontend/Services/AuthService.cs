@@ -10,15 +10,42 @@ public class AuthService
     private readonly HttpClient _httpClient;
     private readonly NavigationManager _navigationManager;
     private readonly BrowserStorage _browserStorage;
+	private readonly JwtService _jwtService;
 
-	public AuthService(HttpClientFactory httpClientFactory, NavigationManager navigationManager, BrowserStorage browserStorage)
+	public AuthService(HttpClientFactory httpClientFactory, NavigationManager navigationManager, BrowserStorage browserStorage, JwtService jwtService)
 	{
 		_httpClient = httpClientFactory.CreateAuthClient();
 		_navigationManager = navigationManager;
-        _browserStorage = browserStorage;
-    }
-    
-    public async Task<AuthResponse> Login(LoginRequest request)
+		_browserStorage = browserStorage;
+		_jwtService = jwtService;
+	}
+
+	public async Task<string> GetCurrentJti()
+	{
+		var token = await GetAccessToken();
+		return _jwtService.GetJti(token);
+	}
+
+	public async Task<string> GetCurrentUserId()
+	{
+		var token = await GetAccessToken();
+		return _jwtService.GetClaim(token, "sub") ??
+			   _jwtService.GetClaim(token, "nameid");
+	}
+
+	public async Task<bool> IsTokenValid()
+	{
+		var token = await GetAccessToken();
+		return !string.IsNullOrEmpty(token) && !_jwtService.IsTokenExpired(token);
+	}
+
+	public async Task<DateTime> GetTokenExpiration()
+	{
+		var token = await GetAccessToken();
+		return _jwtService.GetExpiration(token);
+	}
+
+	public async Task<AuthResponse> Login(LoginRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync("api/authorize/login", request);
         
