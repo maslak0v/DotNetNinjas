@@ -10,11 +10,11 @@ public class AuthService
     private readonly HttpClient _httpClient;
     private readonly NavigationManager _navigationManager;
     private readonly BrowserStorage _browserStorage;
-    
-    public AuthService(HttpClient httpClient, NavigationManager navigationManager, BrowserStorage browserStorage)
-    {
-        _httpClient = httpClient;
-        _navigationManager = navigationManager;
+
+	public AuthService(HttpClientFactory httpClientFactory, NavigationManager navigationManager, BrowserStorage browserStorage)
+	{
+		_httpClient = httpClientFactory.CreateAuthClient();
+		_navigationManager = navigationManager;
         _browserStorage = browserStorage;
     }
     
