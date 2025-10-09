@@ -1,0 +1,30 @@
+﻿@page "/analytics"
+@using FinancialTracker.Frontend.Models
+@using FinancialTracker.Frontend.Services
+@inject AuthService AuthService
+@inject AnalyticsService AnalyticsService
+@inject NavigationManager NavigationManager
+
+<MudContainer>
+    <MudItem>
+        <MudText Typo="Typo.h4">Аналитика</MudText>
+    </MudItem>
+
+
+</MudContainer>
+
+@code {
+    private bool isAuthenticated;
+
+    protected override async Task OnInitializedAsync()
+    {
+        isAuthenticated = await AuthService.IsAuthenticated();
+
+        if (!isAuthenticated)
+        {
+            NavigationManager.NavigateTo("/login");
+        }
+
+    }
+
+}
