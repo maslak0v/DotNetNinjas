@@ -20,12 +20,11 @@ public class UpdateAccountById : AccountBase
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> Update(Guid id, [FromBody] UpdateAccountRequest accountRequest, CancellationToken cancellationToken)
     {
-        // todo Добавить валидацию
         var account = _mapper.Map<AccountDto>(accountRequest);
         account.AccountId = id;
 
-        await _accountService.UpdateAsync(account, cancellationToken);
+        var result = await _accountService.UpdateAsync(account, cancellationToken);
 
-        return NoContent();
+        return StatusCode((int)result.StatusCode, result.Message);
     }
 }
