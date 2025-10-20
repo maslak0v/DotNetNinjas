@@ -87,6 +87,7 @@ public static class Registrator
             cfg.AddProfile<BalanceMappingsProfile>();
             cfg.AddProfile<AdviceMappingsProfile>();
             cfg.AddProfile<MessageMappingsProfile>();
+            cfg.AddProfile<CategoryReportProfile>();
         });
 
         configuration.AssertConfigurationIsValid();
