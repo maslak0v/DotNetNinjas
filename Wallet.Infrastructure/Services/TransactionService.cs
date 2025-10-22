@@ -193,7 +193,8 @@ public class TransactionService : ITransactionService
                     await _unitOfWork.TagRepository.CreateAsync(tag, cancellationToken);
                 }
             }
-            
+
+            var oldTransactionType = existingTransaction.OperationType;
             existingTransaction.TagId = tag?.TagId;
             existingTransaction.CategoryId = category.CategoryId;
             existingTransaction.Amount = transactionDto.Amount;
@@ -205,6 +206,7 @@ public class TransactionService : ITransactionService
             
             var responseDto = _mapper.Map<TransactionDtoResponse>(existingTransaction);
             responseDto.CategoryName = category.Name;
+            responseDto.OldOperationType = oldTransactionType;
 
             return OperationResult<TransactionDtoResponse>.Success(
                 result: responseDto,
