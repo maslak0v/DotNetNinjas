@@ -199,6 +199,8 @@ public class TransactionService : ITransactionService
             existingTransaction.CategoryId = category.CategoryId;
             existingTransaction.Amount = transactionDto.Amount;
             existingTransaction.OperationType = transactionDto.OperationType;
+            existingTransaction.Comment = transactionDto.Comment;
+            existingTransaction.Image = transactionDto.Image;
             existingTransaction.UpdatedAt = DateTime.UtcNow;
             
             await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -233,8 +235,9 @@ public class TransactionService : ITransactionService
 
             if (transaction == null)
                 return OperationResult<DeleteTransactionDto>.Failure(
-                    Enum_StatusCode.NotFound, $"Транзакция не найдена: {id}");
-            
+                    Enum_StatusCode.NotFound, $"Transaction not found: {id}");
+
+
             var account = transaction.Account;
             
             account.CurrentBalance = CalculateUpdatedBalance(account.CurrentBalance, transaction.Amount, transaction.OperationType, false);
@@ -247,7 +250,7 @@ public class TransactionService : ITransactionService
             var responseDto = _mapper.Map<DeleteTransactionDto>(transaction);
             return OperationResult<DeleteTransactionDto>.Success(
                 result: responseDto,
-                message: "Транзакция успешно удалена"
+                message: "Transaction successfully deleted"
             );
         }
         catch (Exception ex)
