@@ -39,4 +39,7 @@ public interface IIncomesRepository
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns></returns>
     Task AddAsync(Income income, CancellationToken cancellationToken);
+
+    Task<List<CategoryAggregate>> GetIncomeTotalByCategoryAsync(
+        Guid userId, DateTime startDate, DateTime endDate, CancellationToken cancellationToken);
 }

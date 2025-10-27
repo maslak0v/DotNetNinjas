@@ -41,4 +41,31 @@ public class ExpensesRepository(AppDbContext db) : IExpensesRepository
         db.Expenses.Add(expense);
         await db.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task<List<CategoryAggregate>> GetExpenseTotalByCategoryAsync(
+        Guid userId,
+        DateTime startDate,
+        DateTime endDate,
+        CancellationToken cancellationToken)
+    {
+        var startUtc = startDate.Kind == DateTimeKind.Unspecified
+        ? DateTime.SpecifyKind(startDate, DateTimeKind.Utc)
+        : startDate.ToUniversalTime();
+
+        var endUtc = endDate.Kind == DateTimeKind.Unspecified
+        ? DateTime.SpecifyKind(endDate, DateTimeKind.Utc)
+        : endDate.ToUniversalTime();
+
+        return await db.Expenses
+        .AsNoTracking()
+        .Where(e => e.UserId == userId &&
+                    e.ExpenseTime >= startUtc &&
+                    e.ExpenseTime <= endUtc)
+        .GroupBy(e => e.Category)
+        .Select(g => new CategoryAggregate(
+            g.Key ?? "Без категории",
+            g.Sum(x => x.Amount),
+            g.Count()))
+        .ToListAsync(cancellationToken);
+    }
 }
