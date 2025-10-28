@@ -1,8 +1,8 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace FinancialTracker.Services.Analytics.Models.Dto;
 
-public class ExpensesRequestDto
+public class IncomesRequestDto
 {
     [FromQuery(Name = "userId")]
     public Guid UserId { get; set; }
@@ -15,4 +15,4 @@ public class ExpensesRequestDto
     
     [FromQuery(Name = "accountId")]
     public Guid AccountId { get; set; }
-} 
+}
