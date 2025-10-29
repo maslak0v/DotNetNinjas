@@ -25,7 +25,7 @@ public class IncomesRepository(AppDbContext db) : IIncomesRepository
             .SumAsync(i => i.Amount, cancellationToken);
     }
 
-    public async Task<List<Income>> GetIncomesByAccountAsync(IncomesRequestDTO request, CancellationToken cancellationToken)
+    public async Task<List<Income>> GetIncomesByAccountAsync(IncomesRequestDto request, CancellationToken cancellationToken)
     {
         var query = db.Set<Income>().AsNoTracking();
         return await query

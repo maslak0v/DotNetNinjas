@@ -1,7 +1,7 @@
 ﻿
 namespace FinancialTracker.Services.Analytics.Models.Dto;
 
-public class IncomeResponseDTO
+public class IncomeResponseDto
 {
     public DateTime IncomeTime { get; set; }
     public decimal Amount { get; set; }
