@@ -3,23 +3,22 @@ using FinancialTracker.Services.Analytics.Models;
 using MassTransit;
 using MessageBus.Shared.Contracts.Interfaces;
 
-namespace FinancialTracker.Services.Analytics.Messaging
+namespace FinancialTracker.Services.Analytics.Messaging;
+
+public class UserCreatedConsumer(
+    ILogger<UserCreatedConsumer> logger,
+    IUserRepository userRepository) : IConsumer<IUserCreated>
 {
-    public class UserCreatedConsumer(
-        ILogger<UserCreatedConsumer> logger,
-        IUserRepository userRepository) : IConsumer<IUserCreated>
+    public async Task Consume(ConsumeContext<IUserCreated> context)
     {
-        public async Task Consume(ConsumeContext<IUserCreated> context)
+        logger.LogInformation($"[RabbitMQ] User created: {context.Message.UserId}");
+        var user = new User
         {
-            logger.LogInformation($"[RabbitMQ] User created: {context.Message.UserId}");
-            var user = new User
-            {
-                Id = context.Message.UserId,
-                Name = context.Message.Name
-            };
+            Id = context.Message.UserId,
+            Name = context.Message.Name
+        };
 
-            await userRepository.AddAsync(user, context.CancellationToken);
+        await userRepository.AddAsync(user, context.CancellationToken);
 
-        }
     }
 }

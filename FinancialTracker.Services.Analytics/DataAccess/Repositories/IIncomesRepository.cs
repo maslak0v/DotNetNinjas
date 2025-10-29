@@ -40,6 +40,40 @@ public interface IIncomesRepository
     /// <returns></returns>
     Task AddAsync(Income income, CancellationToken cancellationToken);
 
+    /// <summary>
+    /// Получить доходы по категориям
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="startDate"></param>
+    /// <param name="endDate"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     Task<List<CategoryAggregate>> GetIncomeTotalByCategoryAsync(
         Guid userId, DateTime startDate, DateTime endDate, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Удалить доход по ID
+    /// </summary>
+    /// <param name="incomeId"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task DeleteByIdAsync(Guid incomeId, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Изменить доход
+    /// </summary>
+    /// <param name="incomeId"></param>
+    /// <param name="category"></param>
+    /// <param name="currency"></param>
+    /// <param name="amount"></param>
+    /// <param name="incomeTime"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task UpdateAsync(
+        Guid incomeId,
+        string? category,
+        string currency,
+        decimal amount,
+        DateTime incomeTime,
+        CancellationToken cancellationToken);
 }

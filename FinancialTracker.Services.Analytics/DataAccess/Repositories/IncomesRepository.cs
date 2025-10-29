@@ -1,6 +1,7 @@
 ﻿using FinancialTracker.Services.Analytics.Models;
 using FinancialTracker.Services.Analytics.Models.Dto;
 using Microsoft.EntityFrameworkCore;
+using System.Threading;
 
 namespace FinancialTracker.Services.Analytics.DataAccess.Repositories;
 
@@ -67,5 +68,31 @@ public class IncomesRepository(AppDbContext db) : IIncomesRepository
             g.Sum(x => x.Amount),
             g.Count()))
         .ToListAsync(cancellationToken);
+    }
+
+    public async Task DeleteByIdAsync(Guid incomeId, CancellationToken cancellationToken)
+    {
+        await db.Incomes
+            .Where(i => i.IncomeId == incomeId)
+            .ExecuteDeleteAsync(cancellationToken);
+    }
+
+    public async Task UpdateAsync(
+        Guid incomeId,
+        string? category,
+        string currency,
+        decimal amount,
+        DateTime incomeTime,
+        CancellationToken cancellationToken)
+    {
+        await db.Incomes
+        .Where(e => e.IncomeId == incomeId)
+        .ExecuteUpdateAsync(
+            e => e
+                .SetProperty(p => p.Category, category)
+                .SetProperty(p => p.Currency, currency)
+                .SetProperty(p => p.Amount, amount)
+                .SetProperty(p => p.IncomeTime, incomeTime),
+            cancellationToken);
     }
 }

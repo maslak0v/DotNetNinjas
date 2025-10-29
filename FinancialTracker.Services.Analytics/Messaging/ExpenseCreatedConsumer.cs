@@ -1,5 +1,4 @@
 using AutoMapper;
-using FinancialTracker.Services.Analytics.DataAccess.Repositories;
 using FinancialTracker.Services.Analytics.Models.Dto;
 using FinancialTracker.Services.Analytics.Services;
 using MassTransit;

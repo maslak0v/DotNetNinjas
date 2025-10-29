@@ -56,7 +56,11 @@ public static class Registrator
         {
             typeof(UserCreatedConsumer),
             typeof(ExpenseCreatedConsumer),
-            typeof(IncomeCreatedConsumer)
+            typeof(IncomeCreatedConsumer),
+            typeof(ExpenseUpdateConsumer),
+            typeof(IncomeUpdateConsumer),
+            typeof(ExpenseDeletedConsumer),
+            typeof(IncomeDeletedConsumer)
         };
         
         return services.AddBusMessage_WithConsumersFromType(consumers);

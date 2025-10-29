@@ -68,4 +68,30 @@ public class ExpensesRepository(AppDbContext db) : IExpensesRepository
             g.Count()))
         .ToListAsync(cancellationToken);
     }
+
+    public async Task DeleteByIdAsync(Guid expenceId, CancellationToken cancellationToken)
+    {
+        await db.Expenses
+            .Where(i => i.ExpenseId == expenceId)
+            .ExecuteDeleteAsync(cancellationToken);
+    }
+
+    public async Task UpdateAsync(
+        Guid expenseId,
+        string? category,
+        string currency,
+        decimal amount,
+        DateTime expenseTime,
+        CancellationToken cancellationToken)
+    {
+        await db.Expenses
+        .Where(e => e.ExpenseId == expenseId)
+        .ExecuteUpdateAsync(
+            e => e
+                .SetProperty(p => p.Category, category)
+                .SetProperty(p => p.Currency, currency)
+                .SetProperty(p => p.Amount, amount)
+                .SetProperty(p => p.ExpenseTime, expenseTime),
+            cancellationToken);
+    }
 }
