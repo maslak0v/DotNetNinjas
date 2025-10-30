@@ -1,6 +1,15 @@
-﻿namespace FinancialTracker.Services.Analytics.Models.Dto;
+﻿using Microsoft.AspNetCore.Mvc;
 
-public sealed record CategoryReportRequestDto(
-    Guid UserId,
-    DateTime StartDate,
-    DateTime EndDate);
+namespace FinancialTracker.Services.Analytics.Models.Dto;
+
+public class CategoryReportRequestDto
+{
+    [FromQuery(Name = "userId")]
+    public Guid UserId { get; set; }
+    
+    [FromQuery(Name = "startDate")]
+    public DateTime StartDate { get; set; }
+    
+    [FromQuery(Name = "endDate")]
+    public DateTime EndDate { get; set; }
+}

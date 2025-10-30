@@ -34,6 +34,19 @@ public class TransactionEventMappings : Profile
                 src.Amount
             ));
 
+        CreateMap<TransactionDtoResponse, TransactionEvents.UpdateTransactionMessage>()
+            .ConstructUsing(src => new TransactionEvents.UpdateTransactionMessage(
+                Guid.NewGuid(),
+                DateTime.UtcNow,
+                src.TransactionId,
+                src.UserId,
+                src.AccountId,
+                src.CategoryName,
+                src.TransactionDate,
+                src.Amount,
+                src.OperationType.ToString(),
+                src.OldOperationType.ToString()));
+
         CreateMap<DeleteTransactionDto, TransactionEvents.TransactionDeletedMessage>().ConstructUsing(src =>
             new TransactionEvents.TransactionDeletedMessage(
                 Guid.NewGuid(),

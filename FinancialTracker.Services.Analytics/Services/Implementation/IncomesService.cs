@@ -17,7 +17,7 @@ public class IncomesService(IIncomesRepository incomesRepository, IMapper mapper
         return await incomesRepository.GetSumOfIncomesUpToDateAsync(userId, upToDate, cancellationToken);
     }
 
-    public async Task<List<Income>> GetIncomesByAccountAsync(IncomesRequestDTO request, CancellationToken cancellationToken)
+    public async Task<List<Income>> GetIncomesByAccountAsync(IncomesRequestDto request, CancellationToken cancellationToken)
     {
         return await incomesRepository.GetIncomesByAccountAsync(request, cancellationToken);
     }

@@ -72,4 +72,15 @@ public class TransactionEvents
         Guid UserId,
         Guid MessageId,
         DateTime Timestamp) : IExpenseDeletedMessage;
+    public record UpdateTransactionMessage(
+        Guid MessageId,
+        DateTime Timestamp,
+        Guid TransactionId,
+        Guid UserId,
+        Guid AccountId,
+        string CategoryName,
+        DateTime TransactionDate,
+        decimal Amount,
+        string OperationType,
+        string OldOperationType) : IUpdateTransactionMessage;
 }
