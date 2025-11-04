@@ -25,25 +25,6 @@ public class TransactionEvents
         decimal Amount) : IIncomeCreatedMessage;
 
     [ExcludeFromTopology]
-    public record IncomeUpdateMessage(
-        Guid IncomeId,
-        Guid UserId,
-        Guid AccountId,
-        string? Category,
-        string Currency,
-        decimal Amount,
-        DateTime IncomeTime,
-        Guid MessageId,
-        DateTime UpdateTime) : IIncomeUpdateMessage;
-
-    [ExcludeFromTopology]
-    public record IncomeDeletedMessage(
-        Guid IncomeId,
-        Guid UserId,
-        Guid MessageId,
-        DateTime Timestamp) : IIncomeDeletedMessage;
-
-    [ExcludeFromTopology]
     public record ExpenseCreatedMessage(
         Guid MessageId,
         DateTime Timestamp,
@@ -54,22 +35,17 @@ public class TransactionEvents
         DateTime ExpenseTime,
         decimal Amount) : IExpenseCreatedMessage;
 
-    [ExcludeFromTopology]
-    public record ExpenseUpdateMessage(
-        Guid ExpenseId,
-        Guid UserId,
-        Guid AccountId,
-        string? Category,
-        string Currency,
-        decimal Amount,
-        DateTime ExpenseTime,
-        Guid MessageId,
-        DateTime UpdateTime) : IExpenseUpdateMessage;
 
     [ExcludeFromTopology]
-    public record ExpenseDeletedMessage(
-        Guid ExpenseId,
-        Guid UserId,
-        Guid MessageId,
-        DateTime Timestamp) : IExpenseDeletedMessage;
+    public record UpdateTransactionMessage(
+    Guid MessageId,
+    DateTime Timestamp,
+    Guid TransactionId,
+    Guid UserId,
+    Guid AccountId,
+    string CategoryName,
+    DateTime TransactionDate,
+    decimal Amount,
+    string OperationType,
+    string OldOperationType) : IUpdateTransactionMessage;
 }
