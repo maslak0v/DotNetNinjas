@@ -25,7 +25,7 @@ public class IncomesRepository(AppDbContext db) : IIncomesRepository
             .SumAsync(i => i.Amount, cancellationToken);
     }
 
-    public async Task<List<Income>> GetIncomesByAccountAsync(IncomesRequestDTO request, CancellationToken cancellationToken)
+    public async Task<List<Income>> GetIncomesByAccountAsync(IncomesRequestDto request, CancellationToken cancellationToken)
     {
         var query = db.Set<Income>().AsNoTracking();
         return await query
@@ -40,5 +40,32 @@ public class IncomesRepository(AppDbContext db) : IIncomesRepository
     {
         db.Incomes.Add(income);
         await db.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<List<CategoryAggregate>> GetIncomeTotalByCategoryAsync
+        (Guid userId,
+        DateTime startDate,
+        DateTime endDate,
+        CancellationToken cancellationToken)
+    {
+        var startUtc = startDate.Kind == DateTimeKind.Unspecified
+        ? DateTime.SpecifyKind(startDate, DateTimeKind.Utc)
+        : startDate.ToUniversalTime();
+
+        var endUtc = endDate.Kind == DateTimeKind.Unspecified
+        ? DateTime.SpecifyKind(endDate, DateTimeKind.Utc)
+        : endDate.ToUniversalTime();
+
+        return await db.Incomes
+            .AsNoTracking()
+            .Where(e => e.UserId == userId &&
+                    e.IncomeTime >= startUtc &&
+                    e.IncomeTime <= endUtc)
+        .GroupBy(e => e.Category)
+        .Select(g => new CategoryAggregate(
+            g.Key ?? "Без категории",
+            g.Sum(x => x.Amount),
+            g.Count()))
+        .ToListAsync(cancellationToken);
     }
 }

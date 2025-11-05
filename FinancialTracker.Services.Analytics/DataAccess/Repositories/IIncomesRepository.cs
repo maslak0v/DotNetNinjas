@@ -21,7 +21,7 @@ public interface IIncomesRepository
     /// <param name="request">Параметры запроса</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>список доходов</returns>
-    Task<List<Income>> GetIncomesByAccountAsync(IncomesRequestDTO request, CancellationToken cancellationToken);
+    Task<List<Income>> GetIncomesByAccountAsync(IncomesRequestDto request, CancellationToken cancellationToken);
 
     /// <summary>
     /// Получить сумму доходов до указанной даты включительно
@@ -39,4 +39,7 @@ public interface IIncomesRepository
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns></returns>
     Task AddAsync(Income income, CancellationToken cancellationToken);
+
+    Task<List<CategoryAggregate>> GetIncomeTotalByCategoryAsync(
+        Guid userId, DateTime startDate, DateTime endDate, CancellationToken cancellationToken);
 }

@@ -39,4 +39,7 @@ public interface IExpensesRepository
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns></returns>
     Task AddAsync(Expense expense, CancellationToken cancellationToken);
+
+    Task<List<CategoryAggregate>> GetExpenseTotalByCategoryAsync(
+        Guid userId, DateTime startDate, DateTime endDate, CancellationToken cancellationToken);
 }

@@ -1,9 +1,0 @@
-﻿namespace FinancialTracker.Services.Analytics.Models.Dto;
-
-public class IncomesRequestDTO
-{
-    public Guid UserId { get; set; }
-    public DateTime StartDate { get; set; }
-    public DateTime EndDate { get; set; }
-    public Guid AccountId { get; set; }
-}
