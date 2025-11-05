@@ -4,17 +4,314 @@
 @inject AuthService AuthService
 @inject AnalyticsService AnalyticsService
 @inject NavigationManager NavigationManager
+@inject ISnackbar Snackbar
 
-<MudContainer>
-    <MudItem>
-        <MudText Typo="Typo.h4">Аналитика</MudText>
-    </MudItem>
+<MudContainer MaxWidth="MaxWidth.Large" Class="py-4">
+    <MudGrid Spacing="4">
 
+        <MudItem>
+            <MudText Typo="Typo.h4">Аналитика</MudText>
+        </MudItem>
 
+        <MudItem xs="12">
+            <div class="d-flex align-center justify-space-between flex-wrap">
+                <div class="d-flex align-center gap-2 flex-wrap">
+                    <MudSelect @bind-Value="selectedPeriod"
+                               Label="Период"
+                               Variant="Variant.Outlined"
+                               Size="Size.Small"
+                               Style="min-width: 200px;">
+                        <MudSelectItem Value='"week"'>Неделя</MudSelectItem>
+                        <MudSelectItem Value='"month"'>Месяц</MudSelectItem>
+                        <MudSelectItem Value='"lastMonth"'>Прошлый месяц</MudSelectItem>
+                        <MudSelectItem Value='"custom"'>Произвольный</MudSelectItem>
+                    </MudSelect>
+                    <MudDatePicker Label="С"
+                                    Date="startDate"
+                                    DateChanged="OnStartDateChanged"
+                                    DateFormat="dd.MM.yyyy"
+                                    Variant="Variant.Outlined"
+                                    Size="Size.Small"
+                                    Style="min-width: 140px;" />
+                    <MudDatePicker Label="По"
+                                    Date="endDate"
+                                    DateChanged="OnEndDateChanged"
+                                    DateFormat="dd.MM.yyyy"
+                                    Variant="Variant.Outlined"
+                                    Size="Size.Small"
+                                    Style="min-width: 140px;" />                    
+                    @if (isLoading)
+                    {
+                        <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="ml-2" />
+                    }                    
+                </div>
+            </div>
+        </MudItem>
+
+        <MudItem xs="12" md="6" lg="3">
+            <MudCard Elevation="2">
+                <MudCardContent>
+                    <div class="d-flex align-center">
+                        <MudIcon Icon="@Icons.Material.Filled.AccountBalance"
+                                 Color="Color.Primary"
+                                 Size="Size.Large"
+                                 Class="mr-3" />
+                        <div>
+                            <MudText Typo="Typo.body2" Color="Color.Tertiary">
+                                Баланс
+                            </MudText>
+                            @if (isLoading)
+                            {
+                                <MudSkeleton Width="80px" Height="32px" Animation="Animation.Pulse" />
+                            }
+                            else if (balanceResponse != null && balanceResponse.IsSuccess)
+                            {
+                                <MudText Typo="Typo.h5" Color="GetBalanceColor(balanceResponse.Result.Amount)">
+                                    @balanceResponse.Result.Amount.ToString("N2") @balanceResponse.Result.Currency
+                                </MudText>
+                                <MudText Typo="Typo.caption" Color="Color.Tertiary">
+                                    на @endDate.ToString("dd.MM.yyyy")
+                                </MudText>
+                            }
+                            else if (balanceResponse != null)
+                            {
+                                <MudText Typo="Typo.body2" Color="Color.Error">
+                                    Ошибка
+                                </MudText>
+                            }
+                        </div>
+                    </div>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12" md="6" lg="3">
+            <MudCard Elevation="2">
+                <MudCardContent>
+                    <div class="d-flex align-center">
+                        <MudIcon Icon="@Icons.Material.Filled.Savings"
+                                 Color="Color.Warning"
+                                 Size="Size.Large"
+                                 Class="mr-3" />
+                        <div>
+                            <MudText Typo="Typo.body2" Color="Color.Tertiary">
+                                Сбережения
+                            </MudText>
+                            @if (isLoading)
+                            {
+                                <MudSkeleton Width="80px" Height="32px" Animation="Animation.Pulse" />
+                            }
+                            else if (incomeResponse != null && expenseResponse != null &&
+                            incomeResponse.IsSuccess && expenseResponse.IsSuccess)
+                            {
+                                var savings = GetTotalIncome() - GetTotalExpenses();
+                                <MudText Typo="Typo.h5" Color="GetBalanceColor(savings)">
+                                    @savings.ToString("N2") ₽
+                                </MudText>
+                                <MudText Typo="Typo.caption" Color="Color.Tertiary">
+                                    @GetPeriodText()
+                                </MudText>
+                            }
+                            else
+                            {
+                                <MudText Typo="Typo.body2" Color="Color.Tertiary">
+                                    -
+                                </MudText>
+                            }
+                        </div>
+                    </div>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12" md="6" lg="3">
+            <MudCard Elevation="2">
+                <MudCardContent>
+                    <div class="d-flex align-center">
+                        <MudIcon Icon="@Icons.Material.Filled.TrendingUp"
+                                 Color="Color.Success"
+                                 Size="Size.Large"
+                                 Class="mr-3" />
+                        <div>
+                            <MudText Typo="Typo.body2" Color="Color.Tertiary">
+                                Доходы
+                            </MudText>
+                            @if (isLoading)
+                            {
+                                <MudSkeleton Width="80px" Height="32px" Animation="Animation.Pulse" />
+                            }
+                            else if (incomeResponse != null && incomeResponse.IsSuccess)
+                            {
+                                <MudText Typo="Typo.h5" Color="Color.Success">
+                                    @GetTotalIncome().ToString("N2") ₽
+                                </MudText>
+                                <MudText Typo="Typo.caption" Color="Color.Tertiary">
+                                    @GetPeriodText()
+                                </MudText>
+                            }
+                            else if (incomeResponse != null)
+                            {
+                                <MudText Typo="Typo.body2" Color="Color.Error">
+                                    Ошибка
+                                </MudText>
+                            }
+                        </div>
+                    </div>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12" md="6" lg="3">
+            <MudCard Elevation="2">
+                <MudCardContent>
+                    <div class="d-flex align-center">
+                        <MudIcon Icon="@Icons.Material.Filled.TrendingDown"
+                                 Color="Color.Error"
+                                 Size="Size.Large"
+                                 Class="mr-3" />
+                        <div>
+                            <MudText Typo="Typo.body2" Color="Color.Tertiary">
+                                Расходы
+                            </MudText>
+                            @if (isLoading)
+                            {
+                                <MudSkeleton Width="80px" Height="32px" Animation="Animation.Pulse" />
+                            }
+                            else if (expenseResponse != null && expenseResponse.IsSuccess)
+                            {
+                                <MudText Typo="Typo.h5" Color="Color.Error">
+                                    @GetTotalExpenses().ToString("N2") ₽
+                                </MudText>
+                                <MudText Typo="Typo.caption" Color="Color.Tertiary">
+                                    @GetPeriodText()
+                                </MudText>
+                            }
+                            else if (expenseResponse != null)
+                            {
+                                <MudText Typo="Typo.body2" Color="Color.Error">
+                                    Ошибка
+                                </MudText>
+                            }
+                        </div>
+                    </div>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12" md="6">
+            <MudCard Elevation="2">
+                <MudCardHeader>
+                    <MudText Typo="Typo.h6">Доходы по категориям</MudText>
+                </MudCardHeader>
+                <MudCardContent>
+                    @if (incomeResponse != null && incomeResponse.IsSuccess && incomeResponse.Result?.Any() == true)
+                    {
+                        var incomeCategories = GetIncomeCategories();
+                        foreach (var category in incomeCategories)
+                        {
+                            <div class="d-flex justify-space-between align-center mb-2">
+                                <MudText Typo="Typo.body2">@category.CategoryName</MudText>
+                                <div class="text-right">
+                                    <MudText Typo="Typo.body2">@category.Amount.ToString("N2") ₽</MudText>
+                                    <MudText Typo="Typo.caption" Color="Color.Tertiary">
+                                        @category.Percentage.ToString("N1")%
+                                    </MudText>
+                                </div>
+                            </div>
+                            <MudProgressLinear Color="Color.Success" Value="@Convert.ToInt32(category.Percentage)" Class="mb-3" />
+                        }
+                    }
+                    else
+                    {
+                        <MudText Typo="Typo.body2" Color="Color.Tertiary">Нет данных о доходах</MudText>
+                    }
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12" md="6">
+            <MudCard Elevation="2">                
+                <MudCardHeader>
+                    <MudText Typo="Typo.h6">Расходы по категориям</MudText>
+                </MudCardHeader>                
+                <MudCardContent>
+                    @if (expenseResponse != null && expenseResponse.IsSuccess && expenseResponse.Result?.Any() == true)
+                    {
+                        var expenseCategories = GetExpenseCategories();
+                        foreach (var category in expenseCategories)
+                        {
+                            <div class="d-flex justify-space-between align-center mb-2">
+                                <MudText Typo="Typo.body2">@category.CategoryName</MudText>
+                                <div class="text-right">
+                                    <MudText Typo="Typo.body2">@category.Amount.ToString("N2") ₽</MudText>
+                                    <MudText Typo="Typo.caption" Color="Color.Tertiary">
+                                        @category.Percentage.ToString("N1")%
+                                    </MudText>
+                                </div>
+                            </div>
+                            <MudProgressLinear Color="Color.Error" Value="@Convert.ToInt32(category.Percentage)" Class="mb-3" />
+                        }
+                    }
+                    else
+                    {
+                        <MudText Typo="Typo.body2" Color="Color.Tertiary">Нет данных о расходах</MudText>
+                    }
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12">
+            <MudCard Elevation="2">
+                <MudCardHeader>                    
+                    <MudText Typo="Typo.h6">Рекомендации</MudText>                    
+                </MudCardHeader>
+                <MudCardContent>
+                    @if (adviceResponse != null && adviceResponse.IsSuccess && adviceResponse.Result?.Any() == true)
+                    {
+                        foreach (var advice in adviceResponse.Result)
+                        {
+                            <MudAlert Icon="@Icons.Material.Filled.Lightbulb" Class="mb-2">
+                                <MudText Typo="Typo.subtitle1">@advice.Title</MudText>
+                                <MudText Typo="Typo.body2">@advice.Message</MudText>
+                            </MudAlert>
+                        }
+                    }
+                    else
+                    {
+                        <MudText Typo="Typo.body2" Color="Color.Tertiary">Нет рекомендаций</MudText>
+                    }
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
 </MudContainer>
 
 @code {
     private bool isAuthenticated;
+    private AnalyticsResponse<Balance> balanceResponse;
+    private string jti;
+    private bool isLoading = false;
+    private CancellationTokenSource cancellationTokenSource;
+
+    private AnalyticsResponse<List<Income>> incomeResponse;
+    private AnalyticsResponse<List<Expense>> expenseResponse;
+    private AnalyticsResponse<List<Advice>> adviceResponse;
+    private DateTime startDate = DateTime.Today;
+    private DateTime endDate = DateTime.Today;
+
+    private string _selectedPeriod = "month";
+    private string selectedPeriod
+    {
+        get => _selectedPeriod;
+        set
+        {
+            if (_selectedPeriod != value)
+            {
+                _selectedPeriod = value;
+                _ = SetPeriod(value);
+            }
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -23,8 +320,211 @@
         if (!isAuthenticated)
         {
             NavigationManager.NavigateTo("/login");
+            return;
         }
 
+        jti = await AuthService.GetCurrentJti();
+        await SetPeriod(selectedPeriod);
+        await LoadBalance();
     }
 
+    private async Task OnStartDateChanged(DateTime? newDate)
+    {
+        if (newDate.HasValue && newDate.Value != startDate)
+        {
+            startDate = newDate.Value;
+
+            cancellationTokenSource?.Cancel();
+            cancellationTokenSource = new CancellationTokenSource();
+
+            await LoadAllData(cancellationTokenSource.Token);
+        }
+    }
+
+    private async Task OnEndDateChanged(DateTime? newDate)
+    {
+        if (newDate.HasValue && newDate.Value != endDate)
+        {
+            endDate = newDate.Value;
+
+            cancellationTokenSource?.Cancel();
+            cancellationTokenSource = new CancellationTokenSource();
+
+            await LoadAllData(cancellationTokenSource.Token);
+        }
+    }
+
+    private string GetPeriodText()
+    {
+        if (selectedPeriod == "custom")
+        {
+            return $"{startDate:dd.MM.yy} - {endDate:dd.MM.yy}";
+        }
+
+        return selectedPeriod switch
+        {
+            "week" => "за неделю",
+            "month" => "за месяц",
+            "lastMonth" => "за прошлый месяц",
+            _ => ""
+        };
+    }
+
+    private async Task SetPeriod(string period)
+    {
+        selectedPeriod = period;
+
+        switch (period)
+        {
+            case "week":
+                startDate = DateTime.Today.AddDays(-7);
+                endDate = DateTime.Today;
+                break;
+            case "month":
+                startDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+                endDate = DateTime.Today;
+                break;
+            case "lastMonth":
+                startDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).AddMonths(-1);
+                endDate = startDate.AddMonths(1).AddDays(-1);
+                break;
+            case "custom":
+                // Даты выбираются пользователем
+                break;
+        }
+
+        await LoadAllData();
+    }
+
+    private async Task LoadAllData(CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrEmpty(jti)) return;
+
+        isLoading = true;
+        StateHasChanged();
+
+        try
+        {
+            await Task.Delay(500, cancellationToken);
+
+            var tasks = new List<Task>
+            {
+                LoadBalance(),
+                LoadIncomes(),
+                LoadExpenses(),
+                LoadAdvice()
+            };
+
+            await Task.WhenAll(tasks);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Ошибка загрузки данных: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task LoadBalance()
+    {
+        balanceResponse = await AnalyticsService.GetBalanceAsync(jti, endDate);
+        if (!balanceResponse.IsSuccess)
+        {
+            Snackbar.Add($"Ошибка загрузки баланса: {balanceResponse.Error}", Severity.Error);
+        }
+    }
+
+    private async Task LoadIncomes()
+    {
+        incomeResponse = await AnalyticsService.GetIncomesAsync(jti, startDate, endDate);
+        if (!incomeResponse.IsSuccess)
+        {
+            Snackbar.Add($"Ошибка загрузки доходов: {incomeResponse.Error}", Severity.Error);
+        }
+    }
+
+    private async Task LoadExpenses()
+    {
+        expenseResponse = await AnalyticsService.GetExpensesAsync(jti, startDate, endDate);
+        if (!expenseResponse.IsSuccess)
+        {
+            Snackbar.Add($"Ошибка загрузки расходов: {expenseResponse.Error}", Severity.Error);
+        }
+    }
+
+    private async Task LoadAdvice()
+    {
+        adviceResponse = await AnalyticsService.GetAdviceAsync(jti, startDate, endDate);
+        if (!adviceResponse.IsSuccess)
+        {
+            Snackbar.Add($"Ошибка загрузки рекомендаций: {adviceResponse.Error}", Severity.Error);
+        }
+    }
+
+    private decimal GetTotalIncome()
+    {
+        return incomeResponse?.IsSuccess == true ? incomeResponse.Result.Sum(i => i.Amount) : 0;
+    }
+
+    private decimal GetTotalExpenses()
+    {
+        return expenseResponse?.IsSuccess == true ? expenseResponse.Result.Sum(e => e.Amount) : 0;
+    }
+
+    private List<CategorySummary> GetIncomeCategories()
+    {
+        if (incomeResponse?.IsSuccess != true) return new List<CategorySummary>();
+
+        var categories = incomeResponse.Result
+            .GroupBy(i => i.Category)
+            .Select(g => new CategorySummary
+            {
+                CategoryName = g.Key,
+                Amount = g.Sum(i => i.Amount),
+                Count = g.Count(),
+                Percentage = GetTotalIncome() > 0 ? (g.Sum(i => i.Amount) / GetTotalIncome()) * 100 : 0
+            })
+            .OrderByDescending(c => c.Amount)
+            .ToList();
+
+        return categories;
+    }
+
+    private List<CategorySummary> GetExpenseCategories()
+    {
+        if (expenseResponse?.IsSuccess != true) return new List<CategorySummary>();
+
+        var categories = expenseResponse.Result
+            .GroupBy(e => e.Category)
+            .Select(g => new CategorySummary
+            {
+                CategoryName = g.Key,
+                Amount = g.Sum(e => e.Amount),
+                Count = g.Count(),
+                Percentage = GetTotalExpenses() > 0 ? (g.Sum(e => e.Amount) / GetTotalExpenses()) * 100 : 0
+            })
+            .OrderByDescending(c => c.Amount)
+            .ToList();
+
+        return categories;
+    }
+     
+    private Color GetBalanceColor(decimal amount)
+    {
+        return amount >= 0 ? Color.Dark : Color.Error;
+    }
+
+    private async Task OnPeriodChanged(string period)
+    {
+        await SetPeriod(period);
+    }
+
+    public void Dispose()
+    {
+        cancellationTokenSource?.Cancel();
+        cancellationTokenSource?.Dispose();
+    }
 }
