@@ -35,17 +35,16 @@ public class TransactionEvents
         DateTime ExpenseTime,
         decimal Amount) : IExpenseCreatedMessage;
 
-
     [ExcludeFromTopology]
     public record UpdateTransactionMessage(
-    Guid MessageId,
-    DateTime Timestamp,
-    Guid TransactionId,
-    Guid UserId,
-    Guid AccountId,
-    string CategoryName,
-    DateTime TransactionDate,
-    decimal Amount,
-    string OperationType,
-    string OldOperationType) : IUpdateTransactionMessage;
+        Guid MessageId,
+        DateTime Timestamp,
+        Guid TransactionId,
+        Guid UserId,
+        Guid AccountId,
+        string CategoryName,
+        DateTime TransactionDate,
+        decimal Amount,
+        string OperationType,
+        string OldOperationType) : IUpdateTransactionMessage;
 }

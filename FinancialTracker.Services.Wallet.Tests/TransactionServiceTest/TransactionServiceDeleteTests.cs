@@ -119,7 +119,7 @@ public class TransactionServiceDeleteTests
         // Assert
         Assert.False(result.IsSuccess);
         Assert.Equal(Enum_StatusCode.NotFound, result.StatusCode);
-        Assert.Equal($"Транзакция не найдена: {transactionId}", result.Message);
+        Assert.Equal($"Transaction not found: {transactionId}", result.Message);
     }
 
     [Fact]

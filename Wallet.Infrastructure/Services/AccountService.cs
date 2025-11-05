@@ -32,10 +32,18 @@ public class AccountService : IAccountService
         await _accountRepository.AddAsync(newAccount, cancellationToken);
     }
 
-    public async Task UpdateAsync(AccountDto account, CancellationToken cancellationToken)
+    public async Task<OperationResult> UpdateAsync(AccountDto account, CancellationToken cancellationToken)
     {
-        var updatedAccount = _mapper.Map<Account>(account);
+        var updatedAccount = await _accountRepository.GetByIdAsync(account.AccountId, cancellationToken);
+        if (updatedAccount is null)
+            return OperationResult.Failure(Enum_StatusCode.NotFound, $"id:{account.AccountId} not found");
+
+        updatedAccount.Name = account.Name;
+        updatedAccount.CurrentBalance = account.CurrentBalance;
+        updatedAccount.UpdatedAt = account.UpdatedAt;
+
         await _accountRepository.UpdateAsync(updatedAccount, cancellationToken);
+        return OperationResult.Success(Enum_StatusCode.NoContent);
     }
 
     public async Task<OperationResult> SoftDeleteAsync(Guid id, CancellationToken cancellationToken)
