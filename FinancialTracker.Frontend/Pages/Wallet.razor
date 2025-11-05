@@ -12,13 +12,48 @@
     <MudItem>
         <MudText Typo="Typo.h5">Баланс: @_totalBalance руб.</MudText>
     </MudItem>
-
+    <MudGrid Spacing="2" Class="p-2">
+        @foreach (var account in _accounts)
+        {
+            <MudItem xs="12" md="6" lg="4">
+                <MudCard Elevation="2">
+                    <MudCardContent>
+                        <div class="d-flex align-center justify-space-between mb-3">
+                            <MudText Typo="Typo.h6" Style="max-width: 70%;">
+                                @account.Name
+                            </MudText>
+                            <MudText Typo="Typo.h6">
+                                @account.CurrentBalance
+                            </MudText>
+                        </div>
+                    </MudCardContent>
+                    
+                    <MudCardActions>
+                        <MudSpacer />
+                        <MudTooltip Text="Редактировать счет">
+                            <MudIconButton Icon="@Icons.Material.Filled.Edit" 
+                                           Color="Color.Primary" 
+                                           Size="Size.Small" />
+                        </MudTooltip>
+                        
+                        <MudTooltip Text="Удалить счет">
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" 
+                                           Color="Color.Error" 
+                                           Size="Size.Small" />
+                        </MudTooltip>
+                    </MudCardActions>
+                </MudCard>
+            </MudItem>
+        }
+    </MudGrid>
+    <MudText Typo="Typo.caption" Style="color: white">@_userId</MudText>
 </MudContainer>
 
 @code {
     private bool _isAuthenticated;
     private double _totalBalance = 0;
     private List<Account> _accounts = new List<Account>();
+    private string _userId = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -29,18 +64,18 @@
             NavigationManager.NavigateTo("/login");
         }
 
-        string jti = await AuthService.GetCurrentJti();
+        _userId = await AuthService.GetCurrentJti();
 
-        await LoadAccounts(jti);
+        await LoadAccounts();
     }
     
-    private async Task LoadAccounts(string jti)
+    private async Task LoadAccounts()
     {
         StateHasChanged();
 
         try
         {
-            _accounts = await WalletService.GetAllAccountsAsync(jti);
+            _accounts = await WalletService.GetAllAccountsAsync(_userId);
             _totalBalance = _accounts.Sum(x => x.CurrentBalance);
         }
         catch (Exception ex)
