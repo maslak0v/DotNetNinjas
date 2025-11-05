@@ -1,4 +1,4 @@
-﻿@page "/finances"
+﻿@page "/wallet"
 @using FinancialTracker.Frontend.Models
 @using FinancialTracker.Frontend.Services
 @inject AuthService AuthService
@@ -7,24 +7,24 @@
 
 <MudContainer>
     <MudItem>
-        <MudText Typo="Typo.h4">Финансы</MudText>
+        <MudText Typo="Typo.h4" Class="mt-3 mb-4">Кошелек</MudText>
     </MudItem>
     <MudItem>
-        <MudText Typo="Typo.h5">Баланс: @totalBalance руб.</MudText>
+        <MudText Typo="Typo.h5">Баланс: @_totalBalance руб.</MudText>
     </MudItem>
 
 </MudContainer>
 
 @code {
-    private bool isAuthenticated;
-    private double totalBalance = 0;
-    private List<Account> accounts = new List<Account>();
+    private bool _isAuthenticated;
+    private double _totalBalance = 0;
+    private List<Account> _accounts = new List<Account>();
 
     protected override async Task OnInitializedAsync()
     {
-        isAuthenticated = await AuthService.IsAuthenticated();
+        _isAuthenticated = await AuthService.IsAuthenticated();
 
-        if (!isAuthenticated)
+        if (!_isAuthenticated)
         {
             NavigationManager.NavigateTo("/login");
         }
@@ -40,8 +40,8 @@
 
         try
         {
-            accounts = await WalletService.GetAllAccountsAsync(jti);
-            totalBalance = accounts.Sum(x => x.CurrentBalance);
+            _accounts = await WalletService.GetAllAccountsAsync(jti);
+            _totalBalance = _accounts.Sum(x => x.CurrentBalance);
         }
         catch (Exception ex)
         {
