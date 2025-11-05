@@ -53,6 +53,13 @@ public class Startup
             c.TagActionsBy(api => new[] { api.GroupName });
             c.DocInclusionPredicate((version, desc) => true);
         });
+        
+        services.AddCors(options => 
+            options.AddPolicy("AllowAllOrigins", builder => 
+                builder.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()));
+        
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -64,6 +71,7 @@ public class Startup
         }
 
         app.UseRouting();
+        app.UseCors("AllowAllOrigins");
         
         app.UseEndpoints(endpoints => 
         {
