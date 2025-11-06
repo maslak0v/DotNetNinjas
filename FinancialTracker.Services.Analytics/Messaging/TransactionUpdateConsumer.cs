@@ -29,12 +29,12 @@ public sealed class TransactionUpdateConsumer(
                 {
                     await incomesRepository.DeleteByIdAsync(m.TransactionId, ct);
                     await expensesRepository.AddAsync(CreateTransactionEntity<Expense>(m)!, ct);
-                    await transaction.CommitAsync();
+                    await transaction.CommitAsync(ct);
                 }
                 catch (Exception ex)
                 {
                     logger.LogError("Error: {error}", ex.Message);
-                    await transaction.RollbackAsync();
+                    await transaction.RollbackAsync(ct);
                 }
             },
 
@@ -45,12 +45,12 @@ public sealed class TransactionUpdateConsumer(
                 {
                     await expensesRepository.DeleteByIdAsync(m.TransactionId, ct);
                     await incomesRepository.AddAsync(CreateTransactionEntity<Income>(m)!, ct);
-                    await transaction.CommitAsync();
+                    await transaction.CommitAsync(ct);
                 }
                 catch (Exception ex)
                 {
                     logger.LogError("Error: {error}", ex.Message);
-                    await transaction.RollbackAsync();
+                    await transaction.RollbackAsync(ct);
                 }
             }
         };
