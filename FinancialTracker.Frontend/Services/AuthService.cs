@@ -1,7 +1,8 @@
-using System.Net.Http.Json;
-using System.Text.Json;
 using FinancialTracker.Frontend.Models;
 using Microsoft.AspNetCore.Components;
+using System.Net.Http.Json;
+using System.Security.Claims;
+using System.Text.Json;
 
 namespace FinancialTracker.Frontend.Services;
 
@@ -10,15 +11,41 @@ public class AuthService
     private readonly HttpClient _httpClient;
     private readonly NavigationManager _navigationManager;
     private readonly BrowserStorage _browserStorage;
-    
-    public AuthService(HttpClient httpClient, NavigationManager navigationManager, BrowserStorage browserStorage)
-    {
-        _httpClient = httpClient;
-        _navigationManager = navigationManager;
-        _browserStorage = browserStorage;
-    }
-    
-    public async Task<AuthResponse> Login(LoginRequest request)
+	private readonly JwtService _jwtService;
+
+	public AuthService(HttpClientFactory httpClientFactory, NavigationManager navigationManager, BrowserStorage browserStorage, JwtService jwtService)
+	{
+		_httpClient = httpClientFactory.CreateAuthClient();
+		_navigationManager = navigationManager;
+		_browserStorage = browserStorage;
+		_jwtService = jwtService;
+	}
+
+	public async Task<string> GetCurrentJti()
+	{
+		var token = await GetAccessToken();
+		return _jwtService.GetJti(token);
+	}
+	
+	public async Task<string> GetUserId()
+	{
+		var token = await GetAccessToken();
+		return  _jwtService.GetClaim(token, ClaimTypes.NameIdentifier);
+	}
+
+	public async Task<bool> IsTokenValid()
+	{
+		var token = await GetAccessToken();
+		return !string.IsNullOrEmpty(token) && !_jwtService.IsTokenExpired(token);
+	}
+
+	public async Task<DateTime> GetTokenExpiration()
+	{
+		var token = await GetAccessToken();
+		return _jwtService.GetExpiration(token);
+	}
+
+	public async Task<AuthResponse> Login(LoginRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync("api/authorize/login", request);
         
@@ -127,6 +154,4 @@ public class AuthService
     }
 
 	public event Action AuthenticationStateChanged;
-
-
 }
