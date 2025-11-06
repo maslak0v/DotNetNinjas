@@ -1,7 +1,6 @@
 ﻿using FinancialTracker.Services.Analytics.Models;
 using FinancialTracker.Services.Analytics.Models.Dto;
 using Microsoft.EntityFrameworkCore;
-using System.Threading;
 
 namespace FinancialTracker.Services.Analytics.DataAccess.Repositories;
 
