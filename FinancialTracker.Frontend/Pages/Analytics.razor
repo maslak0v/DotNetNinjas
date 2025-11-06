@@ -12,7 +12,7 @@
         <MudItem>
             <MudText Typo="Typo.h4">Аналитика</MudText>
         </MudItem>
-
+        
         <MudItem xs="12">
             <div class="d-flex align-center justify-space-between flex-wrap">
                 <div class="d-flex align-center gap-2 flex-wrap">
@@ -289,7 +289,7 @@
 @code {
     private bool isAuthenticated;
     private AnalyticsResponse<Balance> balanceResponse;
-    private string jti;
+    private string nameidentifier;
     private bool isLoading = false;
     private CancellationTokenSource cancellationTokenSource;
 
@@ -322,8 +322,8 @@
             NavigationManager.NavigateTo("/login");
             return;
         }
-
-        jti = await AuthService.GetCurrentJti();
+        
+        nameidentifier = await AuthService.GetNameIdentifier();
         await SetPeriod(selectedPeriod);
         await LoadBalance();
     }
@@ -398,7 +398,7 @@
 
     private async Task LoadAllData(CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrEmpty(jti)) return;
+        if (string.IsNullOrEmpty(nameidentifier)) return;
 
         isLoading = true;
         StateHasChanged();
@@ -430,7 +430,7 @@
 
     private async Task LoadBalance()
     {
-        balanceResponse = await AnalyticsService.GetBalanceAsync(jti, endDate);
+        balanceResponse = await AnalyticsService.GetBalanceAsync(nameidentifier, endDate);
         if (!balanceResponse.IsSuccess)
         {
             Snackbar.Add($"Ошибка загрузки баланса: {balanceResponse.Error}", Severity.Error);
@@ -439,7 +439,7 @@
 
     private async Task LoadIncomes()
     {
-        incomeResponse = await AnalyticsService.GetIncomesAsync(jti, startDate, endDate);
+        incomeResponse = await AnalyticsService.GetIncomesAsync(nameidentifier, startDate, endDate);
         if (!incomeResponse.IsSuccess)
         {
             Snackbar.Add($"Ошибка загрузки доходов: {incomeResponse.Error}", Severity.Error);
@@ -448,7 +448,7 @@
 
     private async Task LoadExpenses()
     {
-        expenseResponse = await AnalyticsService.GetExpensesAsync(jti, startDate, endDate);
+        expenseResponse = await AnalyticsService.GetExpensesAsync(nameidentifier, startDate, endDate);
         if (!expenseResponse.IsSuccess)
         {
             Snackbar.Add($"Ошибка загрузки расходов: {expenseResponse.Error}", Severity.Error);
@@ -457,7 +457,7 @@
 
     private async Task LoadAdvice()
     {
-        adviceResponse = await AnalyticsService.GetAdviceAsync(jti, startDate, endDate);
+        adviceResponse = await AnalyticsService.GetAdviceAsync(nameidentifier, startDate, endDate);
         if (!adviceResponse.IsSuccess)
         {
             Snackbar.Add($"Ошибка загрузки рекомендаций: {adviceResponse.Error}", Severity.Error);
