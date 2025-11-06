@@ -1,8 +1,6 @@
 ﻿using FinancialTracker.Services.Analytics;
 using System.Text.Json;
 using WebInfrastructure.Shared.Middlewares;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
