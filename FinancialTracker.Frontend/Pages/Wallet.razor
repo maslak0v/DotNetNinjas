@@ -26,6 +26,9 @@
                                 @account.CurrentBalance
                             </MudText>
                         </div>
+                        <MudText Typo="Typo.caption">
+                            Account ID: @account.AccountId
+                        </MudText>
                     </MudCardContent>
                     
                     <MudCardActions>
@@ -46,14 +49,14 @@
             </MudItem>
         }
     </MudGrid>
-    <MudText Typo="Typo.caption" Style="color: white">@_userId</MudText>
+    <MudText Typo="Typo.caption">User ID: @nameidentifier</MudText>
 </MudContainer>
 
 @code {
     private bool _isAuthenticated;
     private decimal _totalBalance = 0;
     private List<Account> _accounts = new List<Account>();
-    private string _userId = "";
+    private string nameidentifier;
 
     protected override async Task OnInitializedAsync()
     {
@@ -64,7 +67,7 @@
             NavigationManager.NavigateTo("/login");
         }
 
-        _userId = await AuthService.GetCurrentJti();
+        nameidentifier = await AuthService.GetNameIdentifier();
 
         await LoadAccounts();
     }
@@ -75,7 +78,7 @@
 
         try
         {
-            _accounts = await WalletService.GetAllAccountsAsync(_userId);
+            _accounts = await WalletService.GetAllAccountsAsync(nameidentifier);
             _totalBalance = _accounts.Sum(x => x.CurrentBalance);
         }
         catch (Exception ex)

@@ -11,11 +11,11 @@ namespace FinancialTracker.Frontend.Services
 			_httpClientFactory = httpClientFactory;
 		}
 
-		public async Task<List<Account>> GetAllAccountsAsync(string jti)
+		public async Task<List<Account>> GetAllAccountsAsync(string userId)
 		{
 			using var client = await _httpClientFactory.CreateAuthenticatedWalletClient();
 
-			return await client.GetFromJsonAsync<List<Account>>($"api/accounts/user/{jti}/all")
+			return await client.GetFromJsonAsync<List<Account>>($"api/accounts/user/{userId}/all")
 				?? new List<Account>();
 		}
 	}

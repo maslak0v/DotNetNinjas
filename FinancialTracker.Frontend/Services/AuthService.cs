@@ -37,7 +37,7 @@ public class AuthService
 	{
 		var token = await GetAccessToken();
 		return _jwtService.GetClaim(token, "nameid") ?? 
-		                     _jwtService.GetClaim(token, "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
+		       _jwtService.GetClaim(token, "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
 	}
 
 	public async Task<bool> IsTokenValid()
