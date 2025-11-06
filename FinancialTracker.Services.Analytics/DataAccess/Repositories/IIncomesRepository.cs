@@ -3,7 +3,7 @@ using FinancialTracker.Services.Analytics.Models.Dto;
 
 namespace FinancialTracker.Services.Analytics.DataAccess.Repositories;
 
-public interface IIncomesRepository
+public interface IIncomesRepository: IUnitOfWork
 {
     /// <summary>
     /// Получить список доходов за период для пользователя

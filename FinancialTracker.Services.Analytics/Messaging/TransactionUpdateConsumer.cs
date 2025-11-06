@@ -24,14 +24,34 @@ public sealed class TransactionUpdateConsumer(
 
             [OperationType.IncomeToExpense] = async (m, ct) =>
             {
-                await incomesRepository.DeleteByIdAsync(m.TransactionId, ct);
-                await expensesRepository.AddAsync(CreateTransactionEntity<Expense>(m)!, ct);
+                await using var transaction = await incomesRepository.CreateTransactionAsync(ct);
+                try
+                {
+                    await incomesRepository.DeleteByIdAsync(m.TransactionId, ct);
+                    await expensesRepository.AddAsync(CreateTransactionEntity<Expense>(m)!, ct);
+                    await transaction.CommitAsync();
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError("Error: {error}", ex.Message);
+                    await transaction.RollbackAsync();
+                }
             },
 
             [OperationType.ExpenseToIncome] = async (m, ct) =>
             {
-                await expensesRepository.DeleteByIdAsync(m.TransactionId, ct);
-                await incomesRepository.AddAsync(CreateTransactionEntity<Income>(m)!, ct);
+                await using var transaction = await incomesRepository.CreateTransactionAsync(ct);
+                try
+                {
+                    await expensesRepository.DeleteByIdAsync(m.TransactionId, ct);
+                    await incomesRepository.AddAsync(CreateTransactionEntity<Income>(m)!, ct);
+                    await transaction.CommitAsync();
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError("Error: {error}", ex.Message);
+                    await transaction.RollbackAsync();
+                }
             }
         };
 

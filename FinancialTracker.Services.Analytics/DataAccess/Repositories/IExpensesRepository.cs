@@ -3,7 +3,7 @@ using FinancialTracker.Services.Analytics.Models.Dto;
 
 namespace FinancialTracker.Services.Analytics.DataAccess.Repositories;
 
-public interface IExpensesRepository
+public interface IExpensesRepository: IUnitOfWork
 {
     /// <summary>
     /// Получить список расходов за период для пользователя

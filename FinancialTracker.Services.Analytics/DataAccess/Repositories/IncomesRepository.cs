@@ -1,6 +1,7 @@
 ﻿using FinancialTracker.Services.Analytics.Models;
 using FinancialTracker.Services.Analytics.Models.Dto;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace FinancialTracker.Services.Analytics.DataAccess.Repositories;
 
@@ -94,4 +95,7 @@ public class IncomesRepository(AppDbContext db) : IIncomesRepository
                 .SetProperty(p => p.IncomeTime, incomeTime),
             cancellationToken);
     }
+
+    public async Task<IDbContextTransaction> CreateTransactionAsync(CancellationToken ct)
+        => await db.Database.BeginTransactionAsync(ct);
 }
