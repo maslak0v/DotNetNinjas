@@ -49,14 +49,14 @@
             </MudItem>
         }
     </MudGrid>
-    <MudText Typo="Typo.caption">User ID: @nameidentifier</MudText>
+    <MudText Typo="Typo.caption">User ID: @userId</MudText>
 </MudContainer>
 
 @code {
     private bool _isAuthenticated;
     private decimal _totalBalance = 0;
     private List<Account> _accounts = new List<Account>();
-    private string nameidentifier;
+    private string userId;
 
     protected override async Task OnInitializedAsync()
     {
@@ -67,7 +67,7 @@
             NavigationManager.NavigateTo("/login");
         }
 
-        nameidentifier = await AuthService.GetNameIdentifier();
+        userId = await AuthService.GetUserId();
 
         await LoadAccounts();
     }
@@ -78,7 +78,7 @@
 
         try
         {
-            _accounts = await WalletService.GetAllAccountsAsync(nameidentifier);
+            _accounts = await WalletService.GetAllAccountsAsync(userId);
             _totalBalance = _accounts.Sum(x => x.CurrentBalance);
         }
         catch (Exception ex)

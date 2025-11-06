@@ -1,7 +1,8 @@
-using System.Net.Http.Json;
-using System.Text.Json;
 using FinancialTracker.Frontend.Models;
 using Microsoft.AspNetCore.Components;
+using System.Net.Http.Json;
+using System.Security.Claims;
+using System.Text.Json;
 
 namespace FinancialTracker.Frontend.Services;
 
@@ -33,11 +34,10 @@ public class AuthService
 			   _jwtService.GetClaim(token, "nameid");
 	}
 	
-	public async Task<string> GetNameIdentifier()
+	public async Task<string> GetUserId()
 	{
 		var token = await GetAccessToken();
-		return _jwtService.GetClaim(token, "nameid") ?? 
-		       _jwtService.GetClaim(token, "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
+		return  _jwtService.GetClaim(token, ClaimTypes.NameIdentifier);
 	}
 
 	public async Task<bool> IsTokenValid()
