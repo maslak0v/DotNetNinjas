@@ -16,10 +16,10 @@ public sealed class TransactionUpdateConsumer(
     private readonly IReadOnlyDictionary<OperationType, Func<IUpdateTransactionMessage, CancellationToken, Task>> _actions =
         new Dictionary<OperationType, Func<IUpdateTransactionMessage, CancellationToken, Task>>
         {
-            [OperationType.Income] = (m, ct) => incomesRepository.UpdateAsync(
+            [OperationType.Income] = async (m, ct) => await incomesRepository.UpdateAsync(
                 m.TransactionId, m.CategoryName, DefaultCurrency, m.Amount, m.TransactionDate, ct),
 
-            [OperationType.Expense] = (m, ct) => expensesRepository.UpdateAsync(
+            [OperationType.Expense] = async (m, ct) => await expensesRepository.UpdateAsync(
                 m.TransactionId, m.CategoryName, DefaultCurrency, m.Amount, m.TransactionDate, ct),
 
             [OperationType.IncomeToExpense] = async (m, ct) =>
