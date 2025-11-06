@@ -26,13 +26,6 @@ public class AuthService
 		var token = await GetAccessToken();
 		return _jwtService.GetJti(token);
 	}
-
-	public async Task<string> GetCurrentUserId()
-	{
-		var token = await GetAccessToken();
-		return _jwtService.GetClaim(token, "sub") ??
-			   _jwtService.GetClaim(token, "nameid");
-	}
 	
 	public async Task<string> GetUserId()
 	{
@@ -161,6 +154,4 @@ public class AuthService
     }
 
 	public event Action AuthenticationStateChanged;
-
-
 }
