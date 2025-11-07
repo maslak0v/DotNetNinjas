@@ -1,0 +1,59 @@
+﻿@using FinancialTracker.Frontend.Services
+@inherits LayoutComponentBase
+@inject AuthService AuthService
+@implements IDisposable
+
+<MudThemeProvider />
+<MudSnackbarProvider />
+<MudDialogProvider />
+<MudPopoverProvider />
+
+<MudLayout>
+    <MudAppBar Color="Color.Primary" Elevation="1" Fixed="true" Contextual>
+        <MudLink Href="/wallet" Typo="Typo.h6" Underline="Underline.None" Color="Color.Inherit" Class="ml-2">Трекер финансов</MudLink>
+
+        <MudSpacer />
+
+        @if (isAuthenticated)
+        {
+            <MudLink Href="/wallet" Underline="Underline.None" Color="Color.Inherit" Class="mx-2">Кошелек</MudLink>
+            <MudLink Href="/analytics" Underline="Underline.None" Color="Color.Inherit" Class="mx-2">Аналитика</MudLink>
+            <MudSpacer />
+            <MudButton Variant="Variant.Text" Color="Color.Inherit" OnClick="Logout">Выйти</MudButton>
+        }
+        else
+        {
+            <MudButton Variant="Variant.Text" Color="Color.Inherit" Href="/login">Войти</MudButton>
+        }
+    </MudAppBar>
+
+    <MudMainContent>
+        @Body
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    private bool isAuthenticated;
+
+    protected override async Task OnInitializedAsync()
+    {
+        isAuthenticated = await AuthService.IsAuthenticated();
+        AuthService.AuthenticationStateChanged += OnAuthenticationStateChanged;
+    }
+
+    private async void OnAuthenticationStateChanged()
+    {
+        isAuthenticated = await AuthService.IsAuthenticated();
+        StateHasChanged();
+    }
+
+    private async Task Logout()
+    {
+        await AuthService.Logout();
+    }
+
+    public void Dispose()
+    {
+        AuthService.AuthenticationStateChanged -= OnAuthenticationStateChanged;
+    }
+}

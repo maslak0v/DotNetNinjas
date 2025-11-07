@@ -1,0 +1,95 @@
+services:
+
+  financialtracker.services.wallet:
+    image: $walletapiservice
+    build:
+      context: .
+      dockerfile: Wallet.API/Dockerfile
+    env_file: ./SettingsData.env
+    ports:
+      - "5020:5020"
+    container_name: wallet_webapi
+    depends_on:
+      - financialtracker.services.authorize
+    networks:
+      - my_network
+
+  financialtracker.services.analytics:
+    image: $financialtrackerservicesanalytics
+    build:
+      context: .
+      dockerfile: FinancialTracker.Services.Analytics/Dockerfile
+    env_file: ./SettingsData.env
+    ports:
+      - "5030:5030"
+    container_name: analytics_webapi
+    depends_on:
+      - financialtracker.services.wallet
+    networks:
+      - my_network
+  
+  financialtracker.services.authorize:
+    image: $financialtrackerservicesauthorizeapi
+    build:
+      context: .
+      dockerfile: FinancialTracker.Services.AuthorizeApi/Dockerfile
+    env_file: ./SettingsData.env
+    ports:
+       - "5010:5010"
+    container_name: auth_webapi
+    depends_on:
+      - postgres_db
+      - rabbitmq
+    networks:
+      - my_network
+    #command: ["dotnet", "ef", "database", "update", "--no-build", "--project", "FinancialTracker.Services.AuthorizeApi.csproj", "--startup-project", "."]
+
+  postgres_db:
+    image: postgres:latest
+    container_name: db_postgesql_container
+    restart: always
+    ports:
+      - "5432:5432"
+    env_file: ./SettingsData.env
+    volumes:
+      - pg_data:/var/lib/postgresql
+    networks:
+      - my_network
+  pgadmin: 
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container
+    restart: always
+    ports:
+      - "8081:80"
+    env_file: ./SettingsData.env
+    volumes:
+      - pgadmindata:/var/lib/pgadmin
+    networks:
+      - my_network
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports: 
+      - "5672:5672"
+      - "15672:15672"
+    env_file: ./SettingsData.env
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: on-failure
+    networks:
+      - "my_network"
+    volumes:
+      - "rabbitmq_data:/var/lib/rabbitmq"
+
+volumes:
+  pg_data:
+  pgadmindata:
+  rabbitmq_data:
+  
+networks:
+  my_network:
+    driver: bridge

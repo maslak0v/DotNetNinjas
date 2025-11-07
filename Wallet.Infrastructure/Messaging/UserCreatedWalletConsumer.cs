@@ -1,0 +1,36 @@
+using MassTransit;
+using MessageBus.Shared.Contracts.Interfaces;
+using Microsoft.Extensions.Logging;
+using Wallet.Application.Interfaces.Repositories;
+using Wallet.Domain.Entities;
+using Wallet.Domain.Enums;
+
+namespace Wallet.Infrastructure.Messaging;
+
+public class UserCreatedWalletConsumer : IConsumer<IUserCreated>
+{
+    private readonly ILogger<UserCreatedWalletConsumer> _logger;
+    private readonly IAccountRepository _accountRepository;
+    
+    public UserCreatedWalletConsumer(ILogger<UserCreatedWalletConsumer> logger, IAccountRepository accountRepository)
+    {
+        _logger = logger;
+        _accountRepository = accountRepository;
+    }
+
+    public async Task Consume(ConsumeContext<IUserCreated> context)
+    {
+        var msg = context.Message;
+        _logger.LogInformation($"[RabbitMQ] User created: {msg.UserId}");
+       
+        var wallet = new Account
+        {
+            UserId = msg.UserId, 
+            Name = "Ваш первый счет",
+            CurrentBalance = 0,
+            Currency = Currency.RUB
+        };
+        
+        await _accountRepository.AddAsync(wallet, context.CancellationToken);
+    }
+}

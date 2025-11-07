@@ -1,0 +1,108 @@
+﻿
+using FinancialTracker.Services.AuthorizeApi.Application.Interfaces;
+using FinancialTracker.Services.AuthorizeApi.Domain.Entities;
+using FinancialTracker.Services.AuthorizeApi.Infrastructure.Helpers;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
+
+namespace FinancialTracker.Services.AuthorizeApi.Infrastructure.Services.Imlementation
+{
+    public class TokenServiceImpl(
+        IOptions<JwtSettings> jwtOptions,
+        ITokenRepository tokenRepository) : IAuthTokenService
+    {
+        public async Task<RefreshToken> GenerateRefreshTokenAsync(string userId, CancellationToken cancellationToken)
+        {
+            string refreshtokenStr = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+            var expiresDays = jwtOptions.Value.RefreshExpires;
+            RefreshToken token = RefreshToken.CreateNew(
+                refreshtokenStr,
+                userId,
+                DateTime.UtcNow.AddDays(expiresDays));
+            tokenRepository.Add(token);
+            await tokenRepository.SaveAsync(cancellationToken);
+            return token;
+        }
+
+        public string GenerateAccessToken(User user, string jti)
+        {
+            var claims = GetClaims(user, jti);
+            var jwtsecurityToken = GenerateSecurityToken(claims);
+            string token = new JwtSecurityTokenHandler().WriteToken(jwtsecurityToken);
+            return token;
+        }
+
+        public async Task<RefreshToken?> FindRefreshTokenByJtiAsync(Guid jti, CancellationToken cancellationToken)
+            => await tokenRepository.FindByJtiAsync(jti, cancellationToken);
+
+        public async Task RevokeAsync(RefreshToken refreshToken, CancellationToken cancellationToken)
+        {
+            if (refreshToken.IsRevoked)
+                return;
+            await tokenRepository.RevokeAsync(refreshToken, cancellationToken);
+            return;
+        }
+        public async Task RevokeAllForUserAsync(string userId, CancellationToken cancellationToken) =>
+            await tokenRepository.RevokeAllForUserAsync(userId, cancellationToken);
+
+        public async Task RevokeAllAsync(CancellationToken cancellationToken)
+            => await tokenRepository.RevokeAllAsync(cancellationToken);
+
+        public async Task<bool> IsRevokedRefreshTokenAsync(string jti, CancellationToken cancellationToken)
+        {
+            bool result = Guid.TryParse(jti, out Guid jtiGuid);
+            if (!result)
+                return true; // like token revoked
+            var token = await tokenRepository.FindByJtiAsync(jtiGuid, cancellationToken);
+            return !token?.IsValid() ?? true;
+        }
+
+        #region private 
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="claims"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        private JwtSecurityToken GenerateSecurityToken(IEnumerable<Claim> claims)
+        {
+            var jwtSettings = jwtOptions.Value;
+            var secretkey = Environment.GetEnvironmentVariable("JWT_KEY");
+            if (jwtSettings is null || string.IsNullOrEmpty(secretkey))
+                throw new InvalidOperationException("Jwt settings is not configured");
+
+            byte[] secretKeyBytes = Encoding.UTF8.GetBytes(secretkey);
+            var symmetricSecurityKey = new SymmetricSecurityKey(secretKeyBytes);
+            var signingCredentials = new SigningCredentials(
+                    symmetricSecurityKey,
+                    SecurityAlgorithms.HmacSha256);
+
+            return new JwtSecurityToken(
+                issuer: jwtSettings.ValidIssuer,
+                audience: jwtSettings.ValidAudience,
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(jwtSettings.Expires),
+                signingCredentials: signingCredentials);
+        }
+
+        private List<Claim> GetClaims(User user, string jti)
+        {
+            List<Claim> claims = [
+                new Claim(JwtRegisteredClaimNames.Jti, jti),
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Name, user.UserName!)
+            ];
+            var claimRoles = user.Roles.Select(role => new Claim(ClaimTypes.Role, role));
+            claims.AddRange(claimRoles);
+            return claims;
+        }
+
+        #endregion
+    }
+}

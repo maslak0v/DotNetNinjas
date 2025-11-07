@@ -1,0 +1,90 @@
+using AutoMapper;
+using FinancialTracker.Services.Analytics.DataAccess.Repositories;
+using FinancialTracker.Services.Analytics.Mapping;
+using FinancialTracker.Services.Analytics.Models;
+using FinancialTracker.Services.Analytics.Services.Implementation;
+using FinancialTracker.Services.Analytics.Tests.DSL;
+using Moq;
+
+namespace FinancialTracker.Services.Analytics.Tests;
+
+public class WhenGetExpenses
+{
+    private readonly IMapper _mapper;
+    
+    public WhenGetExpenses()
+    {
+        var config = new MapperConfiguration(cfg =>
+        {
+            cfg.AddProfile<ExpenseMappingsProfile>();
+        });
+
+        _mapper = config.CreateMapper();
+    }
+    
+    [SetUp]
+    public void Setup()
+    {
+    }
+
+    [Test]
+    public async Task ForTommy_ReturnsExpensesOnlyForTommy()
+    {
+        // Arrange
+        var mockRepository = new Mock<IExpensesRepository>();
+        var tommy = CreateUser("Tommy");
+        var alice = CreateUser("Alice");
+        var tommyExpenses = Create.Expense().Amount(100).At(10, 3, 2020)
+            .For(tommy).Please();
+        var aliceExpenses = Create.Expense().Amount(200).At(11, 4, 2022)
+            .For(alice).Please();
+        var allExpenses = new List<Expense>
+        {
+            tommyExpenses, aliceExpenses
+        };
+
+        mockRepository.Setup(repo =>
+                repo.GetExpensesAsync(tommy.Id, It.IsAny<DateTime>(), It.IsAny<DateTime>(), CancellationToken.None))
+            .ReturnsAsync(allExpenses.Where(e => e.User.Id == tommy.Id).ToList);
+        var expensesService = new ExpensesService(mockRepository.Object, _mapper);
+        
+        // Act
+        var result = await expensesService.GetExpensesAsync(tommy.Id,
+            new DateTime(2019, 01, 01),
+            new DateTime(2024, 01, 01),
+            CancellationToken.None);
+
+        // Assert
+        Assert.That(result.Count, Is.EqualTo(1));
+        Assert.That(result.First(), Is.EqualTo(tommyExpenses));
+    }
+
+    [Test]
+    public async Task ForEmptyPeriod_ReturnEmptyExpenses()
+    {
+        // Arrange
+        var tommy = CreateUser("Tommy");
+        var emptyExpenses = new List<Expense>();
+        
+        var mockRepository = new Mock<IExpensesRepository>();
+        mockRepository.Setup(repo =>
+                repo.GetExpensesAsync(tommy.Id, It.IsAny<DateTime>(), It.IsAny<DateTime>(), CancellationToken.None))
+            .ReturnsAsync(emptyExpenses);
+        var expensesService = new ExpensesService(mockRepository.Object, _mapper);
+        
+        // Act
+        var fromDate = new DateTime(2024, 01, 01);
+        var toDate = fromDate.AddDays(-1);
+        var result = await expensesService.GetExpensesAsync(tommy.Id,
+            fromDate, toDate, CancellationToken.None);
+        
+        // Assert
+        Assert.That(result, Is.EqualTo(emptyExpenses));
+    }
+    
+    private User CreateUser(string name)
+    {
+        var user = Create.User().WithName(name).Please();
+        return user;
+    }
+}

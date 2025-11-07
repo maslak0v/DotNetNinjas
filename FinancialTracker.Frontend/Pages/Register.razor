@@ -1,0 +1,105 @@
+@page "/register"
+@using FinancialTracker.Frontend.Models
+@using FinancialTracker.Frontend.Services
+@using System.ComponentModel.DataAnnotations
+@inject AuthService AuthService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+
+<MudContainer Class="d-flex flex-column vh-100 justify-content-center align-items-center">
+
+    <MudText Typo="Typo.h4" Class="mb-2">Регистрация</MudText>
+
+    <EditForm Model="@RegisterRequest" OnValidSubmit="HandleRegister">
+        <DataAnnotationsValidator />
+
+        <MudGrid>
+            <MudItem>
+                <MudCard>
+                    <MudCardContent>
+                        <MudTextField Label="Имя"
+                                      @bind-Value="RegisterRequest.FullName"
+                                      For="@(() => RegisterRequest.FullName)"
+                                      Variant="Variant.Outlined"
+                                      Margin="Margin.Dense"
+                                      FullWidth />
+                        <MudTextField Label="E-mail"
+                                      @bind-Value="RegisterRequest.Email"
+                                      For="@(() => RegisterRequest.Email)"
+                                      Variant="Variant.Outlined"
+                                      Margin="Margin.Dense"
+                                      FullWidth />
+                        <MudTextField Label="Пароль"
+                                      @bind-Value="RegisterRequest.Password"
+                                      For="@(() => RegisterRequest.Password)"
+                                      InputType="InputType.Password"
+                                      Variant="Variant.Outlined"
+                                      Margin="Margin.Dense"
+                                      FullWidth />
+                        <MudTextField Label="Подтвердите пароль"
+                                      @bind-Value="RegisterRequest.ConfirmedPassword"
+                                      For="@(() => RegisterRequest.ConfirmedPassword)"
+                                      InputType="InputType.Password"
+                                      Variant="Variant.Outlined"
+                                      Margin="Margin.Dense"
+                                      FullWidth />
+                    </MudCardContent>
+                    <MudCardContent>
+                        <div id="recaptcha"></div>
+                        <ValidationMessage For="@(() => RegisterRequest.CaptchaToken)" />                        
+                    </MudCardContent>
+                    <MudCardActions>
+                        <MudButton ButtonType="ButtonType.Submit"
+                                   Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   FullWidth>
+                            Зарегистрироваться
+                        </MudButton>
+                    </MudCardActions> 
+                </MudCard>
+            </MudItem>
+        </MudGrid>
+    </EditForm>
+    @if (_errorMessage != null)
+    {
+        <MudText Class="mt-5" Color="Color.Error">@_errorMessage</MudText>
+    }
+</MudContainer>
+
+@code {
+    private RegisterRequest RegisterRequest { get; } = new();
+    private string? _errorMessage = string.Empty;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        { 
+            await JSRuntime.InvokeVoidAsync("initializeRecaptcha", DotNetObjectReference.Create(this));
+        }
+    }
+
+    [JSInvokable]
+    public void SetRecaptchaResponse(string response)
+    {
+        RegisterRequest.CaptchaToken = response;
+        StateHasChanged();
+    }
+    
+    private async Task HandleRegister(EditContext context)
+    {
+        _errorMessage = null;
+        try
+        {
+            await AuthService.Register(RegisterRequest);
+            NavigationManager.NavigateTo("/login");
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = ex.Message;
+            RegisterRequest.CaptchaToken = string.Empty;
+            await JSRuntime.InvokeVoidAsync("grecaptcha.reset");
+            StateHasChanged();
+        }
+    }
+    
+}

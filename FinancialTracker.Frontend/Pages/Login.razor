@@ -1,0 +1,72 @@
+@page "/login"
+@using FinancialTracker.Frontend.Models
+@using FinancialTracker.Frontend.Services
+@using System.ComponentModel.DataAnnotations
+@inject AuthService AuthService
+@inject NavigationManager NavigationManager
+
+<MudContainer Class="d-flex flex-column vh-100 justify-content-center align-items-center">
+
+    <MudText Typo="Typo.h4" Class="mb-2">Вход</MudText>
+
+    <EditForm Model="@LoginRequest" OnValidSubmit="HandleLogin">
+        <DataAnnotationsValidator />
+
+        <MudGrid>
+            <MudItem>
+                <MudCard>
+                    <MudCardContent>
+                        <MudTextField Label="E-mail"
+                                      @bind-Value="LoginRequest.Email"
+                                      For="@(() => LoginRequest.Email)"
+                                      Variant="Variant.Outlined"
+                                      Margin="Margin.Dense"
+                                      FullWidth />
+                        <MudTextField Label="Пароль"
+                                      @bind-Value="LoginRequest.Password"
+                                      For="@(() => LoginRequest.Password)"
+                                      InputType="InputType.Password"
+                                      Variant="Variant.Outlined"
+                                      Margin="Margin.Dense"
+                                      FullWidth />
+                    </MudCardContent>
+                    <MudCardActions>
+                        <MudButton ButtonType="ButtonType.Submit"
+                                   Variant="Variant.Filled"
+                                   Color="Color.Primary" 
+                                   FullWidth>Войти
+                        </MudButton>
+                    </MudCardActions>
+                    <MudCardContent>
+                        <MudText>Нет аккаунта? <MudLink Href="/register">Зарегистрироваться</MudLink></MudText>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+        </MudGrid>
+    </EditForm>
+    @if (_errorMessage != null)
+    {
+        <MudText Class="mt-5" Color="Color.Error">@_errorMessage</MudText>
+    }
+</MudContainer>
+
+@code {
+    private LoginRequest LoginRequest { get; } = new();
+    private string _errorMessage = string.Empty;
+
+    private async Task HandleLogin(EditContext context)
+    {
+        _errorMessage = string.Empty;
+        try
+        {
+            await AuthService.Login(LoginRequest);
+            NavigationManager.NavigateTo("/wallet");
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = ex.Message;
+            // Handle error (show message to user)
+            Console.WriteLine($"Login error: {ex.Message}");
+        }
+    }
+}
