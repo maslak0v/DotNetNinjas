@@ -1,4 +1,6 @@
 # Финансовый трекер / Financial tracker
+<img width="1400" height="797" alt="image" src="https://github.com/user-attachments/assets/c0237432-1af2-4094-ba8f-747e59902a7a" />
+
 
 Позволяет отслеживать свои доходы и расходы, формировать отчеты, выгружать данные в формате JSON для анализа в других сервисах.
 
